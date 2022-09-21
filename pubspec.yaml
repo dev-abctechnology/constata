@@ -1,0 +1,35 @@
+name: constata_0_0_2
+description: Apontamento Digital - Constata.
+
+publish_to: "none"
+version: 1.1.0+8
+
+environment:
+  sdk: ">=2.11.0 <3.0.0"
+
+dependencies:
+  platform: ^3.1.0
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+  shared_preferences: ^2.0.6
+  cupertino_icons: ^1.0.4
+  http: ^0.13.4
+  path_provider: ^2.0.6
+  uuid: ^3.0.5
+  provider: ^6.0.1
+  flutter_masked_text2: ^0.9.1
+  animated_splash_screen: ^1.1.0
+  flutter_slidable: ^2.0.0
+  flutter_speed_dial: ^6.0.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.4
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/images/
