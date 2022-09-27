@@ -1,13 +1,11 @@
+import 'package:constata_0_0_2/src/features/login/login_page.dart';
 import 'package:constata_0_0_2/src/home_page.dart';
-import 'package:constata_0_0_2/src/login_page.dart';
 import 'package:constata_0_0_2/src/models/token.dart';
-
 import 'package:constata_0_0_2/src/shared/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-
 import 'src/features/effective_process/data/appointment_data.dart';
 
 void main() {
