@@ -19,13 +19,13 @@ class _MeasurementCard extends State<MeasurementCard> {
       margin: EdgeInsets.all(10.0),
       child: ListTile(
         leading: Icon(Icons.handyman),
-        title: Text(widget.jsonBody["tp_cp039"]),
+        title: Text(widget.jsonBody["tp_cp052"]),
         subtitle: Text('Local: ' +
-            widget.jsonBody["tp_cp040"]["name"] +
+            widget.jsonBody["tp_cp053"]["name"] +
             '\nSetor: ' +
-            widget.jsonBody["tp_cp041"]["name"] +
+            widget.jsonBody["tp_cp054"]["name"] +
             '\nTarefa: ' +
-            widget.jsonBody["tp_cp042"]["name"]),
+            widget.jsonBody["tp_cp055"]["name"]),
         trailing: Icon(Icons.search),
         onTap: () {
           showDialog(
@@ -53,6 +53,7 @@ class MeasurementeDetails extends StatefulWidget {
 }
 
 List<Widget> buildButton(editing, context) {
+  
   if (editing) {
     return [
       ElevatedButton(
@@ -83,13 +84,14 @@ List<Widget> buildButton(editing, context) {
 class _MeasurementeDetailsState extends State<MeasurementeDetails> {
   @override
   Widget build(BuildContext context) {
+    print(widget.details);
     return Container(
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              widget.details["tp_cp039"],
+              widget.details["tp_cp052"],
               style: TextStyle(fontSize: 16),
             ),
             Container(
@@ -98,7 +100,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                       text: '',
                       style: TextStyle(fontSize: 14, color: Colors.black),
                       children: [
-                    TextSpan(text: widget.details["tp_cp038"].toString())
+                    TextSpan(text: widget.details["tp_cp051"].toString())
                   ])),
             ),
             Divider(color: Colors.black12, thickness: 2),
@@ -109,7 +111,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                   Text("Local"),
                 ],
               ),
-              title: Text(widget.details["tp_cp040"]["name"]),
+              title: Text(widget.details["tp_cp053"]["name"]),
             ),
             Divider(color: Colors.black12, thickness: 2),
             ListTile(
@@ -119,7 +121,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                   Text("Setor"),
                 ],
               ),
-              title: Text(widget.details["tp_cp041"]["name"]),
+              title: Text(widget.details["tp_cp054"]["name"]),
             ),
             Divider(color: Colors.black12, thickness: 2),
             ListTile(
@@ -129,7 +131,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                   Text("Tarefa"),
                 ],
               ),
-              title: Text(widget.details["tp_cp042"]["name"]),
+              title: Text(widget.details["tp_cp055"]["name"]),
             ),
             Divider(color: Colors.black12, thickness: 2),
             Icon(Icons.account_balance),
@@ -141,7 +143,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                   TextSpan(
                       text: 'Quantidade: ',
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: widget.details["tp_cp047"].toString())
+                  TextSpan(text: widget.details["tp_cp058"].toString())
                 ])),
             RichText(
                 text: TextSpan(
@@ -154,7 +156,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                   TextSpan(
                       text: 'R\$ ' +
                           NumberFormat("#,##0.00", 'pt-Br')
-                              .format(widget.details["tp_cp045"]))
+                              .format(widget.details["tp_cp057"]))
                 ])),
             RichText(
                 text: TextSpan(
@@ -167,8 +169,17 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                   TextSpan(
                       text: 'R\$ ' +
                           NumberFormat("#,##0.00", 'pt-Br')
-                              .format(widget.details["tp_cp048"]))
+                              .format(widget.details["tp_cp059"]))
                 ])),
+            Divider(color: Colors.black12, thickness: 2),
+            Container(
+              child: Column(
+                children: [
+                  Text('Observações:', style: TextStyle(fontWeight: FontWeight.bold,)),
+                  Text(widget.details["tp_cp060"].toString(), style: TextStyle(fontSize: 20))
+                ],
+              )
+            ),
             Divider(color: Colors.black12, thickness: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

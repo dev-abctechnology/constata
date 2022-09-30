@@ -44,9 +44,9 @@ class _MeasurementReportState extends State<MeasurementReport> {
         },
         {
           "fieldName": "data.tb01_cp123.tp_cp132",
-          "value": "Sim",
+          "value": "SIM",
           "expression": "EQUAL"
-        }
+        },
       ]
     });
     request.headers.addAll(headers);
@@ -60,7 +60,7 @@ class _MeasurementReportState extends State<MeasurementReport> {
             context);
 
         colaboradores = jsonDecode(await response.stream.bytesToString());
-
+        print(colaboradores[0]['tb01_cp002']);
         if (temp.isEmpty) {
           colaboradores = [];
           return true;
@@ -147,7 +147,7 @@ class _MeasurementReportState extends State<MeasurementReport> {
       "h0_cp002": "MEDI",
       "h0_cp003": '',
       "h0_cp004": "Apontamento de Medição",
-      "tb01_cp037": [],
+      "tb01_cp050": [],
     },
     "ckc": "CONPROD001",
     "cko": "000000000000000000"
@@ -192,11 +192,11 @@ class _MeasurementReportState extends State<MeasurementReport> {
   }
 
   void mountTotalsByType() {
-    var result = jsonBody['data']['tb01_cp037']
+    var result = jsonBody['data']['tb01_cp050']
         .map((e) => {
-              'name': e["tp_cp042"]['name'],
-              'value': e["tp_cp048"],
-              'quantidade': e["tp_cp047"]
+              'name': e["tp_cp055"]['name'],
+              'value': e["tp_cp059"],
+              'quantidade': e["tp_cp058"]
             })
         .toList();
     totalByTypes.clear();
@@ -341,28 +341,29 @@ class _MeasurementReportState extends State<MeasurementReport> {
                               }).then((value) {
                             if (value != null) {
                               setState(() {
-                                jsonBody['data']['tb01_cp037'].add({
-                                  "tp_cp039": value.namePessoa,
-                                  "tp_cp038": value.rg,
-                                  "tp_cp040": {
+                                jsonBody['data']['tb01_cp050'].add({
+                                  "tp_cp052": value.namePessoa,
+                                  "tp_cp051": value.rg,
+                                  "tp_cp053": {
                                     "name": value.localName,
                                     "_id": value.localId
                                   },
-                                  "tp_cp041": {
+                                  "tp_cp054": {
                                     "name": value.typeServiceName,
                                     "_id": value.typeServiceId
                                   },
-                                  "tp_cp042": {
+                                  "tp_cp055": {
                                     "name": value.serviceName,
                                     "_id": value.serviceId
                                   },
-                                  "tp_cp044": {
+                                  "tp_cp056": {
                                     "name": value.unidadeName,
                                     "_id": value.unidadeId
                                   },
-                                  "tp_cp045": value.valor_unitario,
-                                  "tp_cp047": value.qte_consumida,
-                                  "tp_cp048": value.total,
+                                  "tp_cp057": value.valor_unitario,
+                                  "tp_cp058": value.qte_consumida,
+                                  "tp_cp059": value.total,
+                                  "tp_cp060":value.observation,
                                   "_id": value.id
                                 });
                                 showOverBudget();
@@ -383,16 +384,16 @@ class _MeasurementReportState extends State<MeasurementReport> {
             Divider(),
             ListView.builder(
                 shrinkWrap: true,
-                itemCount: jsonBody["data"]["tb01_cp037"].length != 0
-                    ? jsonBody["data"]["tb01_cp037"].length
+                itemCount: jsonBody["data"]["tb01_cp050"].length != 0
+                    ? jsonBody["data"]["tb01_cp050"].length
                     : 0,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                       child: MeasurementCard(
-                    jsonBody: jsonBody["data"]["tb01_cp037"][index],
+                    jsonBody: jsonBody["data"]["tb01_cp050"][index],
                     editing: true,
                     callback: () {
-                      jsonBody["data"]["tb01_cp037"].removeAt(index);
+                      jsonBody["data"]["tb01_cp50"].removeAt(index);
                       setState(() {
                         jsonBody = jsonBody;
                         showOverBudget();

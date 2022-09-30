@@ -16,10 +16,11 @@ class MeasureFormDialog extends StatefulWidget {
 }
 
 class _MeasureFormDialog extends State<MeasureFormDialog> {
-  double valor_unitario;
-  int qte_consumida;
+  double valor_unitario = 0;
+  int qte_consumida = 0;
+  String observation;
   final _controller = MoneyMaskedTextController(
-      decimalSeparator: ',', thousandSeparator: '.', leftSymbol: 'R\$');
+      decimalSeparator: ',', thousandSeparator: '.', leftSymbol: 'R\$', initialValue: 0);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -31,7 +32,7 @@ class _MeasureFormDialog extends State<MeasureFormDialog> {
             maxLength: 40,
             controller: _controller,
             onChanged: (value) {
-              valor_unitario = _controller.numberValue;
+              valor_unitario = double.parse(value);
             },
             keyboardType: TextInputType.number,
           ),
@@ -41,6 +42,14 @@ class _MeasureFormDialog extends State<MeasureFormDialog> {
             keyboardType: TextInputType.number,
             onChanged: (value) {
               qte_consumida = int.parse(value);
+            },
+          ),
+          TextFormField(
+            decoration: new InputDecoration(hintText: 'Observações'),
+            maxLength: 40,
+            keyboardType: TextInputType.text,
+            onChanged: (value) {
+              observation = value;
             },
           ),
           Row(
@@ -57,6 +66,7 @@ class _MeasureFormDialog extends State<MeasureFormDialog> {
                     Map object = {
                       "valor_unitario": valor_unitario,
                       "qte_consumida": qte_consumida,
+                      "observation": observation
                     };
                     Navigator.pop(context, object);
                   },

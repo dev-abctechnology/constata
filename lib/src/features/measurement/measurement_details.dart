@@ -14,7 +14,7 @@ class _MeasurementDetailsState extends State<MeasurementDetails> {
   Widget build(BuildContext context) {
     TextStyle style = TextStyle(color: Colors.black, fontSize: 16);
     TextStyle titleStyle = TextStyle(fontWeight: FontWeight.bold);
-    List measurements = widget.measurement['data']['tb01_cp037'];
+    List measurements = widget.measurement['data']['tb01_cp050'];
     return Scaffold(
         appBar: AppBar(
           title: Text('Detalhes da medição'),
@@ -67,6 +67,7 @@ class _MeasurementDetailsState extends State<MeasurementDetails> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: measurements.length,
                     itemBuilder: (BuildContext context, int index) {
+                      print(measurements[index]);
                       return MeasurementCard(
                         jsonBody: measurements[index],
                         callback: () {},

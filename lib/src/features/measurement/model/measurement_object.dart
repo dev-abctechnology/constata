@@ -18,6 +18,7 @@ class MeasurementObject {
   double total;
   String eliminar = "false";
   String id = Uuid().v4();
+  String observation = '';
 
   @override
   String toString() {
