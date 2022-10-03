@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
               height: MediaQuery.of(context).size.height * 0.02,
             ),
             FittedBox(
-              fit: BoxFit.contain,
+              fit: BoxFit.fitWidth,
               alignment: Alignment.center,
               child: Image.asset(
                 'assets/constata_big.png',

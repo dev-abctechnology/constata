@@ -5,7 +5,7 @@ import 'package:constata_0_0_2/src/shared/verifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 
 import 'measurement_card.dart';
@@ -44,57 +44,64 @@ class _MeasurementReportState extends State<MeasurementReport> {
         },
         {
           "fieldName": "data.tb01_cp123.tp_cp132",
-          "value": "SIM",
+          "value": "Sim",
           "expression": "EQUAL"
         },
       ]
     });
     request.headers.addAll(headers);
+
+    print(request.body);
+
     try {
+      print(DateTime.now());
       http.StreamedResponse response = await request.send();
 
+      print(DateTime.now());
+      developer.log('response.statusCode: ${response.statusCode}');
       if (response.statusCode == 200) {
         List temp = await verifications.checkPresenca(
             transformDate(widget.date.toString()),
             widget.dataLogged['obra']['data']['tb01_cp002'].toString(),
             context);
-
-        colaboradores = jsonDecode(await response.stream.bytesToString());
-        print(colaboradores[0]['tb01_cp002']);
+        var resposta = jsonDecode(await response.stream.bytesToString());
+        print(resposta);
+        colaboradores = resposta;
         if (temp.isEmpty) {
           colaboradores = [];
           return true;
-        }
+        } else {
+          List efetivo = temp[0]['data']['tb01_cp011'];
 
-        List efetivo = temp[0]['data']['tb01_cp011'];
+          List presentes;
 
-        List presentes;
+          presentes = efetivo
+              .where((element) => element['tp_cp015'] == 'Presente')
+              .toList();
 
-        presentes = efetivo
-            .where((element) => element['tp_cp015'] == 'Presente')
-            .toList();
-
-        // print(jsonEncode(presentes));
-        int loop = 0;
-        for (var presente in presentes) {
-          loop++;
-          for (var colaborador in colaboradores) {
+          print(jsonEncode(presentes));
+          int loop = 0;
+          for (var presente in presentes) {
             loop++;
-            if (colaborador['data']['tb01_cp002'] == presente['tp_cp013']) {
-              aptosPresentes.add(colaborador);
+            for (var colaborador in colaboradores) {
+              loop++;
+              if (colaborador['data']['tb01_cp002'] == presente['tp_cp013']) {
+                aptosPresentes.add(colaborador);
+              }
             }
           }
+          print(aptosPresentes.length);
+          colaboradores = aptosPresentes;
+          print(loop);
+          setState(() {});
+          // print(colaboradores.length);
+          return true;
         }
-        print(aptosPresentes.length);
-        colaboradores = aptosPresentes;
-        print(loop);
-        setState(() {});
-        // print(colaboradores.length);
-        return true;
       }
-      return false;
     } catch (e, s) {
+      print(DateTime.now());
       print(e);
+      print(s);
       return false;
     }
   }
@@ -363,7 +370,7 @@ class _MeasurementReportState extends State<MeasurementReport> {
                                   "tp_cp057": value.valor_unitario,
                                   "tp_cp058": value.qte_consumida,
                                   "tp_cp059": value.total,
-                                  "tp_cp060":value.observation,
+                                  "tp_cp060": value.observation,
                                   "_id": value.id
                                 });
                                 showOverBudget();
