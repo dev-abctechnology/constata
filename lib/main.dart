@@ -1,4 +1,5 @@
 import 'package:constata_0_0_2/src/features/login/login_page.dart';
+import 'package:constata_0_0_2/src/features/measurement/data/measurement_data.dart';
 import 'package:constata_0_0_2/src/home_page.dart';
 import 'package:constata_0_0_2/src/models/token.dart';
 import 'package:constata_0_0_2/src/shared/pallete.dart';
@@ -17,6 +18,9 @@ void main() {
         ),
         ChangeNotifierProvider<AppointmentData>(
           create: (context) => AppointmentData(),
+        ),
+        ChangeNotifierProvider<MeasurementData>(
+          create: (context) => MeasurementData(),
         ),
       ],
       builder: (context, child) {

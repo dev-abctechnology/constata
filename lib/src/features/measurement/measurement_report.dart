@@ -269,35 +269,38 @@ class _MeasurementReportState extends State<MeasurementReport> {
 
     request.body = jsonEncode(jsonBody);
     request.headers.addAll(headers);
-    try {
-      http.StreamedResponse response = await request.send();
-      if (response.statusCode == 201) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  content: Text('Medição enviada com sucesso'),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('voltar'))
-                  ],
-                )).then((value) {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-        });
-      } else {
-        SharedPreferences.getInstance()
-            .then((value) => value.setString("filaMedicao", request.body));
-        alerta(context);
-      }
-    } catch (e) {
-      print('err');
-      SharedPreferences.getInstance()
-          .then((value) => value.setString("filaMedicao", request.body));
-      alerta(context);
-    }
+
+    developer.log(request.body.toString(), name: 'Send Body');
+
+    // try {
+    //   http.StreamedResponse response = await request.send();
+    //   if (response.statusCode == 201) {
+    //     showDialog(
+    //         context: context,
+    //         builder: (BuildContext context) => AlertDialog(
+    //               content: Text('Medição enviada com sucesso'),
+    //               actions: [
+    //                 ElevatedButton(
+    //                     onPressed: () {
+    //                       Navigator.of(context).pop();
+    //                     },
+    //                     child: Text('voltar'))
+    //               ],
+    //             )).then((value) {
+    //       Navigator.of(context).pop();
+    //       Navigator.of(context).pop();
+    //     });
+    //   } else {
+    //     SharedPreferences.getInstance()
+    //         .then((value) => value.setString("filaMedicao", request.body));
+    //     alerta(context);
+    //   }
+    // } catch (e) {
+    //   print('err');
+    //   SharedPreferences.getInstance()
+    //       .then((value) => value.setString("filaMedicao", request.body));
+    //   alerta(context);
+    // }
   }
 
   @override

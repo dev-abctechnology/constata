@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'measurement_report.dart';
+import 'measurement_report_r.dart';
 
 class Measurement extends StatefulWidget {
   var dataLogged;
@@ -261,7 +262,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                                     setState(() {
                                       var route = MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            MeasurementReport(
+                                            MeasurementReportReworked(
                                           dataLogged: widget.dataLogged,
                                           date: _date,
                                         ),

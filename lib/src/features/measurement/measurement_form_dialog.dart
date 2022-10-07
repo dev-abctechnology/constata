@@ -20,7 +20,10 @@ class _MeasureFormDialog extends State<MeasureFormDialog> {
   int qte_consumida = 0;
   String observation;
   final _controller = MoneyMaskedTextController(
-      decimalSeparator: ',', thousandSeparator: '.', leftSymbol: 'R\$', initialValue: 0);
+      decimalSeparator: ',',
+      thousandSeparator: '.',
+      leftSymbol: 'R\$',
+      initialValue: 0);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
