@@ -28,8 +28,8 @@ class MeasurementAppointment {
 
 class MeasurementBody {
   String type = "MEDI";
-  String code;
-  String description;
+  String code = null;
+  String description = "Apontamento de Medição";
   List<MeasurementModel> measurements;
   String company;
   String address;
@@ -39,10 +39,7 @@ class MeasurementBody {
   String segment;
 
   MeasurementBody(
-      {this.type,
-      this.code,
-      this.description,
-      this.measurements,
+      {this.measurements,
       this.company,
       this.address,
       this.nameBuild,

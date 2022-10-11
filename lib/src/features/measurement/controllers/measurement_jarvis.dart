@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../constants.dart';
 import '../../../models/token.dart';
 import '../../../shared/verifications.dart';
 
@@ -20,9 +21,7 @@ class MeasurementJarvis {
       'Content-Type': 'application/json'
     };
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-pem-permd-00/filter'));
+        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-pem-permd-00/filter'));
     request.body = json.encode({
       "filters": [
         {
@@ -79,9 +78,7 @@ class MeasurementJarvis {
   Future<String> sendMeasurement(
       MeasurementAppointment data, BuildContext context) async {
     http.Request request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-inm-prjtm-00'));
+        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-inm-prjtm-00'));
     var headers = {
       'Authorization':
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
