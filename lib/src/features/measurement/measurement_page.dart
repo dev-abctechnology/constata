@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:constata_0_0_2/src/features/measurement/data/measurement_data.dart';
 import 'package:constata_0_0_2/src/features/measurement/measurement_details.dart';
 import 'package:constata_0_0_2/src/models/token.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,53 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
   bool dateStatus = false;
   List medicaoPendente = [];
   bool sending = false;
+
+  void rascunho() {
+    if (Provider.of<MeasurementData>(context, listen: false).measurementData !=
+        null) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Rascunho encontrado"),
+              content: Text("Deseja continuar o rascunho?"),
+              actionsAlignment: MainAxisAlignment.spaceAround,
+              actions: [
+                TextButton(
+                  child: Text("Não"),
+                  onPressed: () {
+                    Provider.of<MeasurementData>(context, listen: false)
+                        .clearMeasurementData();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text("Sim"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MeasurementReportReworked(
+                                  dataLogged: widget.dataLogged,
+                                  date: Provider.of<MeasurementData>(context,
+                                          listen: false)
+                                      .measurementData
+                                      .data
+                                      .date,
+                                  edittingMode: true,
+                                )));
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      print('não tem rascunho');
+    }
+  }
+
   Future<void> _openDatePicker(BuildContext context) async {
     setState(() {
       res = [];
@@ -53,8 +101,8 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
         }
 
         _selectedDate = DateFormat(" d 'de' MMMM 'de' y", "pt_BR").format(d);
-        // _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
-        _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
+        _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
+        // _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
         var _date2 = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
         print('jarvis: 2021-11-12T00:00:00');
         print('timePicker: $d');
@@ -78,9 +126,12 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
   void initState() {
     super.initState();
     updateFila();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      rascunho();
+    });
   }
 
-  void updateFila() {
+  void updateFila() async {
     SharedPreferences.getInstance().then((value) {
       if (value.containsKey('filaMedicao')) {
         setState(() {
@@ -267,11 +318,9 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                                           date: _date,
                                         ),
                                       );
-                                      Navigator.of(context)
-                                          .push(route)
-                                          .then((value) => setState(() {
-                                                updateFila();
-                                              }));
+                                      Navigator.of(context).pop();
+
+                                      Navigator.of(context).push(route);
                                     });
                                   }
                                 : null,

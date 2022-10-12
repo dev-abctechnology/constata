@@ -6,12 +6,14 @@ import 'package:constata_0_0_2/src/features/measurement/model/measurement_object
 import 'package:constata_0_0_2/src/models/build_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../shared/currency_input.dart';
+import '../../shared/pallete.dart';
 import '../../shared/seletor_model.dart';
 import 'data/measurement_data.dart';
 import 'model/measurement_model.dart';
@@ -36,6 +38,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
   MeasurementJarvis measurementJarvis = MeasurementJarvis();
   List colaborators = [];
   Build storedBuild;
+  MeasurementBody measurementBody;
+  MeasurementAppointment measurementAppointment;
+
   void initialize() async {
     try {
       try {
@@ -54,12 +59,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         print(s);
       }
 
-      var dateParsed = DateTime.parse(widget.date);
-      DateFormat dateFormat = DateFormat("dd/MM/yyyy");
-      var date = dateFormat.format(dateParsed);
       String obra = widget.dataLogged['obra']['data']['tb01_cp002'];
       colaborators = await measurementJarvis.fetchColaborators(
-          buildName: obra, context: context, date: date);
+          buildName: obra, context: context, date: widget.date);
       setState(() {});
     } catch (e) {
       showSnackBar(e.toString().substring(11), Colors.red);
@@ -115,28 +117,31 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
   @override
   void initState() {
     super.initState();
+
     initialize();
-    var dateParsed = DateTime.parse(widget.date);
-    DateFormat dateFormat = DateFormat("dd/MM/yyyy");
-    var date = dateFormat.format(dateParsed);
-    measurementBody = MeasurementBody(
-      address: widget.dataLogged["local_negocio"]["name"],
-      measurements: [],
-      date: date,
-      company: widget.dataLogged['empresa']['name'].toString(),
-      nameBuild: Seletor(
-          name: widget.dataLogged['obra']['data']["tb01_cp002"],
-          sId: widget.dataLogged['obra']['id']),
-      responsible: widget.dataLogged['user']['name'],
-      segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
-    );
+
+    if (widget.edittingMode == true) {
+      measurementBody = Provider.of<MeasurementData>(context, listen: false)
+          .measurementData
+          .data;
+    } else {
+      measurementBody = MeasurementBody(
+        address: widget.dataLogged["local_negocio"]["name"],
+        measurements: [],
+        date: widget.date,
+        company: widget.dataLogged['empresa']['name'].toString(),
+        nameBuild: Seletor(
+            name: widget.dataLogged['obra']['data']["tb01_cp002"],
+            sId: widget.dataLogged['obra']['id']),
+        responsible: widget.dataLogged['user']['name'],
+        segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
+      );
+    }
   }
 
-  Build obra;
-  MeasurementBody measurementBody;
-  MeasurementAppointment measurementAppointment;
   Future<bool> returnScreenAlert(BuildContext context) {
     return showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -177,10 +182,14 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                         Provider.of<MeasurementData>(context, listen: false)
                             .setMeasurementData(measurementAppointment);
                         developer.log(
-                            'measurementAppointment: ${jsonEncode(measurementAppointment.data.toJson())}');
+                            'measurementAppointment: ${jsonEncode(measurementAppointment.toJson())}');
                         await Future.delayed(Duration(seconds: 1));
                         Navigator.of(context).pop();
-                        Navigator.pop(context, true);
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        showSnackBar(
+                            'Rascunho salvo com sucesso', Colors.green);
                       },
                       child: const Text('Sim')),
                 ],
@@ -201,12 +210,119 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Relatório de Medição'),
+          title: Text('${widget.date} - ${measurementBody.nameBuild.name}'),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: measurementBody.measurements != null
+                      ? measurementBody.measurements.length
+                      : 0,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 5,
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) {
+                              return AlertDialog(
+                                content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Colaborador: ' +
+                                          measurementBody
+                                              .measurements[index].namePerson,
+                                    ),
+                                    Text(
+                                      'Serviço: ' +
+                                          measurementBody
+                                              .measurements[index].service.name,
+                                    ),
+                                    Text(
+                                      'Setor: ' +
+                                          measurementBody
+                                              .measurements[index].sector.name,
+                                    ),
+                                    Text(
+                                      'Local: ' +
+                                          measurementBody
+                                              .measurements[index].local.name,
+                                    ),
+                                    Text(
+                                      'Quantidade: ' +
+                                          measurementBody
+                                              .measurements[index].quantity
+                                              .toString() +
+                                          ' ' +
+                                          measurementBody.measurements[index]
+                                              .measurementUnit.name,
+                                    ),
+                                    Text(
+                                      'Valor Unitário: R\$' +
+                                          measurementBody
+                                              .measurements[index].unitValue
+                                              .toStringAsFixed(2)
+                                              .replaceAll('.', ','),
+                                    ),
+                                    Text(
+                                      'Valor Total: R\$' +
+                                          measurementBody
+                                              .measurements[index].totalValue
+                                              .toStringAsFixed(2)
+                                              .replaceAll('.', ','),
+                                    ),
+                                    Text(
+                                      'Observação: ' +
+                                          measurementBody
+                                              .measurements[index].observation,
+                                    ),
+                                  ],
+                                ),
+                                actionsAlignment: MainAxisAlignment.spaceAround,
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Voltar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      measurementBody.measurements
+                                          .removeAt(index);
+                                      showSnackBar(
+                                          'Medição removida!', Colors.red);
+                                      Navigator.pop(context);
+                                      setState(() {});
+                                    },
+                                    child: Text('Excluir'),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: ListTile(
+                          title: Text(
+                              measurementBody.measurements[index].namePerson),
+                          subtitle: Text(measurementBody
+                                  .measurements[index].sector.name +
+                              '\n' +
+                              measurementBody.measurements[index].service.name +
+                              '\n' +
+                              measurementBody.measurements[index].local.name),
+                          trailing: Icon(Icons.search),
+                        ),
+                      ),
+                    );
+                  }),
               GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -218,6 +334,14 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                   itemBuilder: (context, index) {
                     Task selected;
                     return Card(
+                      shadowColor: measurementBody.measurements
+                              .where((element) =>
+                                  element.namePerson ==
+                                  colaborators[index]['data']['tb01_cp002'])
+                              .isNotEmpty
+                          ? Colors.green.shade100
+                          : Colors.red,
+                      elevation: 5,
                       child: InkWell(
                         onTap: () {
                           showDialog(
@@ -261,11 +385,48 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                               }
                                               return null;
                                             },
+                                            autovalidateMode: AutovalidateMode
+                                                .onUserInteraction,
                                             onChanged: (Task value) {
                                               setState(() {
                                                 selected = value;
                                                 print(selected.toJson());
                                               });
+                                            },
+                                            closeButton: "Fechar",
+                                            searchFn: (String keyword, items) {
+                                              print(keyword);
+                                              List<int> ret = [];
+                                              if (items != null &&
+                                                  keyword.isNotEmpty) {
+                                                keyword.split(" ").forEach((k) {
+                                                  int i = 0;
+                                                  items.forEach((item) {
+                                                    String name = item
+                                                            .value.local.name +
+                                                        ' | ' +
+                                                        item.value.sector.name +
+                                                        ' | ' +
+                                                        item.value.service.name;
+                                                    if (!ret.contains(i) &&
+                                                        k.isNotEmpty &&
+                                                        (name
+                                                            .toString()
+                                                            .toLowerCase()
+                                                            .contains(k
+                                                                .toLowerCase()))) {
+                                                      ret.add(i);
+                                                    }
+                                                    i++;
+                                                  });
+                                                });
+                                              }
+                                              if (keyword.isEmpty) {
+                                                ret = Iterable<int>.generate(
+                                                        items.length)
+                                                    .toList();
+                                              }
+                                              return (ret);
                                             },
                                             isExpanded: true,
                                           ),
@@ -358,123 +519,92 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                       ),
                     );
                   }),
-              ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: measurementBody.measurements.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return AlertDialog(
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Colaborador: ' +
-                                          measurementBody
-                                              .measurements[index].namePerson,
-                                    ),
-                                    Text(
-                                      'Serviço: ' +
-                                          measurementBody
-                                              .measurements[index].service.name,
-                                    ),
-                                    Text(
-                                      'Setor: ' +
-                                          measurementBody
-                                              .measurements[index].sector.name,
-                                    ),
-                                    Text(
-                                      'Local: ' +
-                                          measurementBody
-                                              .measurements[index].local.name,
-                                    ),
-                                    Text(
-                                      'Quantidade: ' +
-                                          measurementBody
-                                              .measurements[index].quantity
-                                              .toString(),
-                                    ),
-                                    Text(
-                                      'Valor Unitário: ' +
-                                          measurementBody
-                                              .measurements[index].unitValue
-                                              .toString(),
-                                    ),
-                                    Text(
-                                      'Valor Total: ' +
-                                          measurementBody
-                                              .measurements[index].totalValue
-                                              .toString(),
-                                    ),
-                                    Text(
-                                      'Observação: ' +
-                                          measurementBody
-                                              .measurements[index].observation,
-                                    ),
-                                  ],
-                                ),
-                                actionsAlignment: MainAxisAlignment.spaceAround,
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Voltar'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      measurementBody.measurements
-                                          .removeAt(index);
-                                      showSnackBar(
-                                          'Medição removida!', Colors.red);
-                                      Navigator.pop(context);
-                                      setState(() {});
-                                    },
-                                    child: Text('Excluir'),
-                                  )
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: ListTile(
-                          title: Text(
-                              measurementBody.measurements[index].namePerson),
-                          subtitle: Text(measurementBody
-                                  .measurements[index].sector.name +
-                              '\n' +
-                              measurementBody.measurements[index].service.name +
-                              '\n' +
-                              measurementBody.measurements[index].local.name),
-                          trailing: Icon(Icons.search),
-                        ),
-                      ),
-                    );
-                  }),
-              ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      await measurementJarvis.sendMeasurement(
-                          MeasurementAppointment(data: measurementBody),
-                          context);
-                      showSnackBar('Medição salva!', Colors.green);
-                      setState(() {});
-                    } catch (e, s) {
-                      print(s);
-                      showSnackBar(e.toString(), Colors.red);
-                    }
-                  },
-                  child: Text('Salvar'))
             ],
           ),
         ),
+        floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.menu_close,
+          animatedIconTheme: IconThemeData(size: 28),
+          backgroundColor: Palette.customSwatch,
+          visible: true,
+          curve: Curves.bounceInOut,
+          children: [
+            SpeedDialChild(
+              child: const Icon(Icons.send, color: Colors.white),
+              backgroundColor: Palette.customSwatch,
+              onTap: () async {
+                if (colaborators
+                    .where((element) => measurementBody.measurements
+                        .where((element2) =>
+                            element2.namePerson ==
+                            element['data']['tb01_cp002'])
+                        .isEmpty)
+                    .isNotEmpty) {
+                  showSnackBar('Existem colaboradores sem medição', Colors.red);
+                } else {
+                  try {
+                    await measurementJarvis
+                        .sendMeasurement(
+                            MeasurementAppointment(data: measurementBody),
+                            context)
+                        .then((value) {
+                      if (value == 'created') {
+                        showSnackBar(
+                            'Medição enviada com sucesso!', Colors.green);
+                      } else {
+                        var nav = Navigator.of(context);
+                        nav.pop();
+                        nav.pop();
+
+                        alerta(context);
+                        showSnackBar('Erro ao enviar a medição!', Colors.red);
+                      }
+                    });
+                    setState(() {});
+                  } catch (e, s) {
+                    print(s);
+                    showSnackBar(e.toString(), Colors.red);
+                  }
+                }
+              },
+              label: 'Enviar',
+              labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w500, color: Colors.white),
+              labelBackgroundColor: Colors.black,
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Future alerta(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Erro no envio!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Parece que você está sem internet.'),
+                Text(
+                    'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                var nav = Navigator.of(context);
+                nav.pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
