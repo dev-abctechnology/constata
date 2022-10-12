@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:constata_0_0_2/src/features/effective_process/controllers/effective_jarvis.dart';
-import 'package:constata_0_0_2/src/features/effective_process/data/appointment_data.dart';
-import 'package:constata_0_0_2/src/features/effective_process/models/effective_model.dart';
-import 'package:constata_0_0_2/src/features/effective_process/quantity_form.dart';
-import 'package:constata_0_0_2/src/shared/pallete.dart';
+import 'package:constata/src/features/effective_process/controllers/effective_jarvis.dart';
+import 'package:constata/src/features/effective_process/data/appointment_data.dart';
+import 'package:constata/src/features/effective_process/models/effective_model.dart';
+import 'package:constata/src/features/effective_process/quantity_form.dart';
+import 'package:constata/src/shared/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

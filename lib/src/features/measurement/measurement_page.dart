@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:constata_0_0_2/src/features/measurement/data/measurement_data.dart';
-import 'package:constata_0_0_2/src/features/measurement/measurement_details.dart';
-import 'package:constata_0_0_2/src/models/token.dart';
+import 'package:constata/src/features/measurement/data/measurement_data.dart';
+import 'package:constata/src/features/measurement/measurement_details.dart';
+import 'package:constata/src/models/token.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;

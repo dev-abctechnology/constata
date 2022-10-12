@@ -1,4 +1,4 @@
-import 'package:constata_0_0_2/src/features/measurement/measurement_card.dart';
+import 'package:constata/src/features/measurement/measurement_card.dart';
 import 'package:flutter/material.dart';
 
 class MeasurementDetails extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:constata_0_0_2/src/features/measurement/model/measurement_model.dart';
+import 'package:constata/src/features/measurement/model/measurement_model.dart';
 
 import '../../../shared/seletor_model.dart';
 

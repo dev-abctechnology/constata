@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:constata_0_0_2/src/features/measurement/model/measurement_object_r.dart';
+import 'package:constata/src/features/measurement/model/measurement_object_r.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:constata_0_0_2/src/features/measurement/controllers/measurement_jarvis.dart';
+import 'package:constata/src/features/measurement/controllers/measurement_jarvis.dart';
 
-import 'package:constata_0_0_2/src/features/measurement/model/measurement_object_r.dart';
-import 'package:constata_0_0_2/src/models/build_model.dart';
+import 'package:constata/src/features/measurement/model/measurement_object_r.dart';
+import 'package:constata/src/models/build_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';

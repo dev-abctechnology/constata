@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:constata_0_0_2/src/features/measurement/measurement_form_dialog.dart';
-import 'package:constata_0_0_2/src/features/measurement/model/measurement_object.dart';
+import 'package:constata/src/features/measurement/measurement_form_dialog.dart';
+import 'package:constata/src/features/measurement/model/measurement_object.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -73,13 +73,14 @@ class _MeasureServiceDialog extends State<MeasureServiceDialog> {
                         object.qte_consumida = response['qte_consumida'];
                         object.valor_unitario = response['valor_unitario'];
                         object.observation = response['observation'];
-                        if(response['qte_consumida'] != '0' && response['valor_unitario'] != '0'){
+                        if (response['qte_consumida'] != '0' &&
+                            response['valor_unitario'] != '0') {
                           object.total = double.parse(double.parse(
-                                (response['qte_consumida'] *
-                                        response['valor_unitario'])
-                                    .toString())
-                            .toStringAsFixed(2));
-                        }else{
+                                  (response['qte_consumida'] *
+                                          response['valor_unitario'])
+                                      .toString())
+                              .toStringAsFixed(2));
+                        } else {
                           object.total = 0;
                         }
                         Navigator.pop(context, object);

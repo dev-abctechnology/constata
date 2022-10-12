@@ -1,4 +1,4 @@
-import 'package:constata_0_0_2/src/shared/seletor_model.dart';
+import 'package:constata/src/shared/seletor_model.dart';
 
 class Build {
   List<Task> tasks;

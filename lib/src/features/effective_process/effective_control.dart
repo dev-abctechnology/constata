@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:constata_0_0_2/src/features/effective_process/apointment_effective_reworked.dart';
-import 'package:constata_0_0_2/src/features/effective_process/data/appointment_data.dart';
-import 'package:constata_0_0_2/src/models/token.dart';
-import 'package:constata_0_0_2/src/shared/load_controller.dart';
+import 'package:constata/src/features/effective_process/apointment_effective_reworked.dart';
+import 'package:constata/src/features/effective_process/data/appointment_data.dart';
+import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

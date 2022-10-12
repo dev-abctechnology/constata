@@ -1,4 +1,4 @@
-import 'package:constata_0_0_2/src/features/effective_process/models/effective_model.dart';
+import 'package:constata/src/features/effective_process/models/effective_model.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentData with ChangeNotifier {

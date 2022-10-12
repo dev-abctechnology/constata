@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:constata_0_0_2/src/home_page.dart';
-import 'package:constata_0_0_2/src/models/token.dart';
+import 'package:constata/src/home_page.dart';
+import 'package:constata/src/models/token.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

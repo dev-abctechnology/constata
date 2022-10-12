@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:constata_0_0_2/src/models/token.dart';
-import 'package:constata_0_0_2/src/shared/auth_refresh_controller.dart';
-import 'package:constata_0_0_2/src/shared/company_refresh_controller.dart';
-import 'package:constata_0_0_2/src/shared/load_controller.dart';
-import 'package:constata_0_0_2/src/shared/pallete.dart';
-import 'package:constata_0_0_2/src/shared/verifications.dart';
+import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/auth_refresh_controller.dart';
+import 'package:constata/src/shared/company_refresh_controller.dart';
+import 'package:constata/src/shared/load_controller.dart';
+import 'package:constata/src/shared/pallete.dart';
+import 'package:constata/src/shared/verifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;

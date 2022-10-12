@@ -1,4 +1,4 @@
-import 'package:constata_0_0_2/src/shared/auth_refresh_controller.dart';
+import 'package:constata/src/shared/auth_refresh_controller.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 

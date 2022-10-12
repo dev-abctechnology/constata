@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:constata_0_0_2/src/constants.dart';
-import 'package:constata_0_0_2/src/features/effective_process/models/effective_model.dart';
-import 'package:constata_0_0_2/src/models/token.dart';
+import 'package:constata/src/constants.dart';
+import 'package:constata/src/features/effective_process/models/effective_model.dart';
+import 'package:constata/src/models/token.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
