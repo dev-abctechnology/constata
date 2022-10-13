@@ -12,6 +12,7 @@ class AppointmentData with ChangeNotifier {
 
   void clearAppointmentData() {
     _appointmentData = null;
+    notifyListeners();
   }
 
   void setAppointmentData(EffectiveApointment data) {

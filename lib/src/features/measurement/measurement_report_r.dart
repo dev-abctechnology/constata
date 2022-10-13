@@ -140,63 +140,71 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
   }
 
   Future<bool> returnScreenAlert(BuildContext context) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Sair do apontamento'),
-            content: Text('Deseja salvar um rascunho?'),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Provider.of<MeasurementData>(context, listen: false)
-                            .clearMeasurementData();
-                        Navigator.pop(context, true);
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Não')),
-                  TextButton(
-                      onPressed: () async {
-                        showDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return AlertDialog(
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    CircularProgressIndicator(),
-                                    Text('Salvando...')
-                                  ],
-                                ),
-                              );
-                            });
-                        measurementAppointment = MeasurementAppointment(
-                          data: measurementBody,
-                        );
-                        Provider.of<MeasurementData>(context, listen: false)
-                            .setMeasurementData(measurementAppointment);
-                        developer.log(
-                            'measurementAppointment: ${jsonEncode(measurementAppointment.toJson())}');
-                        await Future.delayed(Duration(seconds: 1));
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        showSnackBar(
-                            'Rascunho salvo com sucesso', Colors.green);
-                      },
-                      child: const Text('Sim')),
-                ],
-              )
-            ],
-          );
-        });
+    if (measurementBody.measurements.isEmpty) {
+      Provider.of<MeasurementData>(context, listen: false)
+          .clearMeasurementData();
+      Navigator.pop(context, true);
+    } else {
+      return showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Sair do apontamento'),
+              content: Text('Deseja salvar um rascunho?'),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Provider.of<MeasurementData>(context, listen: false)
+                              .clearMeasurementData();
+                          Navigator.pop(context, true);
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Não')),
+                    TextButton(
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  content: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      CircularProgressIndicator(),
+                                      Text('Salvando...')
+                                    ],
+                                  ),
+                                );
+                              });
+                          measurementAppointment = MeasurementAppointment(
+                            data: measurementBody,
+                          );
+                          Provider.of<MeasurementData>(context, listen: false)
+                              .setMeasurementData(measurementAppointment);
+                          developer.log(
+                              'measurementAppointment: ${jsonEncode(measurementAppointment.toJson())}');
+                          await Future.delayed(Duration(seconds: 1));
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+
+                          showSnackBar(
+                              'Rascunho salvo com sucesso', Colors.green);
+                        },
+                        child: const Text('Sim')),
+                  ],
+                )
+              ],
+            );
+          });
+    }
+    ;
   }
 
   @override
@@ -541,6 +549,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                         .isEmpty)
                     .isNotEmpty) {
                   showSnackBar('Existem colaboradores sem medição', Colors.red);
+                } else if (measurementBody.measurements.isEmpty) {
+                  showSnackBar('Não há medições para enviar', Colors.red);
                 } else {
                   try {
                     await measurementJarvis
@@ -553,7 +563,6 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                             'Medição enviada com sucesso!', Colors.green);
                       } else {
                         var nav = Navigator.of(context);
-                        nav.pop();
                         nav.pop();
 
                         alerta(context);

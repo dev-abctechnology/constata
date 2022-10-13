@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:constata/src/constants.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/features/measurement/measurement_details.dart';
 import 'package:constata/src/models/token.dart';
@@ -11,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'measurement_report.dart';
 import 'measurement_report_r.dart';
+import 'model/measurement_model.dart';
+import 'model/measurement_object_r.dart';
 
 class Measurement extends StatefulWidget {
   var dataLogged;
@@ -52,6 +55,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                 TextButton(
                   child: Text("Sim"),
                   onPressed: () {
+                    Navigator.of(context).pop();
                     Navigator.of(context).pop();
                     Navigator.push(
                         context,
@@ -138,6 +142,8 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
           status = false;
         });
         medicaoPendente = [jsonDecode(value.getString('filaMedicao'))];
+        Provider.of<MeasurementData>(context, listen: false)
+            .clearMeasurementData();
         setState(() {});
       }
     });
@@ -163,9 +169,10 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
       'Content-Type': 'application/json'
     };
-    if (date == null) {
-      date = transformDate(_date);
-    }
+    // if (date == null) {
+    //   date = transformDate(_date);
+    // }
+    print('date: $date');
     var request = http.Request(
         'POST',
         Uri.parse(
@@ -210,6 +217,85 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
     }
   }
 
+  Future<Map<String, dynamic>> effectiveValidator(
+      {Map<String, dynamic> offlineMeasurement}) async {
+    String date = offlineMeasurement['data']['h0_cp008'];
+    String obra = offlineMeasurement['data']['h0_cp007']['name'];
+
+    print(date);
+    print(obra);
+    var headers = {
+      'Authorization':
+          'Bearer ${Provider.of<Token>(context, listen: false).token}',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-inm-prjre-00/filter'));
+    request.body = jsonEncode({
+      "filters": [
+        {"fieldName": "data.h0_cp008", "value": "$date", "expression": "EQUAL"},
+        {
+          "fieldName": "data.h0_cp013.name",
+          "value": "$obra",
+          "expression": "EQUAL"
+        }
+      ]
+    });
+    request.headers.addAll(headers);
+
+    print(request.body);
+
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var res = jsonDecode(await response.stream.bytesToString());
+      print(res);
+      if (res.length > 0) {
+        List data = res[0]['data']['tb01_cp011'];
+        List presentes = [];
+        for (var index = 0; index < data.length; index++) {
+          if (data[index]['tp_cp015'] == "Presente") {
+            presentes.add(data[index]);
+          }
+        }
+
+        MeasurementAppointment measurementdata =
+            MeasurementAppointment.fromJson(offlineMeasurement);
+
+        print('${presentes.length} presentes');
+        print('${measurementdata.data.measurements.length} medições');
+        List<MeasurementModel> medicoes = measurementdata.data.measurements;
+        List<MeasurementModel> medicoesPresentes = [];
+        for (MeasurementModel medicao in medicoes) {
+          for (var i = 0; i < presentes.length; i++) {
+            if (medicao.codePerson == presentes[i]['tp_cp012']) {
+              print(presentes[i]['tp_cp012'] +
+                  ' == ' +
+                  medicao.codePerson +
+                  ' ✓');
+              medicoesPresentes.add(medicao);
+            } else {
+              print(presentes[i]['tp_cp012'] +
+                  ' == ' +
+                  medicao.codePerson +
+                  ' ✗');
+            }
+          }
+        }
+
+        print('${measurementdata.data.measurements.length} medições originais');
+        print('${medicoesPresentes.length} medições presentes');
+        measurementdata.data.measurements = medicoesPresentes;
+        print('${measurementdata.data.measurements.length} medições finais');
+        return measurementdata.toJson();
+      } else {
+        throw Exception(
+            'Não foi possivel verificar se houve uma medição no dia');
+      }
+    } else {
+      throw Exception('Não foi possivel verificar se houve uma medição no dia');
+    }
+  }
+
   void makeRequestOffline(body) async {
     http.Request request = http.Request(
         'POST',
@@ -237,22 +323,11 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
         setState(() {
           sending = false;
         });
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content: Text("Apontamento enviado com sucesso!"),
-              );
-            });
+        showSnackBar(
+            'Apontamento de medição enviado com sucesso!', Colors.green);
       } else {
         print('error' + response.statusCode.toString());
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content: Text("Erro inesperado tente novamente"),
-              );
-            });
+        showSnackBar('Erro ao enviar apontamento de medição!', Colors.red);
         setState(() {
           sending = false;
         });
@@ -354,11 +429,24 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                             'Data: ${medicaoPendente[index]["data"]['h0_cp008']}'),
                         trailing: ElevatedButton(
                           onPressed: !sending
-                              ? () {
+                              ? () async {
                                   setState(() {
                                     sending = true;
                                   });
-                                  makeRequestOffline(medicaoPendente[index]);
+
+                                  await effectiveValidator(
+                                          offlineMeasurement:
+                                              medicaoPendente[index])
+                                      .then(
+                                          (value) => makeRequestOffline(value))
+                                      .onError((error, stackTrace) {
+                                    setState(() {
+                                      sending = false;
+                                    });
+                                    showSnackBar(
+                                        'Erro inesperado, tente novamente',
+                                        Colors.red);
+                                  });
                                 }
                               : null,
                           child: Icon(Icons.arrow_circle_up),
@@ -405,5 +493,12 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
         ),
       ),
     );
+  }
+
+  void showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: color,
+      content: Text(message),
+    ));
   }
 }

@@ -51,7 +51,7 @@ void main() {
                   splashIconSize: 100,
                   animationDuration: const Duration(seconds: 2),
                 ),
-            '/homePage': (context) => HomePage(),
+            '/home': (context) => HomePage(),
           },
         );
       },

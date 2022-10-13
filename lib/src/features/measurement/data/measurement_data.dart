@@ -13,6 +13,7 @@ class MeasurementData extends ChangeNotifier {
 
   void clearMeasurementData() {
     _measurementData = null;
+    notifyListeners();
   }
 
   void setMeasurementData(MeasurementAppointment data) {
