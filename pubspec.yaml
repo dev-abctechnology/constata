@@ -2,7 +2,11 @@ name: constata_0_0_2
 description: Apontamento Digital - Constata.
 
 publish_to: "none"
+<<<<<<< Updated upstream
 version: 1.1.1+9
+=======
+version: 1.2.1+11
+>>>>>>> Stashed changes
 
 environment:
   sdk: ">=2.11.0 <3.0.0"
