@@ -23,13 +23,13 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           # channel: 'beta' # 'dev', 'alpha', default to: 'stable'
-          flutter-version: "3.0.5" # you can also specify exact version of flutter
+          flutter-version: "3.3.4" # you can also specify exact version of flutter
 
       # Get flutter dependencies.
       - run: flutter pub get
 
       # Build appbundle.
-      - run: flutter build appbundle --target-platform android-arm,android-arm64,android-x64 --no-sound-null-safety
+      - run: flutter build appbundle
 
       - run: zip -d build/app/outputs/bundle/release/app-release.aab META-INF/\*
 
