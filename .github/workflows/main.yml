@@ -15,29 +15,27 @@ jobs:
     # This job will run on ubuntu virtual machine
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.3.4'
-          channel: 'stable'
-      - run: flutter pub get
-      - run: flutter build appbundle
-      - run: zip -d build/app/outputs/bundle/release/app-release.aab META-INF/\*
-
-      - uses: r0adkll/sign-android-release@v1
-        name: Sign app APK
-
-        id: sign_app # ID used to access action output
-        with:
-          releaseDirectory: build/app/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-
-      # Upload generated apk to the artifacts.
-      - uses: actions/upload-artifact@v1
-        name: Upload Artifact
-        with:
-          name: release-aab
-          path: build/app/outputs/bundle/release/app-release.aab
+    - name: checkout repository
+      uses: actions/checkout@v2
+      
+    - name: prepare key.jks & key.properties files
+      env:
+        FS_KEYSTORE_FILE: ${{ secrets.KEY }}
+        run: |
+          echo "convert base64 strings to files"
+          echo "$FS_KEYSTORE_FILE" >> key.jks.base64
+          echo "done with base64 files creation"
+          base64 --decode key.jks.base64 > key.jks
+          echo "done key.jks"
+        working-directory: 'android'
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
