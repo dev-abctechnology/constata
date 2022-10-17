@@ -1,7 +1,8 @@
-import 'package:constata_0_0_2/src/features/login/login_page.dart';
-import 'package:constata_0_0_2/src/home_page.dart';
-import 'package:constata_0_0_2/src/models/token.dart';
-import 'package:constata_0_0_2/src/shared/pallete.dart';
+import 'package:constata/src/features/login/login_page.dart';
+import 'package:constata/src/features/measurement/data/measurement_data.dart';
+import 'package:constata/src/home_page.dart';
+import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,9 @@ void main() {
         ),
         ChangeNotifierProvider<AppointmentData>(
           create: (context) => AppointmentData(),
+        ),
+        ChangeNotifierProvider<MeasurementData>(
+          create: (context) => MeasurementData(),
         ),
       ],
       builder: (context, child) {
@@ -47,7 +51,7 @@ void main() {
                   splashIconSize: 100,
                   animationDuration: const Duration(seconds: 2),
                 ),
-            '/homePage': (context) => HomePage(),
+            '/home': (context) => HomePage(),
           },
         );
       },

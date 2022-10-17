@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:constata_0_0_2/src/home_page.dart';
-import 'package:constata_0_0_2/src/models/token.dart';
-import 'package:constata_0_0_2/src/shared/load_controller.dart';
+import 'package:constata/src/home_page.dart';
+import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

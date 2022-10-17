@@ -1,12 +1,8 @@
-name: constata_0_0_2
+name: constata
 description: Apontamento Digital - Constata.
 
 publish_to: "none"
-<<<<<<< Updated upstream
-version: 1.1.1+9
-=======
 version: 1.2.1+11
->>>>>>> Stashed changes
 
 environment:
   sdk: ">=2.11.0 <3.0.0"
@@ -28,6 +24,7 @@ dependencies:
   animated_splash_screen: ^1.1.0
   flutter_slidable: ^2.0.0
   flutter_speed_dial: ^6.0.0
+  search_choices: ^2.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

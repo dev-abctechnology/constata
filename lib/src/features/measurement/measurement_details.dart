@@ -1,4 +1,4 @@
-import 'package:constata_0_0_2/src/features/measurement/measurement_card.dart';
+import 'package:constata/src/features/measurement/measurement_card.dart';
 import 'package:flutter/material.dart';
 
 class MeasurementDetails extends StatefulWidget {
@@ -64,7 +64,7 @@ class _MeasurementDetailsState extends State<MeasurementDetails> {
                 ]))),
                 ListView.builder(
                     shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: measurements.length,
                     itemBuilder: (BuildContext context, int index) {
                       print(measurements[index]);
