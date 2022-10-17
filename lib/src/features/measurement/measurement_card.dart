@@ -53,7 +53,6 @@ class MeasurementeDetails extends StatefulWidget {
 }
 
 List<Widget> buildButton(editing, context) {
-  
   if (editing) {
     return [
       ElevatedButton(
@@ -173,13 +172,16 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                 ])),
             Divider(color: Colors.black12, thickness: 2),
             Container(
-              child: Column(
-                children: [
-                  Text('Observações:', style: TextStyle(fontWeight: FontWeight.bold,)),
-                  Text(widget.details["tp_cp060"].toString(), style: TextStyle(fontSize: 20))
-                ],
-              )
-            ),
+                child: Column(
+              children: [
+                Text('Observações:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )),
+                Text(widget.details["tp_cp060"].toString(),
+                    style: TextStyle(fontSize: 20))
+              ],
+            )),
             Divider(color: Colors.black12, thickness: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

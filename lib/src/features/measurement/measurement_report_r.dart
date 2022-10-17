@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:constata/main.dart';
 import 'package:constata/src/features/measurement/controllers/measurement_jarvis.dart';
 
 import 'package:constata/src/features/measurement/model/measurement_object_r.dart';
@@ -40,8 +41,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
   Build storedBuild;
   MeasurementBody measurementBody;
   MeasurementAppointment measurementAppointment;
-
+  bool loading = false;
   void initialize() async {
+    loading = true;
     try {
       try {
         storedBuild = Build.fromJson(widget.dataLogged['obra']['data']);
@@ -77,6 +79,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         }
       });
     }
+    loading = false;
   }
 
   void showSnackBar(String message, Color color) {
@@ -222,313 +225,255 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: measurementBody.measurements != null
-                      ? measurementBody.measurements.length
-                      : 0,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return AlertDialog(
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Colaborador: ' +
-                                          measurementBody
-                                              .measurements[index].namePerson,
-                                    ),
-                                    Text(
-                                      'Serviço: ' +
-                                          measurementBody
-                                              .measurements[index].service.name,
-                                    ),
-                                    Text(
-                                      'Setor: ' +
-                                          measurementBody
-                                              .measurements[index].sector.name,
-                                    ),
-                                    Text(
-                                      'Local: ' +
-                                          measurementBody
-                                              .measurements[index].local.name,
-                                    ),
-                                    Text(
-                                      'Quantidade: ' +
-                                          measurementBody
-                                              .measurements[index].quantity
-                                              .toString() +
-                                          ' ' +
-                                          measurementBody.measurements[index]
-                                              .measurementUnit.name,
-                                    ),
-                                    Text(
-                                      'Valor Unitário: R\$' +
-                                          measurementBody
-                                              .measurements[index].unitValue
-                                              .toStringAsFixed(2)
-                                              .replaceAll('.', ','),
-                                    ),
-                                    Text(
-                                      'Valor Total: R\$' +
-                                          measurementBody
-                                              .measurements[index].totalValue
-                                              .toStringAsFixed(2)
-                                              .replaceAll('.', ','),
-                                    ),
-                                    Text(
-                                      'Observação: ' +
-                                          measurementBody
-                                              .measurements[index].observation,
-                                    ),
-                                  ],
-                                ),
-                                actionsAlignment: MainAxisAlignment.spaceAround,
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Voltar'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      measurementBody.measurements
-                                          .removeAt(index);
-                                      showSnackBar(
-                                          'Medição removida!', Colors.red);
-                                      Navigator.pop(context);
-                                      setState(() {});
-                                    },
-                                    child: Text('Excluir'),
-                                  )
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: ListTile(
-                          title: Text(
-                              measurementBody.measurements[index].namePerson),
-                          subtitle: Text(measurementBody
-                                  .measurements[index].sector.name +
-                              '\n' +
-                              measurementBody.measurements[index].service.name +
-                              '\n' +
-                              measurementBody.measurements[index].local.name),
-                          trailing: Icon(Icons.search),
-                        ),
-                      ),
-                    );
-                  }),
-              GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: colaborators == null ? 0 : colaborators.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 2,
-                      crossAxisSpacing: 2,
-                      crossAxisCount: 2),
-                  itemBuilder: (context, index) {
-                    Task selected;
-                    return Card(
-                      shadowColor: measurementBody.measurements
-                              .where((element) =>
-                                  element.namePerson ==
-                                  colaborators[index]['data']['tb01_cp002'])
-                              .isNotEmpty
-                          ? Colors.green.shade100
-                          : Colors.red,
-                      elevation: 5,
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                List<DropdownMenuItem> dropdownMenuItems = [];
-                                for (Task task in storedBuild.tasks) {
-                                  dropdownMenuItems.add(DropdownMenuItem(
-                                    child: Text(task.local.name +
-                                        ' | ' +
-                                        task.sector.name +
-                                        ' | ' +
-                                        task.service.name),
-                                    value: task,
-                                  ));
-                                }
-
-                                var quantidadeController =
-                                    TextEditingController();
-                                var valorUnitarioController =
-                                    TextEditingController();
-                                var observacaoController =
-                                    TextEditingController();
-                                var _globalKey = GlobalKey<FormState>();
-                                return AlertDialog(
-                                  content: Form(
-                                    key: _globalKey,
-                                    child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SearchChoices.single(
-                                            items: dropdownMenuItems,
-                                            value: selected,
-                                            hint: "Escolha um serviço",
-                                            onClear: () {
-                                              selected = null;
-                                            },
-                                            validator: (value) {
-                                              if (value == null) {
-                                                return 'Campo obrigatório';
-                                              }
-                                              return null;
-                                            },
-                                            autovalidateMode: AutovalidateMode
-                                                .onUserInteraction,
-                                            onChanged: (Task value) {
-                                              setState(() {
-                                                selected = value;
-                                                print(selected.toJson());
-                                              });
-                                            },
-                                            closeButton: "Fechar",
-                                            searchFn: (String keyword, items) {
-                                              print(keyword);
-                                              List<int> ret = [];
-                                              if (items != null &&
-                                                  keyword.isNotEmpty) {
-                                                keyword.split(" ").forEach((k) {
-                                                  int i = 0;
-                                                  items.forEach((item) {
-                                                    String name = item
-                                                            .value.local.name +
-                                                        ' | ' +
-                                                        item.value.sector.name +
-                                                        ' | ' +
-                                                        item.value.service.name;
-                                                    if (!ret.contains(i) &&
-                                                        k.isNotEmpty &&
-                                                        (name
-                                                            .toString()
-                                                            .toLowerCase()
-                                                            .contains(k
-                                                                .toLowerCase()))) {
-                                                      ret.add(i);
-                                                    }
-                                                    i++;
-                                                  });
-                                                });
-                                              }
-                                              if (keyword.isEmpty) {
-                                                ret = Iterable<int>.generate(
-                                                        items.length)
-                                                    .toList();
-                                              }
-                                              return (ret);
-                                            },
-                                            isExpanded: true,
-                                          ),
-                                          TextFormField(
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Campo obrigatório';
-                                              }
-                                              return null;
-                                            },
-                                            controller: quantidadeController,
-                                            keyboardType: const TextInputType
-                                                .numberWithOptions(),
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(r'^\d+\,?\d{0,2}')),
-                                            ],
-                                            decoration: InputDecoration(
-                                              labelText: 'Quantidade',
+          child: loading
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                      Text('Carregando...')
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: measurementBody.measurements != null
+                            ? measurementBody.measurements.length
+                            : 0,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            elevation: 5,
+                            child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) {
+                                    return AlertDialog(
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            MeasurementDetailTile(
+                                                icon: Icon(Icons.person),
+                                                label: 'Nome',
+                                                value: measurementBody
+                                                    .measurements[index]
+                                                    .namePerson),
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                                icon: Icon(Icons.location_on),
+                                                label: 'Local',
+                                                value: measurementBody
+                                                    .measurements[index]
+                                                    .local
+                                                    .name),
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                                icon: Icon(Icons
+                                                    .construction_outlined),
+                                                label: 'Setor',
+                                                value: measurementBody
+                                                    .measurements[index]
+                                                    .sector
+                                                    .name),
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                                icon: Icon(Icons.handyman),
+                                                label: 'Serviço',
+                                                value: measurementBody
+                                                    .measurements[index]
+                                                    .service
+                                                    .name),
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                              icon: Icon(Icons.account_balance),
+                                              label: 'Quantidade',
+                                              value: measurementBody
+                                                  .measurements[index].quantity
+                                                  .toString(),
                                             ),
-                                          ),
-                                          TextFormField(
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Campo obrigatório';
-                                              }
-                                              return null;
-                                            },
-                                            controller: valorUnitarioController,
-                                            keyboardType: const TextInputType
-                                                .numberWithOptions(),
-                                            decoration: InputDecoration(
-                                              labelText: 'Valor Unitário',
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                              icon: SizedBox(
+                                                height: 20,
+                                                width: 0,
+                                              ),
+                                              label: 'Valor Unitário',
+                                              value: 'R\$' +
+                                                  measurementBody
+                                                      .measurements[index]
+                                                      .unitValue
+                                                      .toStringAsFixed(2),
                                             ),
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(r'^\d+\,?\d{0,2}')),
-                                            ],
-                                          ),
-                                          TextFormField(
-                                            controller: observacaoController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Observação',
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                              icon: SizedBox(
+                                                height: 20,
+                                                width: 0,
+                                              ),
+                                              label: 'Valor Total',
+                                              value: 'R\$' +
+                                                  measurementBody
+                                                      .measurements[index]
+                                                      .totalValue
+                                                      .toStringAsFixed(2),
                                             ),
-                                          ),
-                                        ]),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Cancelar'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        if (_globalKey.currentState
-                                            .validate()) {
-                                          addMeasurement(
-                                              colaborator: colaborators[index],
-                                              task: selected,
-                                              quantity: double.parse(
-                                                  quantidadeController.text
-                                                      .replaceAll(',', '.')),
-                                              unitValue: double.parse(
-                                                  valorUnitarioController.text
-                                                      .replaceAll(',', '.')),
-                                              observation:
-                                                  observacaoController.text);
-                                          Navigator.pop(context);
-                                          showSnackBar(
-                                              'Medição criada!', Colors.green);
-                                        }
-                                      },
-                                      child: Text('Adicionar'),
-                                    ),
-                                  ],
+                                            Divider(
+                                                color: Colors.black12,
+                                                thickness: 2),
+                                            MeasurementDetailTile(
+                                              icon: SizedBox(
+                                                height: 20,
+                                                width: 0,
+                                              ),
+                                              label: 'Observação',
+                                              value: measurementBody
+                                                  .measurements[index]
+                                                  .observation,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actionsAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            measurementBody.measurements
+                                                .removeAt(index);
+                                            showSnackBar('Medição removida!',
+                                                Colors.red);
+                                            Navigator.pop(context);
+                                            setState(() {});
+                                          },
+                                          child: Text('Excluir'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('Voltar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                              });
-                        },
-                        child: ListTile(
-                            title: Center(
-                          child: Text(
-                            colaborators[index]['data']['tb01_cp002'],
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                          ),
-                        )),
-                      ),
-                    );
-                  }),
-            ],
-          ),
+                              },
+                              child: ListTile(
+                                title: Text(measurementBody
+                                        .measurements[index].namePerson +
+                                    ' - ' +
+                                    measurementBody
+                                        .measurements[index].codePerson),
+                                subtitle: Text(measurementBody
+                                        .measurements[index].sector.name +
+                                    '\n' +
+                                    measurementBody
+                                        .measurements[index].service.name +
+                                    '\n' +
+                                    measurementBody
+                                        .measurements[index].local.name),
+                                trailing: Icon(Icons.search),
+                              ),
+                            ),
+                          );
+                        }),
+                    GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount:
+                            colaborators == null ? 0 : colaborators.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 1.5,
+                                crossAxisSpacing: 2,
+                                crossAxisCount: 2),
+                        itemBuilder: (context, index) {
+                          Task selected;
+                          return Card(
+                            shadowColor: measurementBody.measurements
+                                    .where((element) =>
+                                        element.namePerson ==
+                                        colaborators[index]['data']
+                                            ['tb01_cp002'])
+                                    .isNotEmpty
+                                ? Colors.green.shade100
+                                : Colors.red,
+                            elevation: 5,
+                            child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      List<DropdownMenuItem> dropdownMenuItems =
+                                          [];
+                                      for (Task task in storedBuild.tasks) {
+                                        dropdownMenuItems.add(DropdownMenuItem(
+                                          child: Text(task.local.name +
+                                              ' | ' +
+                                              task.sector.name +
+                                              ' | ' +
+                                              task.service.name),
+                                          value: task,
+                                        ));
+                                      }
+
+                                      var quantidadeController =
+                                          TextEditingController();
+                                      var valorUnitarioController =
+                                          TextEditingController();
+                                      var observacaoController =
+                                          TextEditingController();
+                                      var _globalKey = GlobalKey<FormState>();
+                                      return searchService(
+                                          _globalKey,
+                                          dropdownMenuItems,
+                                          selected,
+                                          quantidadeController,
+                                          valorUnitarioController,
+                                          observacaoController,
+                                          context,
+                                          index);
+                                    });
+                              },
+                              child: ListTile(
+                                  title: Center(
+                                child: Text(
+                                  colaborators[index]['data']['tb01_cp002']
+                                          .toString()
+                                          .toUpperCase() +
+                                      '\n' +
+                                      colaborators[index]['data']['tb01_cp004']
+                                          .toString()
+                                          .toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )),
+                            ),
+                          );
+                        }),
+                  ],
+                ),
         ),
         floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,
@@ -587,6 +532,139 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
     );
   }
 
+  AlertDialog searchService(
+      GlobalKey<FormState> _globalKey,
+      List<DropdownMenuItem<dynamic>> dropdownMenuItems,
+      Task selected,
+      TextEditingController quantidadeController,
+      TextEditingController valorUnitarioController,
+      TextEditingController observacaoController,
+      BuildContext context,
+      int index) {
+    return AlertDialog(
+      content: Form(
+        key: _globalKey,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          SearchChoices.single(
+            items: dropdownMenuItems,
+            value: selected,
+            hint: "Escolha um serviço",
+            onClear: () {
+              selected = null;
+            },
+            validator: (value) {
+              if (value == null) {
+                return 'Campo obrigatório';
+              }
+              return null;
+            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            onChanged: (Task value) {
+              setState(() {
+                selected = value;
+                print(selected.toJson());
+              });
+            },
+            closeButton: "Fechar",
+            searchFn: (String keyword, items) {
+              print(keyword);
+              List<int> ret = [];
+              if (items != null && keyword.isNotEmpty) {
+                keyword.split(" ").forEach((k) {
+                  int i = 0;
+                  items.forEach((item) {
+                    String name = item.value.local.name +
+                        ' | ' +
+                        item.value.sector.name +
+                        ' | ' +
+                        item.value.service.name;
+                    if (!ret.contains(i) &&
+                        k.isNotEmpty &&
+                        (name
+                            .toString()
+                            .toLowerCase()
+                            .contains(k.toLowerCase()))) {
+                      ret.add(i);
+                    }
+                    i++;
+                  });
+                });
+              }
+              if (keyword.isEmpty) {
+                ret = Iterable<int>.generate(items.length).toList();
+              }
+              return (ret);
+            },
+            isExpanded: true,
+          ),
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Campo obrigatório';
+              }
+              return null;
+            },
+            controller: quantidadeController,
+            keyboardType: const TextInputType.numberWithOptions(),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\,?\d{0,2}')),
+            ],
+            decoration: InputDecoration(
+              labelText: 'Quantidade',
+            ),
+          ),
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Campo obrigatório';
+              }
+              return null;
+            },
+            controller: valorUnitarioController,
+            keyboardType: const TextInputType.numberWithOptions(),
+            decoration: InputDecoration(
+              labelText: 'Valor Unitário',
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\,?\d{0,2}')),
+            ],
+          ),
+          TextFormField(
+            controller: observacaoController,
+            decoration: InputDecoration(
+              labelText: 'Observação',
+            ),
+          ),
+        ]),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Cancelar'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (_globalKey.currentState.validate()) {
+              addMeasurement(
+                  colaborator: colaborators[index],
+                  task: selected,
+                  quantity: double.parse(
+                      quantidadeController.text.replaceAll(',', '.')),
+                  unitValue: double.parse(
+                      valorUnitarioController.text.replaceAll(',', '.')),
+                  observation: observacaoController.text);
+              Navigator.pop(context);
+              showSnackBar('Medição criada!', Colors.green);
+            }
+          },
+          child: Text('Adicionar'),
+        ),
+      ],
+    );
+  }
+
   Future alerta(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -614,6 +692,70 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           ],
         );
       },
+    );
+  }
+}
+
+class MeasurementDetailTile extends StatelessWidget {
+  const MeasurementDetailTile({
+    Key key,
+    this.label,
+    this.value,
+    this.icon,
+  }) : super(key: key);
+  final label;
+  final icon;
+  final value;
+  @override
+  Widget build(BuildContext context) {
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     Text(
+    //       label,
+    //       style: const TextStyle(
+    //         fontWeight: FontWeight.w500,
+    //         color: Colors.black,
+    //       ),
+    //     ),
+    //     const SizedBox(
+    //       height: 10,
+    //     ),
+    //     Text(
+    //       value,
+    //       maxLines: 3,
+    //       overflow: TextOverflow.ellipsis,
+    //       textAlign: TextAlign.right,
+    //       style: const TextStyle(
+    //         fontWeight: FontWeight.normal,
+    //         color: Colors.black,
+    //       ),
+    //     ),
+    //   ],
+    // );
+
+    return ListTile(
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          Text(
+            label,
+            textAlign: TextAlign.start,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text(
+        value,
+        style: const TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 16,
+        ),
+        textAlign: TextAlign.right,
+      ),
     );
   }
 }

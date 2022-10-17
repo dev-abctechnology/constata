@@ -22,6 +22,7 @@ class QuantityForm extends StatelessWidget {
           return null;
         }),
         controller: controller,
+        keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
             hintText: hintText,

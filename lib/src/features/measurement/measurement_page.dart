@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'measurement_report.dart';
 import 'measurement_report_r.dart';
 import 'model/measurement_model.dart';
 import 'model/measurement_object_r.dart';
@@ -115,7 +114,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
         SharedPreferences.getInstance().then((value) {
           if (!value.containsKey('filaMedicao')) {
             status = true;
-            fetchRelatorios(null);
+            fetchRelatorios(_date);
           } else {
             status = false;
           }
@@ -140,10 +139,11 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
       if (value.containsKey('filaMedicao')) {
         setState(() {
           status = false;
+          Provider.of<MeasurementData>(context, listen: false)
+              .clearMeasurementData();
         });
         medicaoPendente = [jsonDecode(value.getString('filaMedicao'))];
-        Provider.of<MeasurementData>(context, listen: false)
-            .clearMeasurementData();
+
         setState(() {});
       }
     });
@@ -188,21 +188,14 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
         res;
         if (res.length > 0) {
           status = false;
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("Escolha outra data!"),
-                  content: Text(
-                      'Na data selecionada já existe um apontamento de medição.'),
-                );
-              });
+          showSnackBar(
+              'Na data selecionada já existe um relatório', Colors.red);
           return true;
+        } else {
+          print(res.length);
+          return false;
         }
       });
-
-      print(res.length);
-      return false;
     } else {
       showDialog(
           context: context,
