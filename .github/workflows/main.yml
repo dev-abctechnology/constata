@@ -29,8 +29,7 @@ jobs:
       - run: flutter pub get
 
       # Build appbundle.
-      - run: flutter build appbundle --target-platform android-arm,android-arm64,android-x64 --no-sound-null-safety
-
+      - run: flutter build appbundle
       - run: zip -d build/app/outputs/bundle/release/app-release.aab META-INF/\*
 
       - uses: r0adkll/sign-android-release@v1
