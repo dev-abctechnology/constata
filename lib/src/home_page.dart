@@ -9,10 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'features/effective_process/data/appointment_data.dart';
 import 'features/effective_process/effective_control.dart';
 import 'features/epi_process/epi_home_page.dart';
+import 'features/measurement/data/measurement_data.dart';
 import 'features/measurement/measurement_page.dart';
 import 'features/tools/select_date_page.dart';
 
@@ -217,6 +220,26 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+          Card(
+            child: ListTile(
+              title: const Text('Mudar de obra'),
+              trailing: const Icon(Icons.change_circle),
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                Map username = jsonDecode(prefs.getString('authentication'));
+                print(username.toString());
+                Provider.of<AppointmentData>(context, listen: false)
+                    .clearAppointmentData();
+                Provider.of<MeasurementData>(context, listen: false)
+                    .clearMeasurementData();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop({
+                  "username": username['user'],
+                  "password": username['password']
+                });
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -263,6 +286,7 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 16, left: 16),
                 child: GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   crossAxisCount: 2,
                   childAspectRatio: 1.0,
