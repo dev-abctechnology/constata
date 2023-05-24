@@ -62,16 +62,7 @@ class _ApointmentEffectiveReworkedState
           .appointmentData
           .data
           .effective;
-      _morningQuantity.text =
-          Provider.of<AppointmentData>(context, listen: false)
-              .appointmentData
-              .data
-              .morningQuantity;
-      _afternoonQuantity.text =
-          Provider.of<AppointmentData>(context, listen: false)
-              .appointmentData
-              .data
-              .afternoonQuantity;
+
       setState(() {});
     } else {
       await fetchEffective();
@@ -130,8 +121,15 @@ class _ApointmentEffectiveReworkedState
             datetime: widget.date,
             description: 'Descrição do apontamento',
             effective: effectives,
-            morningQuantity: _morningQuantity.text,
-            afternoonQuantity: _afternoonQuantity.text,
+            effectiveTotalQuantity: //TODO: mudar para o total de efetivos
+
+                effectives.length.toString(),
+            quantityPresentes:
+                //TODO: mudar para o total de presentes
+                effectives
+                    .where((element) => element.effectiveStatus == 'Presente')
+                    .length
+                    .toString(),
             pointer: widget.dataLogged['user']['name'],
             segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
             type: "EFET"));
@@ -175,8 +173,11 @@ class _ApointmentEffectiveReworkedState
             datetime: widget.date,
             description: 'Descrição do apontamento',
             effective: effectives,
-            morningQuantity: _morningQuantity.text,
-            afternoonQuantity: _afternoonQuantity.text,
+            effectiveTotalQuantity: effectives.length.toString(),
+            quantityPresentes: effectives
+                .where((element) => element.effectiveStatus == 'Presente')
+                .length
+                .toString(),
             pointer: widget.dataLogged['user']['name'],
             segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
             type: "EFET"));
@@ -239,9 +240,6 @@ class _ApointmentEffectiveReworkedState
           );
         });
   }
-
-  final TextEditingController _morningQuantity = TextEditingController();
-  final TextEditingController _afternoonQuantity = TextEditingController();
 
   SpeedDial buildSpeedDial() {
     return SpeedDial(
@@ -310,24 +308,6 @@ class _ApointmentEffectiveReworkedState
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
-              SizedBox(
-                height: 70,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Flexible(
-                        child: QuantityForm(
-                      controller: _morningQuantity,
-                      hintText: 'Cafés da manhã',
-                    )),
-                    Flexible(
-                        child: QuantityForm(
-                      controller: _afternoonQuantity,
-                      hintText: 'Cafés da tarde',
-                    )),
-                  ],
-                ),
-              ),
               Expanded(
                 child: AnimationLimiter(
                   child: ListView.builder(
@@ -355,13 +335,29 @@ class _ApointmentEffectiveReworkedState
                                 startActionPane: ActionPane(
                                   motion: const ScrollMotion(),
                                   closeThreshold: 0.1,
+                                  extentRatio: 1,
                                   children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        changeStatus(index, 'Em viagem');
+                                      },
+                                      autoClose: true,
+                                      flex: 1,
+                                      backgroundColor:
+                                          Color.fromARGB(255, 25, 13, 149),
+                                      foregroundColor: Colors.white,
+                                      spacing: 4,
+                                      borderRadius: BorderRadius.circular(8),
+                                      padding: const EdgeInsets.all(1),
+                                      icon: Icons.airplanemode_active,
+                                      label: 'Viagem',
+                                    ),
                                     SlidableAction(
                                       onPressed: (context) {
                                         changeStatus(index, 'Em Transferência');
                                       },
                                       autoClose: true,
-                                      flex: 3,
+                                      flex: 1,
                                       backgroundColor: const Color.fromARGB(
                                           255, 230, 167, 23),
                                       foregroundColor: Colors.white,
@@ -376,7 +372,7 @@ class _ApointmentEffectiveReworkedState
                                         changeStatus(index, 'Ausente');
                                       },
                                       autoClose: true,
-                                      flex: 2,
+                                      flex: 1,
                                       borderRadius: BorderRadius.circular(8),
                                       backgroundColor: const Color.fromARGB(
                                           255, 199, 37, 37),
