@@ -227,14 +227,25 @@ class _LoginState extends State<Login> {
         Map dataLogged = await json.decode(sharedPreferences.getString("data"));
         Provider.of<Token>(context, listen: false)
             .setToken(dataLogged['token']);
-        setState(() {
-          var route = MaterialPageRoute(
-            builder: (BuildContext context) => HomePage(
-              dataLogged: dataLogged,
-            ),
-          );
-          Navigator.of(context).push(route);
+
+        var route = MaterialPageRoute(
+          builder: (BuildContext context) => HomePage(
+            dataLogged: dataLogged,
+          ),
+        );
+        await Navigator.of(context).push(route).then((value) {
+          print(value);
+          usernameController.text = value['username'];
+          passwordController.text = value['password'];
+
+          showLoading(context);
+          generateToken().then((value) {
+            TextInput.finishAutofillContext();
+            Navigator.of(context).pop();
+            checkAuth();
+          });
         });
+
         return true;
       }
     }

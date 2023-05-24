@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +41,7 @@ class AuthRefreshController {
               return refresh.send().then(
                 (value) {
                   if (value.statusCode == 200) {
-                    print(value.statusCode);
+                    debugPrint(value.statusCode.toString());
                     return value.stream
                         .bytesToString()
                         .then((value) => jsonDecode(value)['access_token']);

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
 
@@ -17,7 +18,7 @@ class CompanyRefreshController {
     request.body =
         '''{"filters": [{"fieldName": "data.tb01_cp002","value": "$name","expression": "EQUAL"}]}''';
     request.headers.addAll(headers);
-    print('asfasf');
+    debugPrint('atualização da obra');
     try {
       http.StreamedResponse res = await request.send();
       var x = json.decode(await res.stream.bytesToString());
@@ -29,7 +30,7 @@ class CompanyRefreshController {
       developer.log('success', name: "Update");
       return value;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       developer.log('error', name: "Update", error: e);
       return null;
     }

@@ -223,7 +223,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
       'Content-Type': 'application/json'
     };
     var request = http.Request(
-        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-inm-prjre-00/filter'));
+        'POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjre-00/filter'));
     request.body = jsonEncode({
       "filters": [
         {"fieldName": "data.h0_cp008", "value": "$date", "expression": "EQUAL"},
@@ -302,7 +302,9 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
 
     request.body = jsonEncode(body);
     request.headers.addAll(headers);
-    if (await fetchRelatorios(body["data"]["h0_cp008"])) {
+    var efetivo = await fetchRelatorios(body["data"]["h0_cp008"]);
+
+    if (efetivo == true) {
       setState(() {
         _selectedDate = body["data"]["h0_cp008"];
         sending = false;
@@ -437,8 +439,10 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                                       sending = false;
                                     });
                                     showSnackBar(
-                                        'Erro inesperado, tente novamente',
+                                        'Erro inesperado, tente novamente, se o erro persistir contate o suporte',
                                         Colors.red);
+                                    print(error);
+                                    print(stackTrace);
                                   });
                                 }
                               : null,

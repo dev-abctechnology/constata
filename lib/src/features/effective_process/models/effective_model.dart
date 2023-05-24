@@ -30,8 +30,8 @@ class DataBody {
   String address;
   String segment;
   String pointer;
-  String morningQuantity;
-  String afternoonQuantity;
+  String effectiveTotalQuantity;
+  String quantityPresentes;
   String deleted;
   List<Effective> effective;
 
@@ -45,8 +45,8 @@ class DataBody {
     this.address,
     this.segment,
     this.pointer,
-    this.morningQuantity,
-    this.afternoonQuantity,
+    this.effectiveTotalQuantity,
+    this.quantityPresentes,
     this.deleted,
     this.effective,
   });
@@ -64,8 +64,8 @@ class DataBody {
     address = json["h0_cp006"];
     segment = json["h0_cp015"];
     pointer = json["h0_cp009"];
-    morningQuantity = json["h0_cp010"];
-    afternoonQuantity = json["h0_cp011"];
+    effectiveTotalQuantity = json["h0_cp010"];
+    quantityPresentes = json["h0_cp011"];
     deleted = json["f0_cp002"];
     effective = json["tb01_cp011"] == null
         ? null
@@ -85,8 +85,8 @@ class DataBody {
     data["h0_cp006"] = address;
     data["h0_cp015"] = segment;
     data["h0_cp009"] = pointer;
-    data["h0_cp010"] = morningQuantity;
-    data["h0_cp011"] = afternoonQuantity;
+    data["h0_cp010"] = effectiveTotalQuantity;
+    data["h0_cp011"] = quantityPresentes;
     if (effective != null) {
       data["tb01_cp011"] = effective.map((e) => e.toJson()).toList();
     }
@@ -134,9 +134,7 @@ class BuildName {
   BuildName({this.name, this.id});
 
   BuildName.fromJson(Map<String, dynamic> json) {
-    name = json["data"]["tb01_cp002"] != null
-        ? json["data"]["tb01_cp002"]
-        : json['h0_cp005']['name'];
+    name = json["data"]["tb01_cp002"] ?? json['h0_cp005']['name'];
     id = json["id"] ?? json['h0_cp005']['_id'];
   }
 

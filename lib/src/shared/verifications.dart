@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -18,10 +19,10 @@ class Verifications {
             'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-inm-prjre-00/filter'));
     request.body = json.encode({
       "filters": [
-        {"fieldName": "data.h0_cp008", "value": "$data", "expression": "EQUAL"},
+        {"fieldName": "data.h0_cp008", "value": data, "expression": "EQUAL"},
         {
           "fieldName": "data.h0_cp013.name",
-          "value": "$obra",
+          "value": obra,
           "expression": "EQUAL"
         }
       ],
@@ -41,7 +42,7 @@ class Verifications {
     if (response.statusCode == 200) {
       List effectiveList = jsonDecode(await response.stream.bytesToString());
       // print(effectiveList);
-      print(response.statusCode);
+      debugPrint(response.statusCode.toString());
       return effectiveList;
     } else {
       return [];
