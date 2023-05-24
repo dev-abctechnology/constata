@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'load_component.dart';
@@ -8,7 +7,7 @@ showLoading(BuildContext context) {
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return AlertDialog(
+      return const AlertDialog(
         elevation: 0,
         backgroundColor: Colors.transparent,
         content: Load(),

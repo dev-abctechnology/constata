@@ -1,3 +1,4 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:constata/src/features/login/login_page.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/home_page.dart';
@@ -6,7 +7,7 @@ import 'package:constata/src/shared/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:animated_splash_screen/animated_splash_screen.dart';
+
 import 'src/features/effective_process/data/appointment_data.dart';
 
 void main() {
@@ -51,7 +52,7 @@ void main() {
                   splashIconSize: 100,
                   animationDuration: const Duration(seconds: 2),
                 ),
-            '/home': (context) => HomePage(),
+            '/home': (context) => const HomePage(),
           },
         );
       },

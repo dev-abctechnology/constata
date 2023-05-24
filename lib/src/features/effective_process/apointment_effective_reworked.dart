@@ -1,24 +1,24 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:constata/src/features/effective_process/controllers/effective_jarvis.dart';
 import 'package:constata/src/features/effective_process/data/appointment_data.dart';
 import 'package:constata/src/features/effective_process/models/effective_model.dart';
 import 'package:constata/src/features/effective_process/quantity_form.dart';
 import 'package:constata/src/shared/pallete.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 class ApointmentEffectiveReworked extends StatefulWidget {
-  final date;
+  final String date;
 
-  final dataLogged;
-  final editingMode;
+  final Map dataLogged;
+  final bool editingMode;
 
   const ApointmentEffectiveReworked(
       {Key key, this.dataLogged, this.date, this.editingMode = false})
@@ -97,7 +97,7 @@ class _ApointmentEffectiveReworkedState
       var effectiveList =
           jsonDecode(sharedPreferences.getString("colaboradores"));
 
-      Uuid uuid = Uuid();
+      Uuid uuid = const Uuid();
 
       for (var i = 0; i < effectiveList.length; i++) {
         var a = Effective(
@@ -108,7 +108,7 @@ class _ApointmentEffectiveReworkedState
             id: uuid.v4());
         list.add(a);
       }
-      print(list.length);
+      debugPrint(list.length.toString());
     }
     return list;
   }
@@ -143,7 +143,7 @@ class _ApointmentEffectiveReworkedState
       showDialog(
           context: context,
           builder: (ctx) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Apontamento enviado!'),
               content: Text(
                   'Os demais serviços estarão disponíveis na data desse efetivo!'),
@@ -157,7 +157,7 @@ class _ApointmentEffectiveReworkedState
       showDialog(
           context: context,
           builder: (ctx) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Apontamento não enviado!'),
               content: Text('O apontamento está pendente de envio!'),
             );
@@ -187,8 +187,8 @@ class _ApointmentEffectiveReworkedState
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Sair do apontamento'),
-            content: Text('Deseja salvar um rascunho?'),
+            title: const Text('Sair do apontamento'),
+            content: const Text('Deseja salvar um rascunho?'),
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,14 +221,14 @@ class _ApointmentEffectiveReworkedState
                         save();
                         Provider.of<AppointmentData>(context, listen: false)
                             .setAppointmentData(_effectiveApointment);
-                        print(
+                        debugPrint(
                             Provider.of<AppointmentData>(context, listen: false)
                                 .appointmentData
                                 .data
                                 .effective
                                 .first
                                 .effectiveName);
-                        await Future.delayed(Duration(seconds: 1));
+                        await Future.delayed(const Duration(seconds: 1));
                         Navigator.of(context).pop();
                         Navigator.pop(context, true);
                       },
@@ -240,13 +240,13 @@ class _ApointmentEffectiveReworkedState
         });
   }
 
-  TextEditingController _morningQuantity = TextEditingController();
-  TextEditingController _afternoonQuantity = TextEditingController();
+  final TextEditingController _morningQuantity = TextEditingController();
+  final TextEditingController _afternoonQuantity = TextEditingController();
 
   SpeedDial buildSpeedDial() {
     return SpeedDial(
       animatedIcon: AnimatedIcons.menu_close,
-      animatedIconTheme: IconThemeData(size: 28),
+      animatedIconTheme: const IconThemeData(size: 28),
       backgroundColor: Palette.customSwatch,
       visible: true,
       curve: Curves.bounceInOut,
@@ -299,7 +299,7 @@ class _ApointmentEffectiveReworkedState
       onWillPop: () async {
         final shouldSave = await returnScreenAlert(context);
 
-        print(shouldSave);
+        debugPrint(shouldSave.toString());
         return shouldSave ?? false;
       },
       child: Scaffold(
@@ -310,7 +310,7 @@ class _ApointmentEffectiveReworkedState
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 70,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -329,142 +329,169 @@ class _ApointmentEffectiveReworkedState
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: effectives != null && effectives.isNotEmpty
-                        ? effectives.length
-                        : 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      var effective = effectives[index];
-                      return Slidable(
-                        key: ValueKey(index),
-                        startActionPane: ActionPane(
-                          motion: const ScrollMotion(),
-                          closeThreshold: 0.1,
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) {
-                                changeStatus(index, 'Em Transferência');
-                              },
-                              autoClose: true,
-                              flex: 3,
-                              backgroundColor:
-                                  Color.fromARGB(255, 230, 167, 23),
-                              foregroundColor: Colors.white,
-                              spacing: 4,
-                              borderRadius: BorderRadius.circular(8),
-                              padding: EdgeInsets.all(2),
-                              icon: Icons.call_split,
-                              label: 'Transferência',
-                            ),
-                            SlidableAction(
-                              onPressed: (context) {
-                                changeStatus(index, 'Ausente');
-                              },
-                              autoClose: true,
-                              flex: 2,
-                              borderRadius: BorderRadius.circular(8),
-                              backgroundColor: Color.fromARGB(255, 199, 37, 37),
-                              foregroundColor: Colors.white,
-                              spacing: 4,
-                              padding: EdgeInsets.all(2),
-                              icon: Icons.cancel_outlined,
-                              label: 'Ausente',
-                            ),
-                          ],
-                        ),
-                        endActionPane: ActionPane(
-                          motion: const ScrollMotion(),
-                          closeThreshold: 0.1,
-                          dismissible: DismissiblePane(
-                            confirmDismiss: () async {
-                              print('confirm');
-                              changeStatus(index, 'Presente');
-                              return false;
-                            },
-                            closeOnCancel: true,
-                            dismissThreshold: 0.02,
-                            onDismissed: () {},
-                          ),
-                          extentRatio: 0.01,
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) {},
-                              autoClose: true,
-                              flex: 1,
-                              backgroundColor: Color(0xFF7BC043),
-                              foregroundColor: Colors.white,
-                              spacing: 0,
-                              padding: EdgeInsets.all(8),
-                              borderRadius: BorderRadius.circular(8),
-                              icon: Icons.check,
-                              label: 'Presente',
-                            ),
-                          ],
-                        ),
-                        child: AnimatedContainer(
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    offset: Offset(0, 2),
-                                    blurRadius: 1,
+                child: AnimationLimiter(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: effectives != null && effectives.isNotEmpty
+                          ? effectives.length
+                          : 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        var effective = effectives[index];
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 2500),
+                          delay: const Duration(milliseconds: 100),
+                          child: SlideAnimation(
+                            duration: const Duration(milliseconds: 2500),
+                            verticalOffset: 300,
+                            horizontalOffset: 30,
+                            curve: Curves.fastLinearToSlowEaseIn,
+                            child: FlipAnimation(
+                              duration: const Duration(milliseconds: 3000),
+                              curve: Curves.fastLinearToSlowEaseIn,
+                              flipAxis: FlipAxis.y,
+                              child: Slidable(
+                                key: ValueKey(index),
+                                startActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  closeThreshold: 0.1,
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        changeStatus(index, 'Em Transferência');
+                                      },
+                                      autoClose: true,
+                                      flex: 3,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 230, 167, 23),
+                                      foregroundColor: Colors.white,
+                                      spacing: 4,
+                                      borderRadius: BorderRadius.circular(8),
+                                      padding: const EdgeInsets.all(2),
+                                      icon: Icons.call_split,
+                                      label: 'Transferência',
+                                    ),
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        changeStatus(index, 'Ausente');
+                                      },
+                                      autoClose: true,
+                                      flex: 2,
+                                      borderRadius: BorderRadius.circular(8),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 199, 37, 37),
+                                      foregroundColor: Colors.white,
+                                      spacing: 4,
+                                      padding: const EdgeInsets.all(2),
+                                      icon: Icons.cancel_outlined,
+                                      label: 'Ausente',
+                                    ),
+                                  ],
+                                ),
+                                endActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  closeThreshold: 0.1,
+                                  dismissible: DismissiblePane(
+                                    confirmDismiss: () async {
+                                      debugPrint('confirm');
+                                      changeStatus(index, 'Presente');
+                                      return false;
+                                    },
+                                    closeOnCancel: true,
+                                    dismissThreshold: 0.02,
+                                    onDismissed: () {},
+                                  ),
+                                  extentRatio: 0.01,
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {},
+                                      autoClose: true,
+                                      flex: 1,
+                                      backgroundColor: const Color(0xFF7BC043),
+                                      foregroundColor: Colors.white,
+                                      spacing: 0,
+                                      padding: const EdgeInsets.all(8),
+                                      borderRadius: BorderRadius.circular(8),
+                                      icon: Icons.check,
+                                      label: 'Presente',
+                                    ),
+                                  ],
+                                ),
+                                child: AnimatedContainer(
+                                  decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                            offset: const Offset(0, 2),
+                                            blurRadius: 1,
+                                            color:
+                                                effective.effectiveStatus == ''
+                                                    ? Colors.red.withOpacity(.5)
+                                                    : Colors.transparent),
+                                      ],
+                                      // color: effective.effectiveStatus == ""
+                                      //     ? Color.fromARGB(255, 230, 60, 60)
+                                      //     : Colors.white,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 1),
+                                  margin: const EdgeInsets.all(2),
+                                  duration: const Duration(seconds: 2),
+                                  curve: Curves.easeOutCirc,
+                                  child: Card(
                                     color: effective.effectiveStatus == ''
-                                        ? Colors.red.withOpacity(.5)
-                                        : Colors.transparent),
-                              ],
-                              // color: effective.effectiveStatus == ""
-                              //     ? Color.fromARGB(255, 230, 60, 60)
-                              //     : Colors.white,
-                              borderRadius: BorderRadius.circular(8)),
-                          padding: EdgeInsets.symmetric(vertical: 1),
-                          margin: EdgeInsets.all(2),
-                          duration: Duration(seconds: 2),
-                          curve: Curves.easeOutCirc,
-                          child: Card(
-                            color: effective.effectiveStatus == ''
-                                ? Colors.grey.shade100
-                                : Colors.white,
-                            // shadowColor: effective.effectiveStatus == ''
-                            //     ? Color.fromARGB(255, 247, 0, 0)
-                            //     : Colors.black,
-                            elevation: effective.effectiveStatus == '' ? 5 : 1,
-                            child: Column(
-                              children: [
-                                ListTile(
-                                    leading: effective.effectiveStatus != ""
-                                        ? null
-                                        : Icon(
-                                            Icons.arrow_forward,
-                                            color: Colors.grey.shade400,
-                                          ),
-                                    title: Text(
-                                      effective.effectiveName +
-                                          '\n' +
-                                          effective.effectiveCode,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                        ? Colors.grey.shade100
+                                        : Colors.white,
+                                    // shadowColor: effective.effectiveStatus == ''
+                                    //     ? Color.fromARGB(255, 247, 0, 0)
+                                    //     : Colors.black,
+                                    elevation:
+                                        effective.effectiveStatus == '' ? 5 : 1,
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                            leading: effective
+                                                        .effectiveStatus !=
+                                                    ""
+                                                ? null
+                                                : Icon(
+                                                    Icons.arrow_forward,
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                            title: Text(
+                                              effective.effectiveName +
+                                                  '\n' +
+                                                  effective.effectiveCode,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            subtitle: Text(
+                                              effective.effectiveStatus,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: effective
+                                                              .effectiveStatus ==
+                                                          "Presente"
+                                                      ? Colors.green
+                                                      : Colors.red),
+                                            ),
+                                            trailing: effective
+                                                        .effectiveStatus !=
+                                                    ""
+                                                ? null
+                                                : Icon(
+                                                    Icons.arrow_back,
+                                                    color: Colors.grey.shade400,
+                                                  )),
+                                      ],
                                     ),
-                                    subtitle: Text(
-                                      effective.effectiveStatus,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: effective.effectiveStatus ==
-                                                  "Presente"
-                                              ? Colors.green
-                                              : Colors.red),
-                                    ),
-                                    trailing: effective.effectiveStatus != ""
-                                        ? null
-                                        : Icon(
-                                            Icons.arrow_back,
-                                            color: Colors.grey.shade400,
-                                          )),
-                              ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                ),
               ),
             ],
           ),
@@ -477,20 +504,20 @@ class _ApointmentEffectiveReworkedState
             color: Palette.customSwatch,
             child: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 40,
                   width: 8,
                 ),
                 Text(
                   '${effectives.length} funcionários cadastrados',
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 )
               ],
             ),
-            shape: CircularNotchedRectangle()),
+            shape: const CircularNotchedRectangle()),
         floatingActionButton: buildSpeedDial(),
       ),
     );
@@ -514,10 +541,10 @@ class _ApointmentEffectiveReworkedState
             context: context,
             builder: (ctx) {
               return AlertDialog(
-                title: Text('Atenção'),
+                title: const Text('Atenção'),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: const [
                     Text('Informe o status de todos!'),
                   ],
                 ),
@@ -531,10 +558,10 @@ class _ApointmentEffectiveReworkedState
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: Text('Atenção'),
+              title: const Text('Atenção'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: const [
                   Text('Informe a quantidade de cafés da manhã e da tarde!'),
                 ],
               ),

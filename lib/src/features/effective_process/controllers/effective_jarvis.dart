@@ -20,7 +20,7 @@ class EffectiveController {
         'Content-Type': 'application/json'
       };
       var request = http.Request(
-          'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-pem-permd-00/filter'));
+          'POST', Uri.parse('$apiUrl/stuffdata/sdt_a-pem-permd-00/filter'));
       request.body = json.encode({
         "filters": [
           {
@@ -66,8 +66,8 @@ class EffectiveController {
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
       'Content-Type': 'application/json'
     };
-    var request = http.Request(
-        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-inm-prjre-00'));
+    var request =
+        http.Request('POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjre-00'));
     request.body = '${jsonEncode(efetivo.toJson())}';
     request.headers.addAll(headers);
     try {

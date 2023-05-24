@@ -21,7 +21,7 @@ class MeasurementJarvis {
       'Content-Type': 'application/json'
     };
     var request = http.Request(
-        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-pem-permd-00/filter'));
+        'POST', Uri.parse('$apiUrl/stuffdata/sdt_a-pem-permd-00/filter'));
     request.body = json.encode({
       "filters": [
         {
@@ -77,8 +77,8 @@ class MeasurementJarvis {
 
   Future<String> sendMeasurement(
       MeasurementAppointment data, BuildContext context) async {
-    http.Request request = http.Request(
-        'POST', Uri.parse('$JARVIS_API/stuffdata/sdt_a-inm-prjtm-00'));
+    http.Request request =
+        http.Request('POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjtm-00'));
     var headers = {
       'Authorization':
           'Bearer ${Provider.of<Token>(context, listen: false).token}',

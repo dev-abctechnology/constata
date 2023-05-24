@@ -134,9 +134,7 @@ class BuildName {
   BuildName({this.name, this.id});
 
   BuildName.fromJson(Map<String, dynamic> json) {
-    name = json["data"]["tb01_cp002"] != null
-        ? json["data"]["tb01_cp002"]
-        : json['h0_cp005']['name'];
+    name = json["data"]["tb01_cp002"] ?? json['h0_cp005']['name'];
     id = json["id"] ?? json['h0_cp005']['_id'];
   }
 

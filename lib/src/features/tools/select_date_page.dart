@@ -339,14 +339,14 @@ class _SelectDatePagState extends State<SelectDatePage> {
                     return Card(
                       child: InkWell(
                         onTap: () {
-                          setState(() {
-                            var route = MaterialPageRoute(
-                              builder: (BuildContext context) => ToolsDetails(
-                                tool: res[index],
-                              ),
-                            );
-                            Navigator.of(context).push(route);
-                          });
+                          // setState(() {
+                          //   var route = MaterialPageRoute(
+                          //     builder: (BuildContext context) => ToolsDetails(
+                          //       tool: res[index],
+                          //     ),
+                          //   );
+                          //   Navigator.of(context).push(route);
+                          // });
                         },
                         child: ListTile(
                           title: Text('${res[index]['data']['h0_cp016']}'),
