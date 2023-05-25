@@ -121,15 +121,11 @@ class _ApointmentEffectiveReworkedState
             datetime: widget.date,
             description: 'Descrição do apontamento',
             effective: effectives,
-            effectiveTotalQuantity: //TODO: mudar para o total de efetivos
-
-                effectives.length.toString(),
-            quantityPresentes:
-                //TODO: mudar para o total de presentes
-                effectives
-                    .where((element) => element.effectiveStatus == 'Presente')
-                    .length
-                    .toString(),
+            effectiveTotalQuantity: effectives.length.toString(),
+            quantityPresentes: effectives
+                .where((element) => element.effectiveStatus == 'Presente')
+                .length
+                .toString(),
             pointer: widget.dataLogged['user']['name'],
             segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
             type: "EFET"));

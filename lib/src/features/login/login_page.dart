@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialog(
+                      return const AlertDialog(
                         content: Text(
                             'Usuário sem perfil cadastrado, por favor, entre em contato com o escritório!'),
                       );
@@ -114,14 +114,14 @@ class _LoginState extends State<Login> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Erro ao entrar'),
-                content: Text('Verifique o usuário e/ou a senha!'),
+                title: const Text('Erro ao entrar'),
+                content: const Text('Verifique o usuário e/ou a senha!'),
                 actions: [
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('Ok'))
+                      child: const Text('Ok'))
                 ],
               );
             });
@@ -132,15 +132,15 @@ class _LoginState extends State<Login> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: Container(
+                content: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     height: MediaQuery.of(context).size.width * 0.8,
                     child: Column(children: [
-                      Container(
+                      SizedBox(
                           height: MediaQuery.of(context).size.width * 0.5,
                           child: Icon(Icons.wifi_off_sharp,
                               size: MediaQuery.of(context).size.height * .17)),
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.width * 0.3,
                         child: Text(
                           'Aparentemente você está sem conexão à internet. Tente novamente mais tarde.',
@@ -155,7 +155,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('Ok'))
+                      child: const Text('Ok'))
                 ],
               );
             });
@@ -283,6 +283,7 @@ class _LoginState extends State<Login> {
       print(response.statusCode);
       return false;
     }
+    return false;
   }
 
   Future<bool> fetchObras() async {
@@ -308,13 +309,16 @@ class _LoginState extends State<Login> {
       if (obraData.isNotEmpty) {
         print('fetch obra');
         developer.log(obraData.length.toString(), name: 'Quantidade de Obras');
+        return true;
       }
     } else {
       print(response.reasonPhrase);
       developer.log(obraData.length.toString(), name: 'Quantidade de Obras');
 
       print('fetch obra erro');
+      return false;
     }
+    return false;
   }
 
   @override
@@ -330,15 +334,15 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
+        body: SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             Container(
@@ -347,8 +351,8 @@ class _LoginState extends State<Login> {
                   'assets/images/constata_big.png',
                   width: double.infinity,
                 )),
-            Divider(),
-            SizedBox(
+            const Divider(),
+            const SizedBox(
               height: 30,
             ),
             Form(
@@ -372,7 +376,7 @@ class _LoginState extends State<Login> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Digite o seu usuário'),
                         ),
@@ -405,17 +409,17 @@ class _LoginState extends State<Login> {
                                   });
                                 },
                               ),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               labelText: 'Digite a sua senha'),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20.0,
                         width: double.infinity,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Container(
+                        child: SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: termsOfUse
@@ -436,7 +440,7 @@ class _LoginState extends State<Login> {
                           value: termsOfUse,
                           title: RichText(
                             text: TextSpan(
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                               text: 'Concordo com os ',
                               children: [
                                 _buildLink(
@@ -485,7 +489,7 @@ class _LoginState extends State<Login> {
                                             ),
                                             actions: [
                                               ElevatedButton(
-                                                child: new Text('Ok'),
+                                                child: const Text('Ok'),
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
@@ -542,7 +546,7 @@ class _LoginState extends State<Login> {
                                           ),
                                           actions: [
                                             ElevatedButton(
-                                              child: new Text('Ok'),
+                                              child: const Text('Ok'),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },

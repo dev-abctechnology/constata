@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../features/transfers/presenter/get_transfer/transfer_page.dart';
 import '../models/token.dart';
 import '../shared/company_refresh_controller.dart';
 import '../shared/load_controller.dart';
@@ -222,6 +223,20 @@ class _HomePageBodyState extends State<HomePageBody> {
                         label: "4 - Controle de Ferramentas",
                         icon: const Icon(
                           Icons.handyman,
+                          size: 30,
+                        )),
+                    GridButton(
+                        onPressed: () {
+                          var route = MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const TransferPage(),
+                          );
+
+                          Navigator.of(context).push(route);
+                        },
+                        label: "5 - Transferências",
+                        icon: const Icon(
+                          Icons.transfer_within_a_station,
                           size: 30,
                         )),
                   ],

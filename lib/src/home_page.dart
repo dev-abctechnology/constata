@@ -238,18 +238,19 @@ class _HomePageState extends State<HomePage> {
   void checkInitToken() {
     tokenSerilizado = Provider.of<Token>(context, listen: false).token;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      initializer();
       AuthRefreshController authRefreshcontroller = AuthRefreshController();
       authRefreshcontroller.checkAuth(tokenSerilizado).then((value) {
-        debugPrint('\n\n\n\n\nChecking Expired Auth Token\n\n\n\n\n');
+        debugPrint('Checking Expired Auth Token');
         // Navigator.pop(context);
         if (value.isNotEmpty) {
-          debugPrint('\n\n\n\n\nNew Token Refreshed\n\n\n\n\n');
+          debugPrint('New Token Refreshed');
 
           Provider.of<Token>(context, listen: false).setToken(value);
         }
-        debugPrint('\n\n\n\n\nToken Not Expired\n\n\n\n\n');
+        debugPrint('Token Not Expired');
       });
+
+      initializer();
     });
   }
 

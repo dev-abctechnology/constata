@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRefreshController {
-  int times = 0;
+  int times = 1;
   Future<String> checkAuth(String token) async {
     var headers = {
       'Authorization': 'Bearer $token',
@@ -47,8 +47,8 @@ class AuthRefreshController {
                         .then((value) => jsonDecode(value)['access_token']);
                   } else {
                     if (times < 3) {
+                      times = times++;
                       checkAuth(token);
-                      times = times + 1;
                     }
                     return '';
                   }
