@@ -11,7 +11,7 @@ import 'package:constata/src/shared/auth_refresh_controller.dart';
 
 import 'features/effective_process/data/appointment_data.dart';
 import 'features/measurement/data/measurement_data.dart';
-import 'features/pages/widgets/home_page.dart';
+import 'widgets/home_page.dart';
 
 class HomePage extends StatefulWidget {
   final Map

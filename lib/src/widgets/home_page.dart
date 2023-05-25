@@ -7,13 +7,13 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../models/token.dart';
-import '../../../shared/company_refresh_controller.dart';
-import '../../../shared/load_controller.dart';
-import '../../effective_process/effective_control.dart';
-import '../../epi_process/epi_home_page.dart';
-import '../../measurement/measurement_page.dart';
-import '../../tools/select_date_page.dart';
+import '../models/token.dart';
+import '../shared/company_refresh_controller.dart';
+import '../shared/load_controller.dart';
+import '../features/effective_process/effective_control.dart';
+import '../features/epi_process/epi_home_page.dart';
+import '../features/measurement/measurement_page.dart';
+import '../features/tools/select_date_page.dart';
 import 'grid_button.dart';
 
 class HomePageBody extends StatefulWidget {
