@@ -36,6 +36,12 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -61,10 +67,6 @@ class _TransferPageState extends State<TransferPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                        onPressed: getData,
-                        child: const Text('Get Transfers'),
-                      ),
                       const SizedBox(height: 20),
                       Text(
                         'Transfers',
