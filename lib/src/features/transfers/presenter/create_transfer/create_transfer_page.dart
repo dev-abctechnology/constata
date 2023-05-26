@@ -14,7 +14,9 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
 
 class CreateTransferPage extends StatefulWidget {
-  const CreateTransferPage({Key key}) : super(key: key);
+  final Map<String, dynamic> originObra;
+
+  const CreateTransferPage({Key key, this.originObra}) : super(key: key);
 
   @override
   State<CreateTransferPage> createState() => _CreateTransferPageState();
@@ -91,6 +93,7 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
       var body = await response.stream.bytesToString();
       var data = jsonDecode(body);
       obras = data.map<ObraSeletor>((e) => ObraSeletor.fromJson(e)).toList();
+
       setState(() {});
       print(obras);
     } else {
@@ -128,7 +131,16 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
     super.initState();
     fetchObras();
     listaEfetivo();
+    date = DateTime.now().toString().substring(0, 10);
+    //date to format dd/MM/yyyy
+    date = date.substring(8, 10) +
+        '/' +
+        date.substring(5, 7) +
+        '/' +
+        date.substring(0, 4);
   }
+
+  String date = '01/01/2023';
 
   @override
   Widget build(BuildContext context) {
@@ -144,172 +156,182 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
           )
         ],
       ),
-      body: Container(
-        child: Stepper(
-          controlsBuilder: (context, details) {
-            return Row(
-              children: [
-                if (_currentStep != 0 && _currentStep > 0)
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentStep--;
-                      });
-                    },
-                    child: const Text('Voltar'),
-                  ),
-                if (_currentStep != 2 && _currentStep < 0)
-                  TextButton(
-                    onPressed: () {
-                      nextStep();
-                    },
-                    child: const Text('Próximo'),
-                  ),
-              ],
-            );
-          },
-          steps: [
-            Step(
-              title: const Text('Selecionar Efetivo'),
-              content: ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title:
-                        Text(efetivo[index]['data']['tb01_cp002'].toString()),
-                    subtitle:
-                        Text(efetivo[index]['data']['tb01_cp004'].toString()),
-                    onTap: () {
-                      // Salvar a seleção do efetivo no _transferEntity
-                      _transferEntity = TransferEntity(
-                        nameEffective:
-                            efetivo[index]['data']['tb01_cp002'].toString(),
-                        // Outros dados do efetivo
-                      );
-                      nextStep();
-                    },
-                  );
-                },
-                itemCount: efetivo.length,
-              ),
-            ),
-            Step(
-              title: const Text('Selecionar Obra de Destino'),
-              content: Container(
-                  child: ListView(
-                shrinkWrap: true,
-                children: [
-                  for (var obra in obras)
-                    ListTile(
-                      title: Text(obra.name),
-                      onTap: () {
-                        _transferEntity = TransferEntity(
-                          nameEffective: _transferEntity.nameEffective,
-                          targetBuild: obra.name,
-                          // Outros dados do efetivo
-                        );
-                        nextStep();
-                      },
-                    )
-                ],
-              )),
-            ),
-            Step(
-              title: const Text('Enviar Transferência'),
-              content: Center(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: _isLoading,
-                  builder: (context, isLoading, _) {
-                    if (isLoading) {
-                      return const CircularProgressIndicator();
-                    } else if (_isSuccess.value) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Solicitação de transferência realizada com sucesso!',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Sair'),
-                          )
-                        ],
-                      );
-                    } else if (_isError.value) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Ocorreu um erro ao realizar a transferência.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              sendTransfer();
-                            },
-                            child: const Text('Tentar novamente'),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Nome: ' + _transferEntity.nameEffective.toString(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const Text('Saindo de: Obra de origem',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text(
-                              'Indo para: ${_transferEntity.targetBuild.toString()}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              sendTransfer();
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green),
-                            child: const Text('Enviar'),
-                          ),
-                        ],
-                      );
-                    }
+      body: Stepper(
+        controlsBuilder: (context, details) {
+          return Row(
+            children: [
+              if (_currentStep != 0 && _currentStep > 0)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentStep--;
+                    });
                   },
+                  child: const Text('Voltar'),
                 ),
+              if (_currentStep != 2 && _currentStep < 0)
+                TextButton(
+                  onPressed: () {
+                    nextStep();
+                  },
+                  child: const Text('Próximo'),
+                ),
+            ],
+          );
+        },
+        steps: [
+          Step(
+            title: const Text('Selecionar Efetivo'),
+            content: Column(
+              children: [
+                ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [
+                    for (var item in efetivo)
+                      ListTile(
+                        title: Text(item['data']['tb01_cp002'].toString()),
+                        subtitle: Text(item['id'].toString()),
+                        onTap: () {
+                          // Salvar a seleção do efetivo no _transferEntity
+                          _transferEntity = TransferEntity(
+                              nameEffective:
+                                  item['data']['tb01_cp002'].toString(),
+                              codeEffective: item['id'].toString());
+                          nextStep();
+                        },
+                      )
+                  ],
+                )
+              ],
+            ),
+          ),
+          Step(
+            title: const Text('Selecionar Obra de Destino'),
+            content: Container(
+                child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                for (var obra in obras)
+                  ListTile(
+                    title: Text(obra.name),
+                    subtitle: Text(obra.id),
+                    onTap: () {
+                      _transferEntity = TransferEntity(
+                          nameEffective: _transferEntity.nameEffective,
+                          codeEffective: _transferEntity.codeEffective,
+                          originBuild: widget.originObra['name'],
+                          originBuildId: widget.originObra['id'],
+                          targetBuild: obra.name,
+                          targetBuildId: obra.id,
+                          date: date,
+                          status: 'Aguardando'
+                          // Outros dados do efetivo
+                          );
+                      nextStep();
+                    },
+                  )
+              ],
+            )),
+          ),
+          Step(
+            title: const Text('Enviar Transferência'),
+            content: Center(
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _isLoading,
+                builder: (context, isLoading, _) {
+                  if (isLoading) {
+                    return const CircularProgressIndicator();
+                  } else if (_isSuccess.value) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Solicitação de transferência realizada com sucesso!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Sair'),
+                        )
+                      ],
+                    );
+                  } else if (_isError.value) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Ocorreu um erro ao realizar a transferência.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            sendTransfer();
+                          },
+                          child: const Text('Tentar novamente'),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Nome: ' + _transferEntity.nameEffective.toString(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                            'Saindo de: ${_transferEntity.originBuild.toString()}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                            'Indo para: ${_transferEntity.targetBuild.toString()}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            sendTransfer();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green),
+                          child: const Text('Enviar'),
+                        ),
+                      ],
+                    );
+                  }
+                },
               ),
             ),
-          ],
-          currentStep: _currentStep,
-          type: StepperType.vertical,
-        ),
+          ),
+        ],
+        currentStep: _currentStep,
+        type: StepperType.vertical,
       ),
     );
   }

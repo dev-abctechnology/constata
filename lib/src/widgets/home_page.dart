@@ -1,4 +1,5 @@
 import 'package:constata/src/home_page.dart';
+import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -130,6 +131,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   @override
   Widget build(BuildContext context) {
     String obra = widget.arguments['obra']['data']['tb01_cp002'];
+    String obraId = widget.arguments['obra']['id'].toString();
     return SingleChildScrollView(
       child: Container(
         decoration: const BoxDecoration(
@@ -226,10 +228,14 @@ class _HomePageBodyState extends State<HomePageBody> {
                           size: 30,
                         )),
                     GridButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          final prefs = SharedPrefs();
+                          await prefs.remove('obra_id');
+                          await prefs.setString('obra_id', obraId);
+
                           var route = MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const TransferPage(),
+                            builder: (BuildContext context) => TransferPage(
+                                obra: {'id': obraId, 'name': obra}),
                           );
 
                           Navigator.of(context).push(route);

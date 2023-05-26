@@ -17,29 +17,9 @@ class CreateTransferDataSourceImpl implements CreateTransferDataSource {
     };
 
     var request =
-        http.Request('POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjre-00'));
+        http.Request('POST', Uri.parse('$apiUrl/stuffdata/sdt_t-ran-sfere-00'));
 
-    request.body = '''
-
-      {
-      "data": {
-        "h0_cp002": "EFET",
-        "h0_cp003": null,
-        "h0_cp004": "000000000000000000",
-        "h0_cp008": "00/00/0000",
-        "h0_cp013": null,
-        "h0_cp006": null,
-        "h0_cp015": null,
-        "h0_cp009": "000",
-        "h0_cp010": "00",
-        "h0_cp011": "00",
-        "tb01_cp011": []
-      },
-      "ckc": "CONPROD001",
-      "cko": "000000000000000000"
-    }
-
-''';
+    request.body = transfer.toString();
 
     request.headers.addAll(headers);
 

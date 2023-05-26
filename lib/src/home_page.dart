@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         debugPrint('gravou na memoria os EPI');
         return true;
       } else {
-        debugPrint(response.reasonPhrase);
+        debugPrint(response.statusCode.toString());
         return false;
       }
     } on Exception catch (e) {

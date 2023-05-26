@@ -14,6 +14,7 @@ class GetTransfersDataSouceImpl implements GetTransfersDataSource {
   Future<List<Map<String, dynamic>>> call() async {
     final prefs = SharedPrefs();
     final token = await prefs.getString('token');
+    final obraId = await prefs.getString('obra_id');
     print(token);
     try {
       final headers = {
@@ -22,69 +23,103 @@ class GetTransfersDataSouceImpl implements GetTransfersDataSource {
       };
 
       var request = http.Request(
-          'POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjre-00/filter'));
+          'POST', Uri.parse('$apiUrl/stuffdata/sdt_t-ran-sfere-00/filter'));
       request.body = '''{
-            "filters": [],
-            "paginator": {"page": 0, "size": 20},
-            "sort": {"fieldName": "data.h0_cp008", "type": "ASC"},
-            "type": "TABLE",
-            "fields": ["_id", "data.h0_cp008", "data.h0_cp009", "data.h0_cp013"]
+            "filters": [
+    {
+      "fieldName": "data.tb01_cp005._id",
+      "value": "$obraId",
+      "expression": "CONTAINS"
+    }
+  ]
+           
           }''';
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        final mock = [
-          {
-            "nameEffective": "Transfer Entity 1",
-            "codeEffective": "TE001",
-            "originBuild": "Origin Building A",
-            "targetBuild": "Target Building B",
-            "status": "Pending",
-            "date": "2023-05-25"
-          },
-          {
-            "nameEffective": "Transfer Entity 2",
-            "codeEffective": "TE002",
-            "originBuild": "Origin Building C",
-            "targetBuild": "Target Building D",
-            "status": "Completed",
-            "date": "2023-05-26"
-          },
-          {
-            "nameEffective": "Transfer Entity 3",
-            "codeEffective": "TE003",
-            "originBuild": "Origin Building E",
-            "targetBuild": "Target Building F",
-            "status": "Pending",
-            "date": "2023-05-27"
-          },
-          {
-            "nameEffective": "Transfer Entity 4",
-            "codeEffective": "TE004",
-            "originBuild": "Origin Building G",
-            "targetBuild": "Target Building H",
-            "status": "Completed",
-            "date": "2023-05-28"
-          },
-          {
-            "nameEffective": "Transfer Entity 5",
-            "codeEffective": "TE005",
-            "originBuild": "Origin Building I",
-            "targetBuild": "Target Building J",
-            "status": "Pending",
-            "date": "2023-05-29"
-          }
-        ];
+        // final mock = [
+        //   {
+        //     "id": "6470d5317b7191235cd59644",
+        //     "ckc": null,
+        //     "cko": null,
+        //     "createdBy": null,
+        //     "created": "2023-05-26T16:06:41.195+0000",
+        //     "deleted": false,
+        //     "lastUpdate": "2023-05-26T16:06:41.195+0000",
+        //     "lastUpdateBy": null,
+        //     "data": {
+        //       "tb01_cp001": "-00003",
+        //       "tb01_cp002": "26/05/2023",
+        //       "tb01_cp003": {
+        //         "name": "ADAILTON NARCISO PEREIRA",
+        //         "_id": "6321dc967b7191293e5dfb68"
+        //       },
+        //       "tb01_cp004": {
+        //         "name": "AGE 360",
+        //         "_id": "61b9f0382212ef074ca781e9"
+        //       },
+        //       "tb01_cp005": {"name": "ALBA", "_id": "6258507f2212ef0f8843f37e"},
+        //       "tb01_cp006": "Aguardando"
+        //     }
+        //   },
+        //   {
+        //     "id": "6470d5317b7191235cd59644",
+        //     "ckc": null,
+        //     "cko": null,
+        //     "createdBy": null,
+        //     "created": "2023-05-26T16:06:41.195+0000",
+        //     "deleted": false,
+        //     "lastUpdate": "2023-05-26T16:06:41.195+0000",
+        //     "lastUpdateBy": null,
+        //     "data": {
+        //       "tb01_cp001": "-00003",
+        //       "tb01_cp002": "26/05/2023",
+        //       "tb01_cp003": {
+        //         "name": "ADAILTON NARCISO PEREIRA",
+        //         "_id": "6321dc967b7191293e5dfb68"
+        //       },
+        //       "tb01_cp004": {
+        //         "name": "AGE 360",
+        //         "_id": "61b9f0382212ef074ca781e9"
+        //       },
+        //       "tb01_cp005": {"name": "ALBA", "_id": "6258507f2212ef0f8843f37e"},
+        //       "tb01_cp006": "Aguardando"
+        //     }
+        //   },
+        //   {
+        //     "id": "6470d5317b7191235cd59644",
+        //     "ckc": null,
+        //     "cko": null,
+        //     "createdBy": null,
+        //     "created": "2023-05-26T16:06:41.195+0000",
+        //     "deleted": false,
+        //     "lastUpdate": "2023-05-26T16:06:41.195+0000",
+        //     "lastUpdateBy": null,
+        //     "data": {
+        //       "tb01_cp001": "-00003",
+        //       "tb01_cp002": "26/05/2023",
+        //       "tb01_cp003": {
+        //         "name": "ADAILTON NARCISO PEREIRA",
+        //         "_id": "6321dc967b7191293e5dfb68"
+        //       },
+        //       "tb01_cp004": {
+        //         "name": "AGE 360",
+        //         "_id": "61b9f0382212ef074ca781e9"
+        //       },
+        //       "tb01_cp005": {"name": "ALBA", "_id": "6258507f2212ef0f8843f37e"},
+        //       "tb01_cp006": "Aguardando"
+        //     }
+        //   }
+        // ];
 
-        // final body = await response.stream.bytesToString();
-        // final json = jsonDecode(body);
-        // final data = json['content'] as List;
-        // final result =
-        //     data.map((e) => e['data'] as Map<String, dynamic>).toList();
+        final body = await response.stream.bytesToString();
+        final json = jsonDecode(body);
+        final data = json as List;
+        final result = data.map((e) => e as Map<String, dynamic>).toList();
 
-        final result = mock;
+        // final result = mock;
         return result;
       } else {
         print(response.reasonPhrase);

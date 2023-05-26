@@ -69,7 +69,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
     }
   }
 
-  void updateFila() {
+  void updateFila() async {
     SharedPreferences.getInstance().then((value) {
       if (value.containsKey('filaFerramentas')) {
         setState(() {
