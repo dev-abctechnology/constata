@@ -9,7 +9,14 @@ class GridButton extends StatelessWidget {
 
   final String label;
 
-  const GridButton({Key key, this.onPressed, this.icon, this.label})
+  final MaterialColor color;
+
+  const GridButton(
+      {Key key,
+      this.onPressed,
+      this.icon,
+      this.label,
+      this.color = Palette.customSwatch})
       : super(key: key);
 
   @override
@@ -17,6 +24,7 @@ class GridButton extends StatelessWidget {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 5,
+          backgroundColor: color.withOpacity(.85),
           textStyle: const TextStyle(color: Colors.white),
           // backgroundColor: Palette.customSwatch.withOpacity(.9)
         ),
@@ -29,6 +37,7 @@ class GridButton extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             )
           ],
         ));

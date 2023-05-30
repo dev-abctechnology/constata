@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:constata/src/features/transfers/data/repositories/accept_transfer_repository.dart';
 import 'package:constata/src/features/transfers/data/repositories/get_transfers_repository.dart';
+import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
 import 'package:constata/src/features/transfers/domain/usecases/accept_transfer/accept_transfer_usecase_impl.dart';
 import 'package:constata/src/features/transfers/domain/usecases/get_transfers/get_transfers_usecase_impl.dart';
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/accept_transfer_datasource.dart';
@@ -23,18 +24,21 @@ class TransferPage extends StatefulWidget {
 
 class _TransferPageState extends State<TransferPage> {
   final _controller = TransferController(
-      GetTransfersUseCaseImpl(
-        GetTransfersRepositoryImpl(
-          GetTransfersDataSouceImpl(
-            HttpClientAdapter(),
-          ),
+    GetTransfersUseCaseImpl(
+      GetTransfersRepositoryImpl(
+        GetTransfersDataSouceImpl(
+          HttpClientAdapter(),
         ),
       ),
-      AcceptTransferUseCaseImpl(
-          AcceptTransferRepositoryImpl(AcceptTransferDataSourceImpl())));
+    ),
+    AcceptTransferUseCaseImpl(
+      AcceptTransferRepositoryImpl(AcceptTransferDataSourceImpl()),
+    ),
+  );
 
   final ValueNotifier<bool> _isLoading = ValueNotifier(false);
   final ValueNotifier<bool> _isError = ValueNotifier(false);
+
   void getData() async {
     _isLoading.value = true;
     bool getTransfer = await _controller.getTransfers();
@@ -82,159 +86,274 @@ class _TransferPageState extends State<TransferPage> {
               : ValueListenableBuilder(
                   valueListenable: _isError,
                   builder: (context, value, child) {
-                    return value
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Erro ao carregar transferências!'),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    getData();
-                                  },
-                                  child: const Text('Tentar novamente'),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(height: 20),
-                                Text(
-                                  'Transferências pendentes',
-                                  style: Theme.of(context).textTheme.headline4,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 20),
-                                Expanded(
-                                  child: ListView.separated(
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(height: 20),
-                                    itemCount: _controller.transfers.length,
-                                    itemBuilder: (context, index) {
-                                      final transfer =
-                                          _controller.transfers[index];
-                                      return ExpansionTile(
-                                        onExpansionChanged: (value) {
-                                          print(transfer);
-                                        },
-                                        title: Text(transfer.nameEffective),
-                                        subtitle: // from to
-                                            // Text(
-                                            //     '${transfer.originBuild} -> ${transfer.targetBuild}'),
-                                            Text(
-                                                '${transfer.originBuild} -> ${transfer.targetBuild}'),
-                                        trailing: Text(transfer.status),
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.green,
-                                                ),
-                                                onPressed: () async {
-                                                  final accepted =
-                                                      await _controller
-                                                          .acceptTransfer(
-                                                              transfer);
-                                                  if (accepted) {
-                                                    //remove from screen and update and show a dialog with success
-
-                                                    _controller.transfers
-                                                        .removeAt(index);
-                                                    setState(() {});
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                              'Sucesso!'),
-                                                          content: const Text(
-                                                              'Transferência aceita com sucesso!'),
-                                                          actions: [
-                                                            ElevatedButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: const Text(
-                                                                  'Ok'),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  } else {
-                                                    print(
-                                                        'Erro ao aceitar transferência!');
-                                                  }
-                                                },
-                                                child: const Text(
-                                                  'Confirmar',
-                                                ),
-                                              ),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.red,
-                                                ),
-                                                onPressed: () async {
-                                                  final canceled =
-                                                      await _controller
-                                                          .denyTransfer(
-                                                              transfer);
-                                                  if (canceled) {
-                                                    //remove from screen and update and show a dialog with success
-
-                                                    _controller.transfers
-                                                        .removeAt(index);
-                                                    setState(() {});
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                              'Sucesso!'),
-                                                          content: const Text(
-                                                              'Transferência cancelada com sucesso!'),
-                                                          actions: [
-                                                            ElevatedButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: const Text(
-                                                                  'Ok'),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  } else {
-                                                    print(
-                                                        'Erro ao cancelar transferência!');
-                                                  }
-                                                },
-                                                child: const Text('Cancelar'),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+                    return value ? _buildErrorContent() : _buildTransferList();
                   },
                 );
         },
+      ),
+    );
+  }
+
+  Widget _buildErrorContent() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Erro ao carregar transferências!'),
+          ElevatedButton(
+            onPressed: () {
+              getData();
+            },
+            child: const Text('Tentar novamente'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransferList() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: _controller.transfers.isEmpty
+            ? [
+                const Text('Nenhuma transferência pendente!'),
+              ]
+            : [
+                const SizedBox(height: 20),
+                Text(
+                  'Transferências pendentes',
+                  style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 20),
+                    itemCount: _controller.transfers.length,
+                    itemBuilder: (context, index) {
+                      final transfer = _controller.transfers[index];
+                      return _buildExpansionTile(transfer, index);
+                    },
+                  ),
+                ),
+              ],
+      ),
+    );
+  }
+
+  Widget _buildExpansionTile(TransferEntity transfer, int index) {
+    return ExpansionTile(
+      onExpansionChanged: (value) {
+        print(transfer);
+      },
+      title: Text(transfer.nameEffective),
+      // subtitle: Text('${transfer.originBuild} (arrow icon here) ${transfer.targetBuild}'),
+      subtitle: TextWithIcon(
+          origin: transfer.originBuild, target: transfer.targetBuild),
+
+      trailing: Text(transfer.status),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              onPressed: () async {
+                await _showConfirmDialog(transfer, index);
+              },
+              child: const Text('Confirmar'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              onPressed: () async {
+                await _showCancelDialog(transfer, index);
+              },
+              child: const Text('Cancelar'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _showConfirmDialog(TransferEntity transfer, int index) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirmar transferência'),
+          content:
+              const Text('Tem certeza que deseja confirmar a transferência?'),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Não'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              onPressed: () async {
+                final accepted = await _controller.acceptTransfer(transfer);
+                if (accepted) {
+                  _controller.transfers.removeAt(index);
+                  setState(() {});
+                  _showSuccessDialog('Transferência aceita com sucesso!');
+                } else {
+                  print('Erro ao aceitar transferência!');
+                }
+              },
+              child: const Text('Sim'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showCancelDialog(TransferEntity transfer, int index) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Cancelar transferência'),
+          content:
+              const Text('Tem certeza que deseja cancelar a transferência?'),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Não'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+
+                final canceled = await _controller.denyTransfer(transfer);
+                if (canceled) {
+                  _controller.transfers.removeAt(index);
+                  setState(() {});
+                  _showSuccessDialog('Transferência cancelada com sucesso!');
+                } else {
+                  print('Erro ao cancelar transferência!');
+                }
+              },
+              child: const Text('Sim'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSuccessDialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Sucesso!'),
+          content: Text(message),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class TransferListLoading extends StatelessWidget {
+  const TransferListLoading({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
+class TransferListError extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const TransferListError({Key key, this.onRetry}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Erro ao carregar transferências!'),
+          ElevatedButton(
+            onPressed: onRetry,
+            child: const Text('Tentar novamente'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TextWithIcon extends StatelessWidget {
+  final String origin;
+  final String target;
+
+  const TextWithIcon({
+    Key key,
+    this.origin,
+    this.target,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: origin,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+          WidgetSpan(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              child: Icon(
+                Icons.arrow_forward,
+                size: 16,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          TextSpan(
+            text: target,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          )
+        ],
       ),
     );
   }

@@ -77,7 +77,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
                 TextSpan(
-                    text: 'Qte Cafés da manhã: ',
+                    text: 'Qte Efetivos: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp010']}')
               ]))),
@@ -85,7 +85,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
                 TextSpan(
-                    text: 'Qte Cafés da tarde: ',
+                    text: 'Qte Presentes: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp011']}')
               ]))),

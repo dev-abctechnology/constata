@@ -16,4 +16,20 @@ class Palette {
       900: Color(0xff000000), //100%
     },
   );
+
+  static const MaterialColor customSwatchDark = MaterialColor(
+    0xFFABCDEF, // Substitua pelo valor de cor desejado para o modo escuro
+    <int, Color>{
+      50: Color(0xff123456), //10%
+      100: Color(0xff234567), //20%
+      200: Color(0xff345678), //30%
+      300: Color(0xff456789), //40%
+      400: Color(0xff56789a), //50%
+      500: Color(0xff6789ab), //60%
+      600: Color(0xff789abc), //70%
+      700: Color(0xff89abcd), //80%
+      800: Color(0xff9abcde), //90%
+      900: Color(0xffabcdef), //100%
+    },
+  );
 }

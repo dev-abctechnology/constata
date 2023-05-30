@@ -60,6 +60,7 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
   TransferEntity _transferEntity = TransferEntity();
 
   List<ObraSeletor> obras = [];
+  List<ObraSeletor> obrasFiltered = [];
 
   Future fetchObras() async {
     final prefs = SharedPrefs();
@@ -93,7 +94,7 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
       var body = await response.stream.bytesToString();
       var data = jsonDecode(body);
       obras = data.map<ObraSeletor>((e) => ObraSeletor.fromJson(e)).toList();
-
+      obrasFiltered = obras;
       setState(() {});
       print(obras);
     } else {
@@ -142,6 +143,39 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
 
   String date = '01/01/2023';
 
+  final _buildFilterController = TextEditingController();
+  final _effectiveFIlterController = TextEditingController();
+
+  filterEffective() {
+    if (_effectiveFIlterController.text.isNotEmpty) {
+      setState(() {
+        efetivo = efetivo
+            .where((element) => element['data']['tb01_cp002']
+                .toString()
+                .toLowerCase()
+                .contains(_effectiveFIlterController.text.toLowerCase()))
+            .toList();
+      });
+    } else {
+      listaEfetivo();
+    }
+  }
+
+  filterBuild() {
+    if (_buildFilterController.text.isNotEmpty) {
+      setState(() {
+        obrasFiltered = obras
+            .where((element) => element.name
+                .toString()
+                .toLowerCase()
+                .contains(_buildFilterController.text.toLowerCase()))
+            .toList();
+      });
+    } else {
+      obrasFiltered = obras;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -184,23 +218,40 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
             title: const Text('Selecionar Efetivo'),
             content: Column(
               children: [
-                ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
+                Column(
                   children: [
-                    for (var item in efetivo)
-                      ListTile(
-                        title: Text(item['data']['tb01_cp002'].toString()),
-                        subtitle: Text(item['id'].toString()),
-                        onTap: () {
-                          // Salvar a seleção do efetivo no _transferEntity
-                          _transferEntity = TransferEntity(
-                              nameEffective:
-                                  item['data']['tb01_cp002'].toString(),
-                              codeEffective: item['id'].toString());
-                          nextStep();
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: _effectiveFIlterController,
+                        decoration: const InputDecoration(
+                            labelText: 'Filtrar efetivo',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.search)),
+                        onChanged: (value) {
+                          filterEffective();
                         },
-                      )
+                      ),
+                    ),
+                    ListView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      children: [
+                        for (var item in efetivo)
+                          ListTile(
+                            title: Text(item['data']['tb01_cp002'].toString()),
+                            // subtitle: Text(item['id'].toString()),
+                            onTap: () {
+                              // Salvar a seleção do efetivo no _transferEntity
+                              _transferEntity = TransferEntity(
+                                  nameEffective:
+                                      item['data']['tb01_cp002'].toString(),
+                                  codeEffective: item['id'].toString());
+                              nextStep();
+                            },
+                          )
+                      ],
+                    ),
                   ],
                 )
               ],
@@ -208,32 +259,47 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
           ),
           Step(
             title: const Text('Selecionar Obra de Destino'),
-            content: Container(
-                child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
+            content: Column(
               children: [
-                for (var obra in obras)
-                  ListTile(
-                    title: Text(obra.name),
-                    subtitle: Text(obra.id),
-                    onTap: () {
-                      _transferEntity = TransferEntity(
-                          nameEffective: _transferEntity.nameEffective,
-                          codeEffective: _transferEntity.codeEffective,
-                          originBuild: widget.originObra['name'],
-                          originBuildId: widget.originObra['id'],
-                          targetBuild: obra.name,
-                          targetBuildId: obra.id,
-                          date: date,
-                          status: 'Aguardando'
-                          // Outros dados do efetivo
-                          );
-                      nextStep();
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _buildFilterController,
+                    decoration: const InputDecoration(
+                        labelText: 'Filtrar obras',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.search)),
+                    onChanged: (value) {
+                      filterBuild();
                     },
-                  )
+                  ),
+                ),
+                ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [
+                    for (var obra in obrasFiltered)
+                      ListTile(
+                        title: Text(obra.name),
+                        onTap: () {
+                          _transferEntity = TransferEntity(
+                              nameEffective: _transferEntity.nameEffective,
+                              codeEffective: _transferEntity.codeEffective,
+                              originBuild: widget.originObra['name'],
+                              originBuildId: widget.originObra['id'],
+                              targetBuild: obra.name,
+                              targetBuildId: obra.id,
+                              date: date,
+                              status: 'Aguardando'
+                              // Outros dados do efetivo
+                              );
+                          nextStep();
+                        },
+                      )
+                  ],
+                ),
               ],
-            )),
+            ),
           ),
           Step(
             title: const Text('Enviar Transferência'),
