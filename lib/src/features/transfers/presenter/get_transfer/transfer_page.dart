@@ -10,13 +10,13 @@ import 'package:constata/src/features/transfers/external/datasources/get_transfe
 import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_controller.dart';
 import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_page.dart';
 import 'package:constata/src/features/transfers/presenter/get_transfer/get_transfer_controller.dart';
-import 'package:constata/src/shared/http_client.dart';
+
 import 'package:flutter/material.dart';
 
 class TransferPage extends StatefulWidget {
   final Map<String, dynamic> obra;
 
-  const TransferPage({Key key, this.obra}) : super(key: key);
+  const TransferPage({Key? key, required this.obra}) : super(key: key);
 
   @override
   State<TransferPage> createState() => _TransferPageState();
@@ -26,9 +26,7 @@ class _TransferPageState extends State<TransferPage> {
   final _controller = TransferController(
     GetTransfersUseCaseImpl(
       GetTransfersRepositoryImpl(
-        GetTransfersDataSouceImpl(
-          HttpClientAdapter(),
-        ),
+        GetTransfersDataSouceImpl(),
       ),
     ),
     AcceptTransferUseCaseImpl(
@@ -68,25 +66,27 @@ class _TransferPageState extends State<TransferPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          var route = MaterialPageRoute(
-            builder: (BuildContext context) =>
-                CreateTransferPage(originObra: widget.obra),
-          );
-          Navigator.of(context).push(route);
+          // var route = MaterialPageRoute(
+          //   builder: (BuildContext context) =>
+          //       CreateTransferPage(originObra: widget.obra),
+          // );
+          // Navigator.of(context).push(route);
         },
         child: const Icon(Icons.add),
       ),
       body: ValueListenableBuilder(
         valueListenable: _isLoading,
         builder: (context, value, child) {
-          return value
+          return value != null
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : ValueListenableBuilder(
                   valueListenable: _isError,
                   builder: (context, value, child) {
-                    return value ? _buildErrorContent() : _buildTransferList();
+                    return value != null
+                        ? _buildErrorContent()
+                        : _buildTransferList();
                   },
                 );
         },
@@ -282,7 +282,7 @@ class _TransferPageState extends State<TransferPage> {
 }
 
 class TransferListLoading extends StatelessWidget {
-  const TransferListLoading({Key key}) : super(key: key);
+  const TransferListLoading({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +295,7 @@ class TransferListLoading extends StatelessWidget {
 class TransferListError extends StatelessWidget {
   final VoidCallback onRetry;
 
-  const TransferListError({Key key, this.onRetry}) : super(key: key);
+  const TransferListError({Key? key, required this.onRetry}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -319,9 +319,9 @@ class TextWithIcon extends StatelessWidget {
   final String target;
 
   const TextWithIcon({
-    Key key,
-    this.origin,
-    this.target,
+    Key? key,
+    required this.origin,
+    required this.target,
   }) : super(key: key);
 
   @override

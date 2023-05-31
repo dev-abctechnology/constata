@@ -17,14 +17,14 @@ class HomePage extends StatefulWidget {
   final Map
       dataLogged; // ---> OBJETO COM TODOS OS DADOS DAS TELAS ANTERIORES (usuário, token,empresa, filial, local de negocio e empresa)
 
-  const HomePage({Key key, this.dataLogged}) : super(key: key);
+  const HomePage({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String tokenSerilizado;
+  String tokenSerilizado = '';
 
   Future fetchColaboradores() async {
     var headers = {
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
               trailing: const Icon(Icons.change_circle),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
-                Map username = jsonDecode(prefs.getString('authentication'));
+                Map username = jsonDecode(prefs.getString('authentication')!);
                 debugPrint(username.toString());
                 Provider.of<AppointmentData>(context, listen: false)
                     .clearAppointmentData();

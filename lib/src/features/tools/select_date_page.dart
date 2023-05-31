@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 class SelectDatePage extends StatefulWidget {
   var dataLogged;
 
-  SelectDatePage({Key key, this.dataLogged}) : super(key: key);
+  SelectDatePage({Key? key, this.dataLogged}) : super(key: key);
 
   @override
   _SelectDatePagState createState() => _SelectDatePagState();
@@ -21,7 +21,7 @@ class SelectDatePage extends StatefulWidget {
 
 class _SelectDatePagState extends State<SelectDatePage> {
   String _selectedDate = "Data do apontamento";
-  String _date = null;
+  String _date = '';
   bool status = false;
   bool rstatus = false;
   List medicaoPendente = [];
@@ -33,7 +33,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
       res = [];
     });
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
@@ -75,7 +75,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
         setState(() {
           status = false;
         });
-        medicaoPendente = [jsonDecode(value.getString('filaFerramentas'))];
+        medicaoPendente = [jsonDecode(value.getString('filaFerramentas')!)];
         setState(() {});
       }
     });
@@ -122,14 +122,8 @@ class _SelectDatePagState extends State<SelectDatePage> {
         Navigator.of(context).pop();
         print('hahahaha');
         res = jsonDecode(await response.stream.bytesToString());
-        setState(() {
-          res;
-
-          return true;
-        });
-
-        print(res.length);
-        return false;
+        setState(() {});
+        return true;
       } else {
         showDialog(
             context: context,

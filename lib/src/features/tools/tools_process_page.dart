@@ -11,7 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ToolsProcessPage extends StatefulWidget {
   var dataLogged;
   String date;
-  ToolsProcessPage({Key key, this.dataLogged, this.date}) : super(key: key);
+  ToolsProcessPage({Key? key, this.dataLogged, required this.date})
+      : super(key: key);
 
   @override
   ToolsProcessPageState createState() => ToolsProcessPageState();

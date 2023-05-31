@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class QuantityForm extends StatelessWidget {
-  String hintText;
-  TextEditingController controller;
-  QuantityForm({
-    this.hintText,
-    this.controller,
-    Key key,
+  final String hintText;
+  final TextEditingController controller;
+  const QuantityForm({
+    required this.hintText,
+    required this.controller,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -16,7 +16,7 @@ class QuantityForm extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         validator: ((value) {
-          if (value.isEmpty || value == null) {
+          if (value!.isEmpty) {
             return 'Preencha!';
           }
           return null;

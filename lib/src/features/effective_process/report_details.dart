@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ReportDetails extends StatefulWidget {
   final Map reportDetail;
 
-  ReportDetails({Key key, this.reportDetail}) : super(key: key);
+  const ReportDetails({Key? key, required this.reportDetail}) : super(key: key);
 
   @override
   _ReportDetailsState createState() => _ReportDetailsState();

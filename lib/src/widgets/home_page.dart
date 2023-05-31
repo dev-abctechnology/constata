@@ -1,4 +1,4 @@
-import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
+// import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ import 'grid_button.dart';
 class HomePageBody extends StatefulWidget {
   final Map arguments;
 
-  const HomePageBody({Key key, this.arguments}) : super(key: key);
+  const HomePageBody({Key? key, required this.arguments}) : super(key: key);
 
   @override
   State<HomePageBody> createState() => _HomePageBodyState();

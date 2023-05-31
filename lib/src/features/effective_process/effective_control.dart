@@ -14,9 +14,9 @@ import 'dart:developer' as developer;
 import 'report_details.dart';
 
 class EffectiveControl extends StatefulWidget {
-  var dataLogged;
+  Map dataLogged;
 
-  EffectiveControl({Key key, this.dataLogged}) : super(key: key);
+  EffectiveControl({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _EffectiveControlState createState() => _EffectiveControlState();
@@ -24,7 +24,7 @@ class EffectiveControl extends StatefulWidget {
 
 class _EffectiveControlState extends State<EffectiveControl> {
   String _selectedDate = "Data do apontamento";
-  String _date = null;
+  String _date = "";
   int opened = 0;
   List res = [];
   List resAppointment = [];
@@ -36,29 +36,27 @@ class _EffectiveControlState extends State<EffectiveControl> {
   //{timestamp: 2021-11-12T13:33:31.491+0000, status: 500, error: Internal Server Error, message: No value present, path: /jarvis/api/stuffdata/sdt_a-inm-prjre-00}
 
   void buildFila() async {
-    SharedPreferences sharedPreferences;
+    late SharedPreferences sharedPreferences;
     await SharedPreferences.getInstance()
         .then((value) => sharedPreferences = value);
-    if (sharedPreferences != null) {
-      if (sharedPreferences.containsKey("filaApontamento")) {
-        pending = true;
-        status = false;
-        setState(() {});
-        filaDeApontamento.add(
-          await json.decode(
-            sharedPreferences.getString("filaApontamento"),
-          ),
-        );
-        setState(() {});
-        print(filaDeApontamento);
-      }
+    if (sharedPreferences.containsKey("filaApontamento")) {
+      pending = true;
+      status = false;
+      setState(() {});
+      filaDeApontamento.add(
+        await json.decode(
+          sharedPreferences.getString("filaApontamento")!,
+        ),
+      );
+      setState(() {});
+      print(filaDeApontamento);
     }
     rascunho();
   }
 
   void rascunho() {
-    if (Provider.of<AppointmentData>(context, listen: false).appointmentData !=
-        null) {
+    if (Provider.of<AppointmentData>(context, listen: false).hasData.value ==
+        true) {
       showDialog(
           barrierDismissible: false,
           context: context,
@@ -103,7 +101,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
       res = [];
     });
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
@@ -165,10 +163,12 @@ class _EffectiveControlState extends State<EffectiveControl> {
         });
         print(res.length);
       } else {
-        print('as' + response.reasonPhrase);
+        print('as' + response.reasonPhrase.toString());
         Navigator.of(context).pop();
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, s) {
+      print(e);
+      print(s);
       Navigator.of(context).pop();
     }
   }
@@ -270,6 +270,8 @@ class _EffectiveControlState extends State<EffectiveControl> {
         return {'log': 'error'};
       }
     } catch (e, s) {
+      print(e);
+      print(s);
       showDialog(
           context: context,
           builder: (BuildContext context) {

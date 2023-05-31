@@ -16,7 +16,7 @@ class SelectObra extends StatefulWidget {
   var obraData;
 
   SelectObra(
-      {Key key,
+      {Key? key,
       this.user,
       this.localDeNegocio,
       this.empresa,

@@ -27,7 +27,7 @@ class AuthRefreshController {
                 'Authorization': 'Basic amFydmlzQGVmY3MyMDE4OlM0SkJ4NzRv',
                 'Content-Type': 'application/x-www-form-urlencoded',
               };
-              Map body = jsonDecode(value.getString("authentication"));
+              Map body = jsonDecode(value.getString("authentication")!);
               var refresh = http.Request(
                   'POST',
                   Uri.parse(

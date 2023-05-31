@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ToolListAlert extends StatefulWidget {
   var dataLogged;
 
-  ToolListAlert({Key key, this.dataLogged}) : super(key: key);
+  ToolListAlert({Key? key, this.dataLogged}) : super(key: key);
 
   @override
   _ToolListAlertState createState() => _ToolListAlertState();

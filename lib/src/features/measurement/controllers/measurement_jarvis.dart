@@ -12,7 +12,9 @@ import '../../../shared/verifications.dart';
 
 class MeasurementJarvis {
   Future<List<dynamic>> fetchColaborators(
-      {BuildContext context, String buildName, String date}) async {
+      {required BuildContext context,
+      required String buildName,
+      required String date}) async {
     Verifications verifications = Verifications();
     List colaborators = [];
     var headers = {
@@ -66,6 +68,9 @@ class MeasurementJarvis {
           }
         }
         return effectiveAllowedAndPresent;
+      } else {
+        print((await response.stream.bytesToString()));
+        throw Exception('Falha ao carregar colaboradores');
       }
     } catch (e) {
       print(e);

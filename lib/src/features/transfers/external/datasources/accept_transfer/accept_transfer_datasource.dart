@@ -70,6 +70,9 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
       } else {
         throw Exception(updateResponse.message);
       }
-    } catch (e) {}
+    } catch (e, s) {
+      print(e);
+      return ResponseEither.exception(e.toString(), s);
+    }
   }
 }

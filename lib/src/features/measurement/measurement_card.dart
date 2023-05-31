@@ -3,7 +3,11 @@ import 'package:intl/intl.dart';
 
 class MeasurementCard extends StatefulWidget {
   bool editing = true;
-  MeasurementCard({Key key, this.jsonBody, this.callback, this.editing})
+  MeasurementCard(
+      {Key? key,
+      required this.jsonBody,
+      required this.callback,
+      required this.editing})
       : super(key: key);
   Map jsonBody;
   final VoidCallback callback;
@@ -46,7 +50,8 @@ class _MeasurementCard extends State<MeasurementCard> {
 
 class MeasurementeDetails extends StatefulWidget {
   bool editing;
-  MeasurementeDetails({Key key, this.details, this.editing}) : super(key: key);
+  MeasurementeDetails({Key? key, required this.details, required this.editing})
+      : super(key: key);
   Map details;
   @override
   _MeasurementeDetailsState createState() => _MeasurementeDetailsState();

@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class EffectiveController {
   Future<List<Effective>> fetchEffective(
-      {BuildContext context, String buildName}) async {
+      {required BuildContext context, required String buildName}) async {
     try {
       var headers = {
         'Authorization':
@@ -60,7 +60,8 @@ class EffectiveController {
   }
 
   Future<String> sendEffective(
-      {BuildContext context, EffectiveApointment efetivo}) async {
+      {required BuildContext context,
+      required EffectiveApointment efetivo}) async {
     var headers = {
       'Authorization':
           'Bearer ${Provider.of<Token>(context, listen: false).token}',

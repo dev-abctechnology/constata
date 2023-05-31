@@ -3,29 +3,29 @@ import 'package:uuid/uuid.dart' as uuid;
 import '../../../shared/seletor_model.dart';
 
 class MeasurementModel {
-  String namePerson;
-  String codePerson;
-  Seletor local;
-  Seletor sector;
-  Seletor service;
-  Seletor measurementUnit;
-  double unitValue;
-  double quantity;
-  double totalValue;
-  String observation;
+  late String namePerson;
+  late String codePerson;
+  late Seletor? local;
+  late Seletor? sector;
+  late Seletor? service;
+  late Seletor? measurementUnit;
+  late double unitValue;
+  late double quantity;
+  late double totalValue;
+  late String observation;
   String sId = const uuid.Uuid().v4();
 
   MeasurementModel({
-    this.namePerson,
-    this.codePerson,
-    this.local,
-    this.sector,
-    this.service,
-    this.measurementUnit,
-    this.unitValue,
-    this.quantity,
-    this.totalValue,
-    this.observation,
+    required this.namePerson,
+    required this.codePerson,
+    required this.local,
+    required this.sector,
+    required this.service,
+    required this.measurementUnit,
+    required this.unitValue,
+    required this.quantity,
+    required this.totalValue,
+    required this.observation,
   });
 
   MeasurementModel.fromJson(Map<String, dynamic> json) {
@@ -51,16 +51,16 @@ class MeasurementModel {
     data['tp_cp052'] = namePerson;
     data['tp_cp051'] = codePerson;
     if (local != null) {
-      data['tp_cp053'] = local.toJson();
+      data['tp_cp053'] = local!.toJson();
     }
     if (sector != null) {
-      data['tp_cp054'] = sector.toJson();
+      data['tp_cp054'] = sector!.toJson();
     }
     if (service != null) {
-      data['tp_cp055'] = service.toJson();
+      data['tp_cp055'] = service!.toJson();
     }
     if (measurementUnit != null) {
-      data['tp_cp056'] = measurementUnit.toJson();
+      data['tp_cp056'] = measurementUnit!.toJson();
     }
     data['tp_cp057'] = unitValue;
     data['tp_cp058'] = quantity;

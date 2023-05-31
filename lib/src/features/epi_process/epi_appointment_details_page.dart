@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class EpiAppointmentDetails extends StatefulWidget {
-  var epiAppointment;
+  final Map epiAppointment;
 
-  EpiAppointmentDetails({Key key, this.epiAppointment}) : super(key: key);
+  const EpiAppointmentDetails({Key? key, required this.epiAppointment})
+      : super(key: key);
 
   @override
   State<EpiAppointmentDetails> createState() => _EpiAppointmentDetailsState();
@@ -12,9 +13,7 @@ class EpiAppointmentDetails extends StatefulWidget {
 class _EpiAppointmentDetailsState extends State<EpiAppointmentDetails> {
   @override
   Widget build(BuildContext context) {
-    var validated = widget.epiAppointment['data']['h0_cp056'] == null
-        ? 'Não'
-        : widget.epiAppointment['data']['h0_cp056'];
+    var validated = widget.epiAppointment['data']['h0_cp056'] ?? 'Não';
 
     List epis = widget.epiAppointment['data']['tb03_cp011'];
 

@@ -52,7 +52,7 @@ void main() {
                   splashIconSize: 100,
                   animationDuration: const Duration(seconds: 2),
                 ),
-            '/home': (context) => const HomePage(),
+            // '/home': (context) => const HomePage(),
           },
         );
       },

@@ -1,28 +1,28 @@
 import 'dart:convert';
 
 class TransferEntity {
-  String id;
-  String innerId;
-  String nameEffective;
-  String codeEffective;
-  String originBuild;
-  String originBuildId;
-  String targetBuild;
-  String targetBuildId;
-  String status;
-  String date;
+  late String id;
+  late String innerId;
+  late String nameEffective;
+  late String codeEffective;
+  late String originBuild;
+  late String originBuildId;
+  late String targetBuild;
+  late String targetBuildId;
+  late String status;
+  late String date;
 
   TransferEntity({
-    this.id,
-    this.innerId,
-    this.nameEffective,
-    this.codeEffective,
-    this.originBuild,
-    this.originBuildId,
-    this.targetBuild,
-    this.targetBuildId,
-    this.status,
-    this.date,
+    required this.id,
+    required this.innerId,
+    required this.nameEffective,
+    required this.codeEffective,
+    required this.originBuild,
+    required this.originBuildId,
+    required this.targetBuild,
+    required this.targetBuildId,
+    required this.status,
+    required this.date,
   });
 
   TransferEntity.fromMap(Map<String, dynamic> map) {
@@ -53,6 +53,34 @@ class TransferEntity {
     data['tb01_cp005'] = {"name": targetBuild, "_id": targetBuildId};
     data['tb01_cp006'] = status;
     return data;
+  }
+
+  // copywith
+
+  TransferEntity.copyWith({
+    String? id,
+    String? innerId,
+    String? nameEffective,
+    String? codeEffective,
+    String? originBuild,
+    String? originBuildId,
+    String? targetBuild,
+    String? targetBuildId,
+    String? status,
+    String? date,
+  }) {
+    TransferEntity(
+      id: id ?? this.id,
+      innerId: innerId ?? this.innerId,
+      nameEffective: nameEffective ?? this.nameEffective,
+      codeEffective: codeEffective ?? this.codeEffective,
+      originBuild: originBuild ?? this.originBuild,
+      originBuildId: originBuildId ?? this.originBuildId,
+      targetBuild: targetBuild ?? this.targetBuild,
+      targetBuildId: targetBuildId ?? this.targetBuildId,
+      status: status ?? this.status,
+      date: date ?? this.date,
+    );
   }
 
   @override

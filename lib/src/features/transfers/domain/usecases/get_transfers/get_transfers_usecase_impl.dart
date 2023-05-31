@@ -16,9 +16,9 @@ class GetTransfersUseCaseImpl implements GetTransfersUseCase {
       final List<TransferEntity> transfers = await repository();
       return ResponseEither.success(transfers);
     } on TransferExceptionRepo catch (e, s) {
-      return ResponseEither.error(e.message, s);
+      return ResponseEither.exception(e.message, s);
     } catch (e, s) {
-      return ResponseEither.error(e.toString(), s);
+      return ResponseEither.exception(e.toString(), s);
     }
   }
 }

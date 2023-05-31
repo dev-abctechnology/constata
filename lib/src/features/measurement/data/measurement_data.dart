@@ -3,21 +3,24 @@ import 'package:flutter/widgets.dart';
 import '../model/measurement_object_r.dart';
 
 class MeasurementData extends ChangeNotifier {
-  MeasurementAppointment _measurementData;
+  late MeasurementAppointment _measurementData;
+
+  final ValueNotifier<bool> _hasData = ValueNotifier(false);
+
+  bool get hasData => _hasData.value;
 
   MeasurementAppointment get measurementData {
-    if (_measurementData != null) {
-      return _measurementData;
-    }
+    return _measurementData;
   }
 
   void clearMeasurementData() {
-    _measurementData = null;
+    _hasData.value = false;
     notifyListeners();
   }
 
   void setMeasurementData(MeasurementAppointment data) {
     _measurementData = data;
+    _hasData.value = true;
     notifyListeners();
   }
 }

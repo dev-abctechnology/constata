@@ -11,7 +11,6 @@ import 'package:uuid/uuid.dart';
 import 'package:constata/src/features/effective_process/controllers/effective_jarvis.dart';
 import 'package:constata/src/features/effective_process/data/appointment_data.dart';
 import 'package:constata/src/features/effective_process/models/effective_model.dart';
-import 'package:constata/src/features/effective_process/quantity_form.dart';
 import 'package:constata/src/shared/pallete.dart';
 
 class ApointmentEffectiveReworked extends StatefulWidget {
@@ -21,7 +20,10 @@ class ApointmentEffectiveReworked extends StatefulWidget {
   final bool editingMode;
 
   const ApointmentEffectiveReworked(
-      {Key key, this.dataLogged, this.date, this.editingMode = false})
+      {Key? key,
+      required this.dataLogged,
+      required this.date,
+      this.editingMode = false})
       : super(key: key);
 
   @override
@@ -38,7 +40,7 @@ class _ApointmentEffectiveReworkedState
 
   List<Effective> effectives = [];
   EffectiveController effectiveController = EffectiveController();
-  String nomeObra;
+  String nomeObra = '';
   @override
   void initState() {
     nomeObra = widget.dataLogged['obra']['data']['tb01_cp002'];
@@ -86,7 +88,7 @@ class _ApointmentEffectiveReworkedState
     List<Effective> list = [];
     if (sharedPreferences.containsKey("colaboradores")) {
       var effectiveList =
-          jsonDecode(sharedPreferences.getString("colaboradores"));
+          jsonDecode(sharedPreferences.getString("colaboradores")!);
 
       Uuid uuid = const Uuid();
 
@@ -110,7 +112,7 @@ class _ApointmentEffectiveReworkedState
     });
   }
 
-  EffectiveApointment _effectiveApointment;
+  late EffectiveApointment _effectiveApointment;
   void send() async {
     _effectiveApointment = EffectiveApointment(
         data: DataBody(
@@ -162,24 +164,25 @@ class _ApointmentEffectiveReworkedState
   void save() async {
     _effectiveApointment = EffectiveApointment(
         data: DataBody(
-            address: widget.dataLogged['local_negocio']['name'],
-            buildName: BuildName.fromJson(widget.dataLogged['obra']),
-            code: null,
-            companyName: CompanyName.fromJson(widget.dataLogged['empresa']),
-            datetime: widget.date,
-            description: 'Descrição do apontamento',
-            effective: effectives,
-            effectiveTotalQuantity: effectives.length.toString(),
-            quantityPresentes: effectives
-                .where((element) => element.effectiveStatus == 'Presente')
-                .length
-                .toString(),
-            pointer: widget.dataLogged['user']['name'],
-            segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
-            type: "EFET"));
+      address: widget.dataLogged['local_negocio']['name'],
+      buildName: BuildName.fromJson(widget.dataLogged['obra']),
+      code: null,
+      companyName: CompanyName.fromJson(widget.dataLogged['empresa']),
+      datetime: widget.date,
+      description: 'Descrição do apontamento',
+      effective: effectives,
+      effectiveTotalQuantity: effectives.length.toString(),
+      quantityPresentes: effectives
+          .where((element) => element.effectiveStatus == 'Presente')
+          .length
+          .toString(),
+      pointer: widget.dataLogged['user']['name'],
+      segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
+      type: "EFET",
+    ));
   }
 
-  Future<bool> returnScreenAlert(BuildContext context) {
+  Future returnScreenAlert(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -203,12 +206,12 @@ class _ApointmentEffectiveReworkedState
                         showDialog(
                             context: context,
                             builder: (ctx) {
-                              return AlertDialog(
+                              return const AlertDialog(
                                 content: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
-                                  children: const [
+                                  children: [
                                     CircularProgressIndicator(),
                                     Text('Salvando...')
                                   ],
@@ -308,9 +311,7 @@ class _ApointmentEffectiveReworkedState
                 child: AnimationLimiter(
                   child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: effectives != null && effectives.isNotEmpty
-                          ? effectives.length
-                          : 0,
+                      itemCount: effectives.isNotEmpty ? effectives.length : 0,
                       itemBuilder: (BuildContext context, int index) {
                         var effective = effectives[index];
                         return AnimationConfiguration.staggeredList(
@@ -525,7 +526,7 @@ class _ApointmentEffectiveReworkedState
   }
 
   void sendValidator() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       final validator =
           effectives.any((element) => element.effectiveStatus == '');
       if (validator == true) {

@@ -14,7 +14,11 @@ class EpiReportTask extends StatefulWidget {
   String date;
   Map userSelected;
 
-  EpiReportTask({Key key, this.dataLogged, this.date, this.userSelected})
+  EpiReportTask(
+      {Key? key,
+      required this.dataLogged,
+      required this.date,
+      required this.userSelected})
       : super(key: key);
 
   @override
@@ -22,7 +26,7 @@ class EpiReportTask extends StatefulWidget {
 }
 
 class _EpiReportTaskState extends State<EpiReportTask> {
-  List result;
+  List result = [];
   var body;
   List epiReport = [];
 
@@ -40,7 +44,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
           SharedPreferences sharedPreferences =
               await SharedPreferences.getInstance();
           if (sharedPreferences.containsKey("epi")) {
-            result = jsonDecode(sharedPreferences.getString("epi"));
+            result = jsonDecode(sharedPreferences.getString("epi")!);
             setState(() {
               _isOffline = true;
             });
@@ -162,10 +166,6 @@ class _EpiReportTaskState extends State<EpiReportTask> {
 
   Map returnData = {};
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _textEditingController = TextEditingController();
-
   var returnValue;
 
   Future sendEpiReport() async {
@@ -210,8 +210,8 @@ class _EpiReportTaskState extends State<EpiReportTask> {
     SharedPreferences preferenciasCompartilhadas =
         await SharedPreferences.getInstance();
     if (preferenciasCompartilhadas.containsKey('filaApontamentoEPI')) {
-      List fila =
-          preferenciasCompartilhadas.getStringList("filaApontamentoEPI");
+      List<String> fila =
+          preferenciasCompartilhadas.getStringList("filaApontamentoEPI")!;
       fila.add(jsonEncode(jsonDecode(request)));
       SharedPreferences.getInstance()
           .then((value) => value.setStringList("filaApontamentoEPI", fila));
@@ -311,7 +311,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                                       FilteringTextInputFormatter.digitsOnly
                                     ],
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value!.isEmpty) {
                                         return 'Informe a quantidade de EPIs entregues';
                                       }
                                       return null;
@@ -360,7 +360,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                             child: Text('Cancelar')),
                         ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState.validate()) {
+                              if (_formKey.currentState!.validate()) {
                                 if (dropValue.value == null ||
                                     dropValue.value == '') {
                                   showDialog(

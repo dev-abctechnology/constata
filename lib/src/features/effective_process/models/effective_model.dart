@@ -1,19 +1,19 @@
 class EffectiveApointment {
-  DataBody data;
+  late DataBody data;
   String ckc = 'CONPROD001';
   String cko = '000000000000000000';
 
-  EffectiveApointment({this.data});
+  EffectiveApointment({required this.data});
 
   EffectiveApointment.fromJson(Map<String, dynamic> json) {
-    data = json["data"] == null ? null : DataBody.fromJson(json["data"]);
+    data = (json["data"] == null ? null : DataBody.fromJson(json["data"]))!;
     ckc = json["ckc"];
     cko = json["cko"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (this.data != null) data["data"] = this.data.toJson();
+    data["data"] = this.data.toJson();
     data["ckc"] = ckc;
     data["cko"] = cko;
     return data;
@@ -22,33 +22,31 @@ class EffectiveApointment {
 
 class DataBody {
   String type = "EFET";
-  String code;
-  String description;
-  String datetime;
-  CompanyName companyName;
-  BuildName buildName;
-  String address;
-  String segment;
-  String pointer;
-  String effectiveTotalQuantity;
-  String quantityPresentes;
-  String deleted;
-  List<Effective> effective;
+  late String? code;
+  late String description;
+  late String datetime;
+  late CompanyName companyName;
+  late BuildName buildName;
+  late String address;
+  late String segment;
+  late String pointer;
+  late String effectiveTotalQuantity;
+  late String quantityPresentes;
+  late List<Effective> effective;
 
   DataBody({
-    this.type,
-    this.code,
-    this.description,
-    this.datetime,
-    this.companyName,
-    this.buildName,
-    this.address,
-    this.segment,
-    this.pointer,
-    this.effectiveTotalQuantity,
-    this.quantityPresentes,
-    this.deleted,
-    this.effective,
+    required this.type,
+    required this.code,
+    required this.description,
+    required this.datetime,
+    required this.companyName,
+    required this.buildName,
+    required this.address,
+    required this.segment,
+    required this.pointer,
+    required this.effectiveTotalQuantity,
+    required this.quantityPresentes,
+    required this.effective,
   });
 
   DataBody.fromJson(Map<String, dynamic> json) {
@@ -56,22 +54,22 @@ class DataBody {
     code = json["h0_cp003"];
     description = json["h0_cp004"];
     datetime = json["h0_cp008"];
-    companyName = json["h0_cp005"] == null
+    companyName = (json["h0_cp005"] == null
         ? null
-        : CompanyName.fromJson(json["h0_cp005"]);
-    buildName =
-        json["h0_cp013"] == null ? null : BuildName.fromJson(json["h0_cp013"]);
+        : CompanyName.fromJson(json["h0_cp005"]))!;
+    buildName = (json["h0_cp013"] == null
+        ? null
+        : BuildName.fromJson(json["h0_cp013"]))!;
     address = json["h0_cp006"];
     segment = json["h0_cp015"];
     pointer = json["h0_cp009"];
     effectiveTotalQuantity = json["h0_cp010"];
     quantityPresentes = json["h0_cp011"];
-    deleted = json["f0_cp002"];
-    effective = json["tb01_cp011"] == null
+    effective = (json["tb01_cp011"] == null
         ? null
         : (json["tb01_cp011"] as List)
             .map((e) => Effective.fromJson(e))
-            .toList();
+            .toList())!;
   }
 
   Map<String, dynamic> toJson() {
@@ -80,33 +78,31 @@ class DataBody {
     data["h0_cp003"] = null;
     data["h0_cp004"] = description;
     data["h0_cp008"] = datetime;
-    if (companyName != null) data["h0_cp005"] = companyName.toJson();
-    if (buildName != null) data["h0_cp013"] = buildName.toJson();
+    data["h0_cp005"] = companyName.toJson();
+    data["h0_cp013"] = buildName.toJson();
     data["h0_cp006"] = address;
     data["h0_cp015"] = segment;
     data["h0_cp009"] = pointer;
     data["h0_cp010"] = effectiveTotalQuantity;
     data["h0_cp011"] = quantityPresentes;
-    if (effective != null) {
-      data["tb01_cp011"] = effective.map((e) => e.toJson()).toList();
-    }
+    data["tb01_cp011"] = effective.map((e) => e.toJson()).toList();
     return data;
   }
 }
 
 class Effective {
-  String effectiveCode;
-  String effectiveName;
-  String effectiveFixed;
-  String effectiveStatus;
-  String id;
+  late String effectiveCode;
+  late String effectiveName;
+  late String effectiveFixed;
+  late String effectiveStatus;
+  late String id;
 
   Effective(
-      {this.effectiveCode,
-      this.effectiveName,
-      this.effectiveFixed,
-      this.effectiveStatus,
-      this.id});
+      {required this.effectiveCode,
+      required this.effectiveName,
+      required this.effectiveFixed,
+      required this.effectiveStatus,
+      required this.id});
 
   Effective.fromJson(Map<String, dynamic> json) {
     effectiveCode = json["tp_cp012"];
@@ -128,10 +124,13 @@ class Effective {
 }
 
 class BuildName {
-  String name;
-  String id;
+  late String name;
+  late String id;
 
-  BuildName({this.name, this.id});
+  BuildName({
+    required this.name,
+    required this.id,
+  });
 
   BuildName.fromJson(Map<String, dynamic> json) {
     name = json["name"];
@@ -147,10 +146,13 @@ class BuildName {
 }
 
 class CompanyName {
-  String name;
-  String id;
+  late String name;
+  late String id;
 
-  CompanyName({this.name, this.id});
+  CompanyName({
+    required this.name,
+    required this.id,
+  });
 
   CompanyName.fromJson(Map<String, dynamic> json) {
     name = json["name"];

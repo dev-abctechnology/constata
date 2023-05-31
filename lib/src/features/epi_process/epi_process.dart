@@ -12,7 +12,8 @@ class EpiProcess extends StatefulWidget {
   Map dataLogged;
 
   final String selectedDate;
-  EpiProcess({Key key, this.dataLogged, this.selectedDate}) : super(key: key);
+  EpiProcess({Key? key, required this.dataLogged, required this.selectedDate})
+      : super(key: key);
 
   @override
   _EpiProcessState createState() => _EpiProcessState();
@@ -26,9 +27,8 @@ class _EpiProcessState extends State<EpiProcess> {
   List epiReport = [];
   List body = [];
   List effectiveList = [];
-  Map _selectedColaborator;
-  String _selectedDate;
-  String _date;
+  Map _selectedColaborator = {};
+  String _date = '';
   int opened = 0;
   bool pending = false;
   bool sending = false;
@@ -141,8 +141,8 @@ class _EpiProcessState extends State<EpiProcess> {
     if (preferenciasCompartilhadas.containsKey('colaboradores')) {
       developer.log('Colaboradores na memoria');
       effectiveList =
-          jsonDecode(preferenciasCompartilhadas.getString("colaboradores"));
-      print(jsonDecode(preferenciasCompartilhadas.getString("colaboradores")));
+          jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!);
+      print(jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!));
       setState(() {
         _isOffline = true;
       });
@@ -211,6 +211,7 @@ class _EpiProcessState extends State<EpiProcess> {
                     developer.log(result.toString(), name: "Retorno da pagina");
                   } catch (error, s) {
                     print(error);
+                    print(s);
                   }
                 } catch (e, s) {
                   developer.log("error", error: e, stackTrace: s);

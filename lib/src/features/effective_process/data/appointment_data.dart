@@ -2,20 +2,22 @@ import 'package:constata/src/features/effective_process/models/effective_model.d
 import 'package:flutter/material.dart';
 
 class AppointmentData with ChangeNotifier {
-  EffectiveApointment _appointmentData;
+  late EffectiveApointment _appointmentData;
+  ValueNotifier<bool> _hasData = ValueNotifier(false);
+
+  ValueNotifier<bool> get hasData => _hasData;
 
   EffectiveApointment get appointmentData {
-    if (_appointmentData != null) {
-      return _appointmentData;
-    }
+    return _appointmentData;
   }
 
   void clearAppointmentData() {
-    _appointmentData = null;
+    _hasData.value = false;
     notifyListeners();
   }
 
   void setAppointmentData(EffectiveApointment data) {
+    _hasData.value = true;
     _appointmentData = data;
     notifyListeners();
   }

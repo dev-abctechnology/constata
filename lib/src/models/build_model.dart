@@ -1,7 +1,7 @@
 import 'package:constata/src/shared/seletor_model.dart';
 
 class Build {
-  List<Task> tasks;
+  late List<Task>? tasks;
 
   Build({
     this.tasks,
@@ -17,7 +17,7 @@ class Build {
     final Map<String, dynamic> _data = <String, dynamic>{};
 
     if (tasks != null) {
-      _data["tb02_cp080"] = tasks.map((e) => e.toJson()).toList();
+      _data["tb02_cp080"] = tasks!.map((e) => e.toJson()).toList();
     }
 
     return _data;
@@ -25,34 +25,34 @@ class Build {
 }
 
 class Task {
-  Seletor local;
-  Seletor sector;
-  Seletor service;
-  double budgetedQuantity;
-  Seletor measureUnit;
-  double unitaryValue;
-  double valorOrcado;
-  double quantidadeConsumida;
-  double valorRealConsumido;
-  double saldoQuantidade;
-  double saldoValor;
-  double mediaConsumida;
-  String id;
+  late Seletor? local;
+  late Seletor? sector;
+  late Seletor? service;
+  late double? budgetedQuantity;
+  late Seletor? measureUnit;
+  late double? unitaryValue;
+  late double? valorOrcado;
+  late double? quantidadeConsumida;
+  late double? valorRealConsumido;
+  late double? saldoQuantidade;
+  late double? saldoValor;
+  late double? mediaConsumida;
+  late String id;
 
   Task(
-      {this.local,
-      this.sector,
-      this.service,
-      this.budgetedQuantity,
-      this.measureUnit,
-      this.unitaryValue,
-      this.valorOrcado,
-      this.quantidadeConsumida,
-      this.valorRealConsumido,
-      this.saldoQuantidade,
-      this.saldoValor,
-      this.mediaConsumida,
-      this.id});
+      {required this.local,
+      required this.sector,
+      required this.service,
+      required this.measureUnit,
+      required this.budgetedQuantity,
+      required this.unitaryValue,
+      required this.valorOrcado,
+      required this.quantidadeConsumida,
+      required this.valorRealConsumido,
+      required this.saldoQuantidade,
+      required this.saldoValor,
+      required this.mediaConsumida,
+      required this.id});
 
   Task.fromJson(Map<String, dynamic> json) {
     local =
@@ -95,17 +95,17 @@ class Task {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     if (local != null) {
-      _data["tp_cp081"] = local.toJson();
+      _data["tp_cp081"] = local!.toJson();
     }
     if (sector != null) {
-      _data["tp_cp082"] = sector.toJson();
+      _data["tp_cp082"] = sector!.toJson();
     }
     if (service != null) {
-      _data["tp_cp083"] = service.toJson();
+      _data["tp_cp083"] = service!.toJson();
     }
     _data["tp_cp084"] = budgetedQuantity;
     if (measureUnit != null) {
-      _data["tp_cp085"] = measureUnit.toJson();
+      _data["tp_cp085"] = measureUnit!.toJson();
     }
     _data["tp_cp086"] = unitaryValue;
     _data["tp_cp087"] = valorOrcado;
@@ -120,11 +120,15 @@ class Task {
 }
 
 class Responsible {
-  String code;
-  String name;
-  String id;
+  late String code;
+  late String name;
+  late String id;
 
-  Responsible({this.code, this.name, this.id});
+  Responsible({
+    required this.code,
+    required this.name,
+    required this.id,
+  });
 
   Responsible.fromJson(Map<String, dynamic> json) {
     code = json["tp_cp009"];

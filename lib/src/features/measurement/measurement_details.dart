@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class MeasurementDetails extends StatefulWidget {
   Map measurement;
 
-  MeasurementDetails({Key key, this.measurement}) : super(key: key);
+  MeasurementDetails({Key? key, required this.measurement}) : super(key: key);
   @override
   _MeasurementDetailsState createState() => _MeasurementDetailsState();
 }

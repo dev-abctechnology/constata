@@ -12,10 +12,10 @@ class GridButton extends StatelessWidget {
   final MaterialColor color;
 
   const GridButton(
-      {Key key,
-      this.onPressed,
-      this.icon,
-      this.label,
+      {Key? key,
+      required this.onPressed,
+      required this.icon,
+      required this.label,
       this.color = Palette.customSwatch})
       : super(key: key);
 

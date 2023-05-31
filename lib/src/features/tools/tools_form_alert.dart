@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 
 class ToolsFormAlert extends StatefulWidget {
   var tool;
-  ToolsFormAlert({Key key, this.tool}) : super(key: key);
+  ToolsFormAlert({Key? key, this.tool}) : super(key: key);
 
   @override
   _ToolsFormAlertState createState() => _ToolsFormAlertState();
@@ -23,10 +23,9 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
     saldo = double.parse(widget.tool["tp_cp044"].toString());
     disponivel = double.parse(widget.tool["tp_cp041"].toString());
   }
+
   @override
   Widget build(BuildContext context) {
-    
-
     return AlertDialog(
       content: SingleChildScrollView(
         child: Column(
@@ -48,11 +47,12 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                       controller: controller,
                       validator: (value) {
                         if (controller.text.isNotEmpty &&
-                            double.tryParse(controller.text) > disponivel) {
+                            double.tryParse(controller.text)! > disponivel) {
                           controller.clear();
                           return "Valor inválido!";
-                        }else if(controller.text.isNotEmpty){
-                          saldo = widget.tool["tp_cp041"] + double.tryParse(controller.text);
+                        } else if (controller.text.isNotEmpty) {
+                          saldo = widget.tool["tp_cp041"] +
+                              double.tryParse(controller.text);
                         }
                         return null;
                       },
@@ -66,7 +66,7 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                       controller: controller1,
                       validator: (value) {
                         if (controller1.text.isNotEmpty &&
-                            double.tryParse(controller1.text) > saldo) {
+                            double.tryParse(controller1.text)! > saldo) {
                           controller1.clear();
                           return "Valor inválido!";
                         }

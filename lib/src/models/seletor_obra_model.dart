@@ -1,8 +1,11 @@
 class ObraSeletor {
-  String id;
-  String name;
+  late String id;
+  late String name;
 
-  ObraSeletor({this.id, this.name});
+  ObraSeletor({
+    required this.id,
+    required this.name,
+  });
 
   ObraSeletor.fromJson(Map<String, dynamic> json) {
     id = json['id'];

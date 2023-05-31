@@ -13,7 +13,7 @@ import 'select_build_page.dart';
 
 //LOGIN
 class Login extends StatefulWidget {
-  const Login({Key key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -25,8 +25,8 @@ class _LoginState extends State<Login> {
   var passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Map loginResponse;
-  Map privilegiesResponse;
+  Map loginResponse = {};
+  Map privilegiesResponse = {};
   var privilegeDetail;
   String userType = 'Perfil';
   var token;
@@ -219,40 +219,37 @@ class _LoginState extends State<Login> {
   }
 
   Future isLogged() async {
-    SharedPreferences sharedPreferences;
+    late SharedPreferences sharedPreferences;
     await SharedPreferences.getInstance()
         .then((value) => sharedPreferences = value);
-    if (sharedPreferences != null) {
-      if (sharedPreferences.containsKey("data")) {
-        Map dataLogged = await json.decode(sharedPreferences.getString("data"));
-        Provider.of<Token>(context, listen: false)
-            .setToken(dataLogged['token']);
+    if (sharedPreferences.containsKey("data")) {
+      Map dataLogged = await json.decode(sharedPreferences.getString("data")!);
+      Provider.of<Token>(context, listen: false).setToken(dataLogged['token']);
 
-        var route = MaterialPageRoute(
-          builder: (BuildContext context) => HomePage(
-            dataLogged: dataLogged,
-          ),
-        );
-        await Navigator.of(context).push(route).then((value) {
-          print(value);
-          usernameController.text = value['username'];
-          passwordController.text = value['password'];
+      var route = MaterialPageRoute(
+        builder: (BuildContext context) => HomePage(
+          dataLogged: dataLogged,
+        ),
+      );
+      await Navigator.of(context).push(route).then((value) {
+        print(value);
+        usernameController.text = value['username'];
+        passwordController.text = value['password'];
 
-          showLoading(context);
-          generateToken().then((value) {
-            TextInput.finishAutofillContext();
-            Navigator.of(context).pop();
-            checkAuth();
-          });
+        showLoading(context);
+        generateToken().then((value) {
+          TextInput.finishAutofillContext();
+          Navigator.of(context).pop();
+          checkAuth();
         });
+      });
 
-        return true;
-      }
+      return true;
     }
   }
 
-  List userData;
-  List obraData;
+  List userData = [];
+  List obraData = [];
   Future<bool> fetchCollaborators() async {
     var headers = {
       'Authorization':
@@ -371,7 +368,7 @@ class _LoginState extends State<Login> {
                           controller: usernameController,
                           enableSuggestions: false,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Digite o usuário';
                             }
                             return null;
@@ -393,7 +390,7 @@ class _LoginState extends State<Login> {
                           obscureText: _hidePassword,
                           enableSuggestions: false,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Digite a senha';
                             }
                             return null;
@@ -562,7 +559,7 @@ class _LoginState extends State<Login> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              termsOfUse = value;
+                              termsOfUse = value!;
                             });
                           }),
                     ],
@@ -575,13 +572,13 @@ class _LoginState extends State<Login> {
   }
 
   _buildLink({
-    BuildContext context,
-    String title,
-    VoidCallback onTap,
+    required BuildContext context,
+    required String title,
+    required VoidCallback onTap,
   }) {
     return TextSpan(
       text: title,
-      style: Theme.of(context).textTheme.bodyText1.copyWith(
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: 14.0,
             color: Colors.redAccent,
           ),

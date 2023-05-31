@@ -17,15 +17,15 @@ import 'model/measurement_object_r.dart';
 class Measurement extends StatefulWidget {
   var dataLogged;
 
-  Measurement({Key key, this.dataLogged}) : super(key: key);
+  Measurement({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _MeasurementState createState() => _MeasurementState();
 }
 
-class _MeasurementState extends State<Measurement> with NavigatorObserver {
+class _MeasurementState extends State<Measurement> {
   String _selectedDate = "Data do apontamento";
-  String _date = null;
+  String _date = '';
   bool status = false;
   bool dateStatus = false;
   List medicaoPendente = [];
@@ -56,18 +56,18 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MeasurementReportReworked(
-                                  dataLogged: widget.dataLogged,
-                                  date: Provider.of<MeasurementData>(context,
-                                          listen: false)
-                                      .measurementData
-                                      .data
-                                      .date,
-                                  edittingMode: true,
-                                )));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => MeasurementReportReworked(
+                    //               dataLogged: widget.dataLogged,
+                    //               date: Provider.of<MeasurementData>(context,
+                    //                       listen: false)
+                    //                   .measurementData
+                    //                   .data
+                    //                   .date,
+                    //               edittingMode: true,
+                    //             )));
                   },
                 ),
               ],
@@ -83,7 +83,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
       res = [];
     });
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
@@ -142,7 +142,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
           Provider.of<MeasurementData>(context, listen: false)
               .clearMeasurementData();
         });
-        medicaoPendente = [jsonDecode(value.getString('filaMedicao'))];
+        medicaoPendente = [jsonDecode(value.getString('filaMedicao')!)];
 
         setState(() {});
       }
@@ -184,18 +184,18 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       res = jsonDecode(await response.stream.bytesToString());
-      setState(() {
-        res;
-        if (res.length > 0) {
-          status = false;
-          showSnackBar(
-              'Na data selecionada já existe um relatório', Colors.red);
-          return true;
-        } else {
-          print(res.length);
-          return false;
-        }
-      });
+
+      res;
+      if (res.length > 0) {
+        status = false;
+        showSnackBar('Na data selecionada já existe um relatório', Colors.red);
+        setState(() {});
+        return true;
+      } else {
+        print(res.length);
+        setState(() {});
+        return false;
+      }
     } else {
       showDialog(
           context: context,
@@ -208,10 +208,11 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
       print(response.reasonPhrase);
       return false;
     }
+    return false;
   }
 
   Future<Map<String, dynamic>> effectiveValidator(
-      {Map<String, dynamic> offlineMeasurement}) async {
+      {required Map<String, dynamic> offlineMeasurement}) async {
     String date = offlineMeasurement['data']['h0_cp008'];
     String obra = offlineMeasurement['data']['h0_cp007']['name'];
 
@@ -371,34 +372,34 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          height: MediaQuery.of(context).size.height * 0.065,
-                          child: ElevatedButton(
-                            onPressed: status == true && dateStatus == true
-                                ? () {
-                                    setState(() {
-                                      var route = MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            MeasurementReportReworked(
-                                          dataLogged: widget.dataLogged,
-                                          date: _date,
-                                        ),
-                                      );
-                                      Navigator.of(context).pop();
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Center(
+                    //     child: Container(
+                    //       width: MediaQuery.of(context).size.width * 0.95,
+                    //       height: MediaQuery.of(context).size.height * 0.065,
+                    //       child: ElevatedButton(
+                    //         onPressed: status == true && dateStatus == true
+                    //             ? () {
+                    //                 setState(() {
+                    //                   var route = MaterialPageRoute(
+                    //                     builder: (BuildContext context) =>
+                    //                         MeasurementReportReworked(
+                    //                       dataLogged: widget.dataLogged,
+                    //                       date: _date,
+                    //                     ),
+                    //                   );
+                    //                   Navigator.of(context).pop();
 
-                                      Navigator.of(context).push(route);
-                                    });
-                                  }
-                                : null,
-                            child: Text("Apontar"),
-                          ),
-                        ),
-                      ),
-                    ),
+                    //                   Navigator.of(context).push(route);
+                    //                 });
+                    //               }
+                    //             : null,
+                    //         child: Text("Apontar"),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

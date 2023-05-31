@@ -15,7 +15,7 @@ import 'epi_process.dart';
 class EpiHome extends StatefulWidget {
   var dataLogged;
 
-  EpiHome({Key key, this.dataLogged}) : super(key: key);
+  EpiHome({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _EpiHomeState createState() => _EpiHomeState();
@@ -24,7 +24,7 @@ class EpiHome extends StatefulWidget {
 class _EpiHomeState extends State<EpiHome> {
   var res = [];
   String _selectedDate = "Escolha a data";
-  String _date;
+  String _date = "";
   int opened = 0;
   bool pending = false;
   bool sending = false;
@@ -36,7 +36,7 @@ class _EpiHomeState extends State<EpiHome> {
     });
     bool k = false;
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
@@ -170,7 +170,7 @@ class _EpiHomeState extends State<EpiHome> {
     developer.log(indice.toString(), name: "Indice apagar:");
     setState(() {
       SharedPreferences.getInstance().then((value) async {
-        List fila = value.getStringList('filaApontamentoEPI');
+        List<String> fila = value.getStringList('filaApontamentoEPI')!;
         print(fila.length);
         if (fila.length > 1) {
           fila.removeAt(indice);
@@ -191,7 +191,7 @@ class _EpiHomeState extends State<EpiHome> {
 
   List filaDeApontamento = [];
 
-  List result;
+  List result = [];
 
   @override
   void initState() {
@@ -201,21 +201,19 @@ class _EpiHomeState extends State<EpiHome> {
   }
 
   void buildFila() async {
-    SharedPreferences sharedPreferences;
+    late SharedPreferences sharedPreferences;
     await SharedPreferences.getInstance()
         .then((value) => sharedPreferences = value);
-    if (sharedPreferences != null) {
-      if (sharedPreferences.containsKey("filaApontamentoEPI")) {
-        // pending = true;
-        // status = false;
-        setState(() {});
-        filaDeApontamento = jsonDecode(
-            sharedPreferences.getStringList("filaApontamentoEPI").toString());
-        print("ADFDSAFDSF" +
-            sharedPreferences.getStringList('filaApontamentoEPI').toString());
-        developer.log(filaDeApontamento.length.toString());
-        setState(() {});
-      }
+    if (sharedPreferences.containsKey("filaApontamentoEPI")) {
+      // pending = true;
+      // status = false;
+      setState(() {});
+      filaDeApontamento = jsonDecode(
+          sharedPreferences.getStringList("filaApontamentoEPI").toString());
+      print("ADFDSAFDSF" +
+          sharedPreferences.getStringList('filaApontamentoEPI').toString());
+      developer.log(filaDeApontamento.length.toString());
+      setState(() {});
     }
   }
 
