@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppointmentData with ChangeNotifier {
   late EffectiveApointment _appointmentData;
-  ValueNotifier<bool> _hasData = ValueNotifier(false);
+  final ValueNotifier<bool> _hasData = ValueNotifier(false);
 
   ValueNotifier<bool> get hasData => _hasData;
 
@@ -18,7 +18,7 @@ class AppointmentData with ChangeNotifier {
 
   void setAppointmentData(EffectiveApointment data) {
     _hasData.value = true;
-    _appointmentData = data;
+    _appointmentData = EffectiveApointment.fromJson(data.toJson());
     notifyListeners();
   }
 }

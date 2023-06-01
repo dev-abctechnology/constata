@@ -86,7 +86,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
         });
         return false;
       }
-    } on Exception catch (e) {
+    } on Exception {
       return false;
     }
   }
@@ -254,10 +254,10 @@ class _EpiReportTaskState extends State<EpiReportTask> {
             child: Column(
               children: [
                 colaboratorTile(),
-                Divider(),
+                const Divider(),
                 epiReportListing(),
                 sendButton(context),
-                Text("Escolha o EPI"),
+                const Text("Escolha o EPI"),
                 result.isEmpty
                     ? const CircularProgressIndicator()
                     : epiSelectListing(),
@@ -317,7 +317,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                                       return null;
                                     },
                                     controller: quantidadeEPI,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                         icon: Icon(Icons.animation_outlined),
                                         labelText: 'Quantidade de EPIs'),
                                   ),
@@ -352,21 +352,20 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                       ),
                       actions: [
                         ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(primary: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text('Cancelar')),
+                            child: const Text('Cancelar')),
                         ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                if (dropValue.value == null ||
-                                    dropValue.value == '') {
+                                if (dropValue.value == '') {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return AlertDialog(
+                                        return const AlertDialog(
                                           content: Text(''),
                                         );
                                       });
@@ -381,7 +380,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                                 }
                               }
                             },
-                            child: Text('Confirmar')),
+                            child: const Text('Confirmar')),
                       ],
                       actionsAlignment: MainAxisAlignment.spaceBetween,
                     );
@@ -407,27 +406,28 @@ class _EpiReportTaskState extends State<EpiReportTask> {
         itemCount: epiReport.isEmpty ? 0 : epiReport.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Card(
                   child: ListTile(
                 title: Text('EPI: ${epiReport[index]['tp_cp016']}\n'
                     'Quantidade: ${epiReport[index]['tp_cp017']}\n'
                     'Motivo: ${epiReport[index]['tp_cp019']}\n'),
                 trailing: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.red),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () {
                       print('Before: ${epiReport.length}');
                       epiReport.removeAt(index);
                       print('After: ${epiReport.length}');
                       setState(() {});
                     },
-                    child: Icon(Icons.delete)),
+                    child: const Icon(Icons.delete)),
               )));
         });
   }
 
-  Container sendButton(BuildContext context) {
-    return Container(
+  SizedBox sendButton(BuildContext context) {
+    return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
           onPressed: epiReport.isNotEmpty
@@ -444,7 +444,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertDialog(
+                                return const AlertDialog(
                                   content: Text('Enviado com sucesso!'),
                                 );
                               });
@@ -456,11 +456,11 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Erro no envio!'),
+                                return const AlertDialog(
+                                  title: Text('Erro no envio!'),
                                   content: SingleChildScrollView(
                                     child: ListBody(
-                                      children: const <Widget>[
+                                      children: <Widget>[
                                         Text(
                                             'Parece que você está sem internet.'),
                                         Text(
@@ -480,7 +480,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return AlertDialog(
+                            return const AlertDialog(
                               title: Text("Erro ao enviar o apontamento!"),
                             );
                           });
@@ -488,7 +488,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                   });
                 }
               : null,
-          child: Text('Enviar')),
+          child: const Text('Enviar')),
     );
   }
 }

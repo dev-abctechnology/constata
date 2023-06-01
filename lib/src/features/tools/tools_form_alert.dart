@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
@@ -56,7 +55,7 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                         }
                         return null;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           icon: Icon(Icons.arrow_back),
                           labelText: 'Entrada de ferramentas'),
                     ),
@@ -73,7 +72,7 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                         print(saldo);
                         return null;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           icon: Icon(Icons.arrow_forward),
                           labelText: 'Saída de ferramentas'),
                     ),
@@ -98,10 +97,10 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                       "name": widget.tool['tp_cp040']['name'],
                       "_id": widget.tool['tp_cp040']['_id']
                     },
-                    "_id": Uuid().v4()
+                    "_id": const Uuid().v4()
                   });
                 },
-                child: Text('Salvar'))
+                child: const Text('Salvar'))
           ],
         ),
       ),

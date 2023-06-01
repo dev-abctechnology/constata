@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:constata/src/features/transfers/data/repositories/accept_transfer_repository.dart';
 import 'package:constata/src/features/transfers/data/repositories/get_transfers_repository.dart';
@@ -7,8 +6,6 @@ import 'package:constata/src/features/transfers/domain/usecases/accept_transfer/
 import 'package:constata/src/features/transfers/domain/usecases/get_transfers/get_transfers_usecase_impl.dart';
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/accept_transfer_datasource.dart';
 import 'package:constata/src/features/transfers/external/datasources/get_transfers_datasource.dart';
-import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_controller.dart';
-import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_page.dart';
 import 'package:constata/src/features/transfers/presenter/get_transfer/get_transfer_controller.dart';
 
 import 'package:flutter/material.dart';
@@ -99,7 +96,7 @@ class _TransferPageState extends State<TransferPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Erro ao carregar transferências!'),
+          const Text('Erro ao carregar transferências!'),
           ElevatedButton(
             onPressed: () {
               getData();
@@ -123,7 +120,7 @@ class _TransferPageState extends State<TransferPage> {
                 const SizedBox(height: 20),
                 Text(
                   'Transferências pendentes',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -303,7 +300,7 @@ class TransferListError extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Erro ao carregar transferências!'),
+          const Text('Erro ao carregar transferências!'),
           ElevatedButton(
             onPressed: onRetry,
             child: const Text('Tentar novamente'),
@@ -331,12 +328,12 @@ class TextWithIcon extends StatelessWidget {
         children: [
           TextSpan(
             text: origin,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),
           ),
-          WidgetSpan(
+          const WidgetSpan(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.0),
               child: Icon(
@@ -348,7 +345,7 @@ class TextWithIcon extends StatelessWidget {
           ),
           TextSpan(
             text: target,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),

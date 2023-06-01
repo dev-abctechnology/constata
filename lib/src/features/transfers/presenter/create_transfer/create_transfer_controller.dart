@@ -15,7 +15,7 @@ class CreateTransferController {
       } else {
         return true;
       }
-    } catch (e, s) {
+    } catch (e) {
       return false;
     }
   }

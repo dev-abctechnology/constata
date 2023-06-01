@@ -13,10 +13,10 @@ class _ReportDetailsState extends State<ReportDetails> {
   @override
   Widget build(BuildContext context) {
     List efetivo = widget.reportDetail['data']['tb01_cp011'];
-    TextStyle style = TextStyle(color: Colors.black, fontSize: 16);
+    TextStyle style = const TextStyle(color: Colors.black, fontSize: 16);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalhes do efetivo'),
+        title: const Text('Detalhes do efetivo'),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -25,7 +25,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                 title: RichText(
                     text: TextSpan(text: '', style: style, children: [
-                  TextSpan(
+                  const TextSpan(
                       text: 'Cod: ',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(
@@ -35,7 +35,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Data: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp008']}')
@@ -43,7 +43,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Obra: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(
@@ -52,7 +52,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Local de Negócio: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp006']}')
@@ -60,7 +60,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Segmento: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp015']}')
@@ -68,7 +68,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Responsável: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp009']}')
@@ -76,7 +76,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Qte Efetivos: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp010']}')
@@ -84,21 +84,21 @@ class _ReportDetailsState extends State<ReportDetails> {
               ListTile(
                   title: RichText(
                       text: TextSpan(text: '', style: style, children: [
-                TextSpan(
+                const TextSpan(
                     text: 'Qte Presentes: ',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: '${widget.reportDetail['data']['h0_cp011']}')
               ]))),
-              Divider(),
+              const Divider(),
               Container(
-                child: Center(
+                child: const Center(
                   child: Text('Lista de efetivo'),
                 ),
               ),
-              Divider(color: Colors.transparent),
+              const Divider(color: Colors.transparent),
               ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: efetivo.isEmpty ? 0 : efetivo.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Card(

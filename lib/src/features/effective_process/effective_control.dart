@@ -62,14 +62,14 @@ class _EffectiveControlState extends State<EffectiveControl> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Um rascunho foi encontrado!'),
-              content: Text('Deseja continuar o lançamento?'),
+              title: const Text('Um rascunho foi encontrado!'),
+              content: const Text('Deseja continuar o lançamento?'),
               actions: [
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Não')),
+                    child: const Text('Não')),
                 TextButton(
                     onPressed: () {
                       var route = MaterialPageRoute(
@@ -88,7 +88,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                       Navigator.of(context).pop();
                       Navigator.of(context).push(route);
                     },
-                    child: Text('Sim')),
+                    child: const Text('Sim')),
               ],
             );
           });
@@ -105,15 +105,15 @@ class _EffectiveControlState extends State<EffectiveControl> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
-        Duration(days: 10000),
+        const Duration(days: 10000),
       ),
       lastDate: DateTime.now().add(
-        Duration(days: 0),
+        const Duration(days: 0),
       ),
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(Duration(days: 3)));
+        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
         if (k == true) {
           status = false;
         }
@@ -136,7 +136,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
   Future fetchRelatorios(date) async {
     setState(() {});
 
-    developer.log('${Provider.of<Token>(context, listen: false).token}',
+    developer.log(Provider.of<Token>(context, listen: false).token,
         name: 'token');
 
     var headers = {
@@ -192,12 +192,12 @@ class _EffectiveControlState extends State<EffectiveControl> {
       Navigator.of(context).pop();
       if (response.statusCode == 200) {
         resAppointment = jsonDecode(await response.stream.bytesToString());
-        if (resAppointment.length > 0) {
+        if (resAppointment.isNotEmpty) {
           status = false;
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
+                return const AlertDialog(
                   title: Text('Escolha outra data!'),
                   content: Text(
                       "Na data selecionada já existe um apontamento de efetivo."),
@@ -219,7 +219,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Não foi possível verificar se há apontamentos.'),
               content: Text(
                 "Verifique sua conexão e tente novamente!\n\nAtenção!\nPode ocorrer inconsistências.",
@@ -248,13 +248,13 @@ class _EffectiveControlState extends State<EffectiveControl> {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         resAppointment = jsonDecode(await response.stream.bytesToString());
-        if (resAppointment.length > 0) {
+        if (resAppointment.isNotEmpty) {
           status = false;
           showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Erro ao enviar.'),
+                  title: const Text('Erro ao enviar.'),
                   content: Text(
                       "Na data ${filaDeApontamento[0]['data']['h0_cp008']} já existe um apontamento de efetivo para a obra \"${widget.dataLogged['obra']['data']['tb01_cp002']}\"."),
                 );
@@ -276,7 +276,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Não foi possível enviar o apontamento'),
+              title: const Text('Não foi possível enviar o apontamento'),
               content: Text(
                 "Verifique sua conexão ou se já existe um apontamento para a obra \"${widget.dataLogged['obra']['data']['tb01_cp002']}\" na data: ${filaDeApontamento[0]['data']['h0_cp008']}",
                 textAlign: TextAlign.center,
@@ -349,7 +349,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
+                    return const AlertDialog(
                       content: Text("Apontamento enviado com sucesso!"),
                     );
                   });
@@ -361,7 +361,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
+                return const AlertDialog(
                   content: Text(
                       "Ocorreu um erro inesperado. Tente novamente mais tarde"),
                 );
@@ -390,7 +390,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('1 - Controle de efetivo'),
+        title: const Text('1 - Controle de efetivo'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -425,7 +425,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                                     }
                                   });
                                 },
-                                icon: Icon(Icons.calendar_today)),
+                                icon: const Icon(Icons.calendar_today)),
                           ],
                         ),
                       ),
@@ -433,9 +433,9 @@ class _EffectiveControlState extends State<EffectiveControl> {
                     Center(
                         child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.95,
-                        height: MediaQuery.of(context).size.height * 0.065,
+                      child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        height: MediaQuery.sizeOf(context).height * 0.065,
                         child: ElevatedButton(
                           onPressed: status
                               ? () {
@@ -452,7 +452,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                                   });
                                 }
                               : null,
-                          child: Text("Apontar"),
+                          child: const Text("Apontar"),
                         ),
                       ),
                     )),
@@ -460,8 +460,9 @@ class _EffectiveControlState extends State<EffectiveControl> {
                 ),
               ),
               Center(
-                child: Text(
-                    "${filaDeApontamento.isEmpty ? '' : 'Apontamentos aguardando envio'}"),
+                child: Text(filaDeApontamento.isEmpty
+                    ? ''
+                    : 'Apontamentos aguardando envio'),
               ),
               ListView.builder(
                   shrinkWrap: true,
@@ -471,12 +472,12 @@ class _EffectiveControlState extends State<EffectiveControl> {
                     return Card(
                       child: ListTile(
                         leading: ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(primary: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             onPressed: () {
                               apagarApontamentoPendente(index);
                             },
-                            child: Icon(Icons.delete)),
+                            child: const Icon(Icons.delete)),
                         title: Text(
                             'Descrição: ${filaDeApontamento[index]['data']['h0_cp004']}\n'
                             'Data: ${filaDeApontamento[index]['data']['h0_cp008']}'),
@@ -494,7 +495,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                                     (value) => switchAppointment(value),
                                   );
                                 },
-                          child: Icon(Icons.arrow_circle_up),
+                          child: const Icon(Icons.arrow_circle_up),
                         ),
                       ),
                     );
@@ -532,7 +533,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                           ),
                         ),
                       ),
-                      Divider()
+                      const Divider()
                     ],
                   );
                 },

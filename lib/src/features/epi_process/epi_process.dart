@@ -99,7 +99,7 @@ class _EpiProcessState extends State<EpiProcess> {
         print(response.reasonPhrase);
         return false;
       }
-    } catch (e, s) {
+    } catch (e) {
       return false;
     }
   }
@@ -170,7 +170,7 @@ class _EpiProcessState extends State<EpiProcess> {
             children: [
               const Text("Escolha o colaborador"),
               effectiveList.isEmpty
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : effectiveListing(),
             ],
           ),

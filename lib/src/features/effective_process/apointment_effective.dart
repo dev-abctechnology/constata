@@ -103,9 +103,9 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Erro no envio!'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Parece que você está sem internet.'),
                 Text(
                     'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),
@@ -473,8 +473,6 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                 : null,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                developer.log(cafeManhaController.text, name: "MANHÃ");
-                developer.log(cafeTardeController.text, name: "TARDE");
                 if (viewList.isNotEmpty) {
                   if (val.contains('')) {
                     showDialog(

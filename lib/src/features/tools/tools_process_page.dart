@@ -39,7 +39,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
         "h0_cp002": "EMPRT",
         "h0_cp003": null,
         "h0_cp004": "Movim. de Empréstimo de Ferramenta",
-        "h0_cp016": "${widget.date}",
+        "h0_cp016": widget.date,
         "h0_cp005": {"name": "Constata", "_id": "60e5a9782212ef44c4d3b27e"},
         "h0_cp010": {
           "name": "${widget.dataLogged['obra']['data']['tb01_cp002']}",
@@ -57,7 +57,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
 
     jsonEncode(toolsAppointment);
     request.headers.addAll(headers);
-    developer.log('${request.body}');
+    developer.log(request.body);
     try {
       showLoading(context);
       http.StreamedResponse response = await request.send();
@@ -77,7 +77,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: Text("Apontamento enviado com sucesso!"),
+                content: const Text("Apontamento enviado com sucesso!"),
                 actions: <Widget>[
                   TextButton(
                     child: const Text('OK'),
@@ -99,9 +99,9 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Erro no envio!'),
-              content: SingleChildScrollView(
+              content: const SingleChildScrollView(
                 child: ListBody(
-                  children: const <Widget>[
+                  children: <Widget>[
                     Text('Parece que você está sem internet.'),
                     Text(
                         'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),
@@ -136,9 +136,9 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Erro no envio!'),
-            content: SingleChildScrollView(
+            content: const SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
+                children: <Widget>[
                   Text('Parece que você está sem internet.'),
                   Text(
                       'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),
@@ -169,7 +169,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Ferramentas'),
+          title: const Text('Ferramentas'),
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
@@ -188,7 +188,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
               }
               setState(() {});
             },
-            child: Icon(Icons.handyman)),
+            child: const Icon(Icons.handyman)),
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -197,8 +197,8 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
               toolsAppointment.isEmpty
                   ? Container(
                       padding: EdgeInsets.fromLTRB(
-                          16, MediaQuery.of(context).size.height / 2, 16, 0),
-                      child: Text(
+                          16, MediaQuery.sizeOf(context).height / 2, 16, 0),
+                      child: const Text(
                         'Clique no botão abaixo para adicionar um apontamento de ferramentas.',
                         textAlign: TextAlign.center,
                       ),
@@ -215,7 +215,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
                     child: InkWell(
                       onTap: () {},
                       child: ListTile(
-                        contentPadding: EdgeInsets.all(4),
+                        contentPadding: const EdgeInsets.all(4),
                         title: Text(
                             'Ferramenta: ${toolsAppointment[i]['tp_cp108']['name']}\n'
                             'fornecedor: ${toolsAppointment[i]['tp_cp109']['name']}'),
@@ -223,15 +223,15 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
                             Text('Entrada: ${toolsAppointment[i]['tp_cp110']}\n'
                                 'Saida: ${toolsAppointment[i]['tp_cp111']}'),
                         trailing: ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(primary: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             onPressed: () {
                               setState(() {
                                 toolsAppointment.remove(toolsAppointment[i]);
                                 print(toolsAppointment.length);
                               });
                             },
-                            child: Container(
+                            child: const SizedBox(
                               height: double.maxFinite,
                               child: Icon(
                                 Icons.delete,
@@ -242,7 +242,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
                   );
                 },
               ),
-              toolsAppointment.length > 0
+              toolsAppointment.isNotEmpty
                   ? ElevatedButton(
                       onPressed: () {
                         sendApointment();
@@ -254,7 +254,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
                         //       );
                         //     });
                       },
-                      child: Text('Enviar'))
+                      child: const Text('Enviar'))
                   : Container()
             ],
           ),

@@ -48,7 +48,7 @@ class MeasurementBody {
 
   MeasurementBody.fromJson(Map<String, dynamic> json) {
     type = json['h0_cp002'];
-    code = json['h0_cp003'];
+    code = json['h0_cp003'] ?? null;
     description = json['h0_cp004'];
     if (json['tb01_cp050'] != null) {
       measurements = <MeasurementModel>[];
@@ -68,16 +68,12 @@ class MeasurementBody {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['h0_cp002'] = type;
-    data['h0_cp003'] = code;
+    data['h0_cp003'] = null;
     data['h0_cp004'] = description;
-    if (measurements != null) {
-      data['tb01_cp050'] = measurements.map((v) => v.toJson()).toList();
-    }
+    data['tb01_cp050'] = measurements.map((v) => v.toJson()).toList();
     data['h0_cp005'] = company;
     data['h0_cp006'] = address;
-    if (nameBuild != null) {
-      data['h0_cp007'] = nameBuild.toJson();
-    }
+    data['h0_cp007'] = nameBuild.toJson();
     data['h0_cp008'] = date;
     data['h0_cp009'] = responsible;
     data['h0_cp013'] = segment;

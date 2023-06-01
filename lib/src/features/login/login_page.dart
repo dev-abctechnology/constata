@@ -133,20 +133,17 @@ class _LoginState extends State<Login> {
             builder: (BuildContext context) {
               return AlertDialog(
                 content: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: MediaQuery.of(context).size.width * 0.8,
+                    width: MediaQuery.sizeOf(context).width * 0.7,
+                    height: MediaQuery.sizeOf(context).width * 0.8,
                     child: Column(children: [
                       SizedBox(
-                          height: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.sizeOf(context).width * 0.5,
                           child: Icon(Icons.wifi_off_sharp,
-                              size: MediaQuery.of(context).size.height * .17)),
+                              size: MediaQuery.sizeOf(context).height * .17)),
                       SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.3,
-                        child: Text(
+                        height: MediaQuery.sizeOf(context).width * 0.3,
+                        child: const Text(
                           'Aparentemente você está sem conexão à internet. Tente novamente mais tarde.',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).textScaleFactor * 20),
                         ),
                       ),
                     ])),
@@ -332,8 +329,8 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).height,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -453,9 +450,10 @@ class _LoginState extends State<Login> {
                                           return AlertDialog(
                                             title: const Text(
                                                 'Termos e condições gerais de uso (e de compra e venda) do OU site ___ OU aplicativo ____'),
-                                            content: SingleChildScrollView(
+                                            content:
+                                                const SingleChildScrollView(
                                               child: ListBody(
-                                                children: const [
+                                                children: [
                                                   Text('''
                                                         Por meio de seus termos e condições gerais de uso e/ou de venda, um site ou um aplicativo explica aos usuários quais são as condições de utilização do serviço disponibilizado através de sua página ou programa, seja ele gratuito ou pago. Além de informar o usuário sobre a necessidade de cadastro ou sobre os elementos protegidos por direitos autorais, este instrumento determina, ainda, as responsabilidades de cada uma das partes - editor (pessoa que mantém o site ou aplicativo) e usuário -, em relação ao uso do serviço.
                 
@@ -510,9 +508,9 @@ class _LoginState extends State<Login> {
                                         return AlertDialog(
                                           title: const Text(
                                               'Termos e condições gerais de uso (e de compra e venda) do OU site ___ OU aplicativo ____'),
-                                          content: SingleChildScrollView(
+                                          content: const SingleChildScrollView(
                                             child: ListBody(
-                                              children: const [
+                                              children: [
                                                 Text('''
                                                         Por meio de seus termos e condições gerais de uso e/ou de venda, um site ou um aplicativo explica aos usuários quais são as condições de utilização do serviço disponibilizado através de sua página ou programa, seja ele gratuito ou pago. Além de informar o usuário sobre a necessidade de cadastro ou sobre os elementos protegidos por direitos autorais, este instrumento determina, ainda, as responsabilidades de cada uma das partes - editor (pessoa que mantém o site ou aplicativo) e usuário -, em relação ao uso do serviço.
                 

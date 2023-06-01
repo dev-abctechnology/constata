@@ -60,7 +60,7 @@ class AuthRefreshController {
 
         return '';
       });
-    } catch (e, s) {
+    } catch (e) {
       print(e);
       return '';
     }

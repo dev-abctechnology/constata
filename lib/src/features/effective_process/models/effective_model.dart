@@ -133,8 +133,8 @@ class BuildName {
   });
 
   BuildName.fromJson(Map<String, dynamic> json) {
-    name = json["name"];
-    id = json["_id"];
+    name = json["name"] ?? json["data"]['tb01_cp002'];
+    id = json["_id"] ?? json["id"];
   }
 
   Map<String, dynamic> toJson() {
@@ -156,7 +156,8 @@ class CompanyName {
 
   CompanyName.fromJson(Map<String, dynamic> json) {
     name = json["name"];
-    id = json["id"];
+    // id = json["id"] or json["_id"];
+    id = json["_id"] ?? json["id"];
   }
 
   Map<String, dynamic> toJson() {

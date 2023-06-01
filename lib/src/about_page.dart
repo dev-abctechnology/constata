@@ -10,11 +10,11 @@ class About extends StatelessWidget {
         title: const Text('Sobre'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Text(""""""),

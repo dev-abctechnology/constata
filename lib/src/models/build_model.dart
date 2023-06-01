@@ -37,7 +37,7 @@ class Task {
   late double? saldoQuantidade;
   late double? saldoValor;
   late double? mediaConsumida;
-  late String id;
+  late String? id;
 
   Task(
       {required this.local,

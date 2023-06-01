@@ -32,8 +32,8 @@ class _EpiAppointmentDetailsState extends State<EpiAppointmentDetails> {
                 title:
                     Text("ID: ${widget.epiAppointment['data']['h0_cp014']}")),
             ListTile(title: Text("Validado: $validated")),
-            Divider(),
-            ListTile(title: Center(child: Text("Lista de EPIs"))),
+            const Divider(),
+            const ListTile(title: Center(child: Text("Lista de EPIs"))),
             ListView.builder(
               shrinkWrap: true,
               itemCount: epis.isEmpty ? 0 : epis.length,

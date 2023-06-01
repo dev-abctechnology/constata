@@ -165,8 +165,8 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Column(
-                                  children: const [
+                                child: const Column(
+                                  children: [
                                     Icon(Icons.approval),
                                     Text('Ficar')
                                   ],
@@ -182,8 +182,8 @@ class _HomePageState extends State<HomePage> {
                                   SystemChannels.platform
                                       .invokeMethod('SystemNavigator.pop');
                                 },
-                                child: Column(
-                                  children: const [
+                                child: const Column(
+                                  children: [
                                     Icon(Icons.exit_to_app),
                                     Text('Sair')
                                   ],

@@ -3,7 +3,6 @@ import 'package:constata/src/features/transfers/domain/entities/transfer_entity.
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/transfer_repo.dart';
 import 'package:constata/src/shared/custom_either.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
-import 'package:flutter/material.dart';
 
 class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
   final prefs = SharedPrefs();

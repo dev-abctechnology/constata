@@ -21,7 +21,7 @@ class TransferController {
       } else {
         return false;
       }
-    } catch (e, s) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -35,7 +35,7 @@ class TransferController {
       } else {
         return false;
       }
-    } catch (e, s) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -49,7 +49,7 @@ class TransferController {
       } else {
         return false;
       }
-    } catch (e, s) {
+    } catch (e) {
       rethrow;
     }
   }

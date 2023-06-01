@@ -1,11 +1,7 @@
 // import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
-import 'package:constata/src/home_page.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,20 +42,20 @@ class _HomePageBodyState extends State<HomePageBody> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Column(
-                    children: const [Icon(Icons.approval), Text('Ficar')],
+                  child: const Column(
+                    children: [Icon(Icons.approval), Text('Ficar')],
                   ),
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.red),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
                     SharedPreferences.getInstance().then(
                       (value) => value.remove("data"),
                     );
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                   },
-                  child: Column(
-                    children: const [Icon(Icons.exit_to_app), Text('Sair')],
+                  child: const Column(
+                    children: [Icon(Icons.exit_to_app), Text('Sair')],
                   ),
                 ),
               ],
@@ -82,7 +78,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
+                return const AlertDialog(
                   title: Text('Verifique sua conexão!'),
                   content: Text(
                       'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
@@ -111,7 +107,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
+                return const AlertDialog(
                   title: Text('Ocorreu um problema volte e tente novamente!'),
                   content: Text(
                       'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
@@ -151,8 +147,8 @@ class _HomePageBodyState extends State<HomePageBody> {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.02),
-        height: MediaQuery.of(context).size.height * 0.9,
+            horizontal: MediaQuery.sizeOf(context).width * 0.02),
+        height: MediaQuery.sizeOf(context).height * 0.9,
         decoration: const BoxDecoration(
           // color: Colors.green,
           image: DecorationImage(
@@ -170,14 +166,14 @@ class _HomePageBodyState extends State<HomePageBody> {
                 child: Container(
                   child: Text('Conectado em $obra',
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
                       )),
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
+                height: MediaQuery.sizeOf(context).height * 0.02,
               ),
               Container(
                 alignment: Alignment.center,
@@ -186,7 +182,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
+                height: MediaQuery.sizeOf(context).height * 0.02,
               ),
               Center(
                 child: Padding(
@@ -289,8 +285,8 @@ class _HomePageBodyState extends State<HomePageBody> {
               ),
               // Divider(),
               // Container(
-              //   width: MediaQuery.of(context).size.width * 0.95,
-              //   height: MediaQuery.of(context).size.height * 0.065,
+              //   width: MediaQuery.sizeOf(context).width * 0.95,
+              //   height: MediaQuery.sizeOf(context).height * 0.065,
               //   child: ElevatedButton(
               //     style: ElevatedButton.styleFrom(primary: Colors.red),
               //     onPressed: () {

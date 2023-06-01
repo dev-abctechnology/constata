@@ -1,7 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:constata/src/features/login/login_page.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
-import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/pallete.dart';
 import 'package:flutter/material.dart';

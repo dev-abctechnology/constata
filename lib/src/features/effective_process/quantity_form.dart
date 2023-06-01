@@ -28,10 +28,10 @@ class QuantityForm extends StatelessWidget {
             hintText: hintText,
             disabledBorder:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
-            hintStyle: TextStyle(fontWeight: FontWeight.bold),
+            hintStyle: const TextStyle(fontWeight: FontWeight.bold),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.red))),
+                borderSide: const BorderSide(color: Colors.red))),
       ),
     );
   }
