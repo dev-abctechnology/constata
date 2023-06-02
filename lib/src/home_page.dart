@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:constata/src/shared/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -254,12 +255,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  changeTheme() async {
+    Provider.of<DarkMode>(context, listen: false).changeMode();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Olá, ${widget.dataLogged['user']['name']}.'),
         centerTitle: true,
+        actions: [
+          // IconButton(
+          //   onPressed: () {
+          //     changeTheme();
+          //   },
+          //   icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
+          //       ? Icon(Icons.wb_sunny)
+          //       : Icon(Icons.nightlight_round),
+          // )
+        ],
       ),
       drawer: customDrawer(context),
       body: HomePageBody(arguments: widget.dataLogged),

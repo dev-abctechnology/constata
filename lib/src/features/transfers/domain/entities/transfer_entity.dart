@@ -1,28 +1,28 @@
 import 'dart:convert';
 
 class TransferEntity {
-  late String id;
-  late String innerId;
-  late String nameEffective;
-  late String codeEffective;
-  late String originBuild;
-  late String originBuildId;
-  late String targetBuild;
-  late String targetBuildId;
-  late String status;
-  late String date;
+  late String? id;
+  late String? innerId;
+  late String? nameEffective;
+  late String? codeEffective;
+  late String? originBuild;
+  late String? originBuildId;
+  late String? targetBuild;
+  late String? targetBuildId;
+  late String? status;
+  late String? date;
 
   TransferEntity({
-    required this.id,
-    required this.innerId,
-    required this.nameEffective,
-    required this.codeEffective,
-    required this.originBuild,
-    required this.originBuildId,
-    required this.targetBuild,
-    required this.targetBuildId,
-    required this.status,
-    required this.date,
+    this.id,
+    this.innerId,
+    this.nameEffective,
+    this.codeEffective,
+    this.originBuild,
+    this.originBuildId,
+    this.targetBuild,
+    this.targetBuildId,
+    this.status,
+    this.date,
   });
 
   TransferEntity.fromMap(Map<String, dynamic> map) {

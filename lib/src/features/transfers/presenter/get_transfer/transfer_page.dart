@@ -1,4 +1,3 @@
-
 import 'package:constata/src/features/transfers/data/repositories/accept_transfer_repository.dart';
 import 'package:constata/src/features/transfers/data/repositories/get_transfers_repository.dart';
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
@@ -6,6 +5,7 @@ import 'package:constata/src/features/transfers/domain/usecases/accept_transfer/
 import 'package:constata/src/features/transfers/domain/usecases/get_transfers/get_transfers_usecase_impl.dart';
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/accept_transfer_datasource.dart';
 import 'package:constata/src/features/transfers/external/datasources/get_transfers_datasource.dart';
+import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_page.dart';
 import 'package:constata/src/features/transfers/presenter/get_transfer/get_transfer_controller.dart';
 
 import 'package:flutter/material.dart';
@@ -63,25 +63,25 @@ class _TransferPageState extends State<TransferPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // var route = MaterialPageRoute(
-          //   builder: (BuildContext context) =>
-          //       CreateTransferPage(originObra: widget.obra),
-          // );
-          // Navigator.of(context).push(route);
+          var route = MaterialPageRoute(
+            builder: (BuildContext context) =>
+                CreateTransferPage(originObra: widget.obra),
+          );
+          Navigator.of(context).push(route);
         },
         child: const Icon(Icons.add),
       ),
       body: ValueListenableBuilder(
         valueListenable: _isLoading,
         builder: (context, value, child) {
-          return value != null
+          return value == true
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : ValueListenableBuilder(
                   valueListenable: _isError,
                   builder: (context, value, child) {
-                    return value != null
+                    return value == true
                         ? _buildErrorContent()
                         : _buildTransferList();
                   },
@@ -145,12 +145,12 @@ class _TransferPageState extends State<TransferPage> {
       onExpansionChanged: (value) {
         print(transfer);
       },
-      title: Text(transfer.nameEffective),
+      title: Text(transfer.nameEffective!),
       // subtitle: Text('${transfer.originBuild} (arrow icon here) ${transfer.targetBuild}'),
       subtitle: TextWithIcon(
-          origin: transfer.originBuild, target: transfer.targetBuild),
+          origin: transfer.originBuild!, target: transfer.targetBuild!),
 
-      trailing: Text(transfer.status),
+      trailing: Text(transfer.status!),
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -267,6 +267,7 @@ class _TransferPageState extends State<TransferPage> {
           actions: [
             ElevatedButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
               child: const Text('Ok'),

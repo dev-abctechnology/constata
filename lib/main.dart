@@ -2,6 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:constata/src/features/login/login_page.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/dark_mode.dart';
 import 'package:constata/src/shared/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,6 +14,9 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<DarkMode>(
+          create: (context) => DarkMode(),
+        ),
         ChangeNotifierProvider<Token>(
           create: (context) => Token(),
         ),
@@ -28,6 +32,9 @@ void main() {
           debugShowCheckedModeBanner: false,
           title: "Constata - Apontamento Digital",
           theme: ThemeData(
+            brightness: Provider.of<DarkMode>(context).isDarkMode
+                ? Brightness.dark
+                : Brightness.light,
             useMaterial3: false,
             primarySwatch: Palette.customSwatch,
           ),
@@ -47,7 +54,9 @@ void main() {
                     'assets/images/constata.png',
                   ),
                   splashTransition: SplashTransition.fadeTransition,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Provider.of<DarkMode>(context).isDarkMode
+                      ? Colors.black
+                      : Colors.white,
                   splashIconSize: 100,
                   animationDuration: const Duration(seconds: 2),
                 ),

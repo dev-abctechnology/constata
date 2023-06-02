@@ -12,7 +12,7 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
   Future<ResponseEither> call(TransferEntity transfer, String label) async {
     try {
       final colaborator =
-          await repository.getColaborator(transfer.codeEffective);
+          await repository.getColaborator(transfer.codeEffective!);
       if (colaborator['status'] == false) {
         throw Exception(colaborator['message']);
       } else {
@@ -38,10 +38,8 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
 
   Future<ResponseEither> updateTransferQueue(
       TransferEntity entity, String label) async {
-    String token = await prefs.getString('token');
-
     try {
-      final transfer = await repository.getTransfer(entity.id);
+      final transfer = await repository.getTransfer(entity.id!);
       if (transfer['status'] == false) {
         throw Exception(transfer['message']);
       } else {
