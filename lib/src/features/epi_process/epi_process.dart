@@ -156,7 +156,7 @@ class _EpiProcessState extends State<EpiProcess> {
     return Scaffold(
       appBar: _isOffline
           ? AppBar(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.redAccent,
               title: Text('EPIs - ${widget.selectedDate}\nVocê está offline'),
               centerTitle: true,
             )

@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
           Card(
             child: ListTile(
               title: const Text('Sair'),
-              trailing: const Icon(Icons.lock_open),
+              trailing: const Icon(Icons.lock_open, color: Colors.red),
               onTap: () {
                 showDialog(
                     context: context,
@@ -185,7 +185,9 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: const Column(
                                   children: [
-                                    Icon(Icons.exit_to_app),
+                                    Icon(
+                                      Icons.exit_to_app,
+                                    ),
                                     Text('Sair')
                                   ],
                                 ),
@@ -201,7 +203,7 @@ class _HomePageState extends State<HomePage> {
           Card(
             child: ListTile(
               title: const Text('Mudar de obra'),
-              trailing: const Icon(Icons.change_circle),
+              trailing: const Icon(Icons.change_circle, color: Colors.blue),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
                 Map username = jsonDecode(prefs.getString('authentication')!);
@@ -266,14 +268,14 @@ class _HomePageState extends State<HomePage> {
         title: Text('Olá, ${widget.dataLogged['user']['name']}.'),
         centerTitle: true,
         actions: [
-          // IconButton(
-          //   onPressed: () {
-          //     changeTheme();
-          //   },
-          //   icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
-          //       ? Icon(Icons.wb_sunny)
-          //       : Icon(Icons.nightlight_round),
-          // )
+          IconButton(
+            onPressed: () {
+              changeTheme();
+            },
+            icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
+                ? Icon(Icons.wb_sunny)
+                : Icon(Icons.nightlight_round),
+          )
         ],
       ),
       drawer: customDrawer(context),

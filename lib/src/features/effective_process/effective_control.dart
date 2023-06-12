@@ -157,13 +157,13 @@ class _EffectiveControlState extends State<EffectiveControl> {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         res = jsonDecode(await response.stream.bytesToString());
-        setState(() {
-          res;
-          Navigator.of(context).pop();
-        });
+        setState(() {});
+
+        Navigator.of(context).pop();
         print(res.length);
       } else {
-        print('as' + response.reasonPhrase.toString());
+        print('efetivo error: ' +
+            jsonDecode(await response.stream.bytesToString()));
         Navigator.of(context).pop();
       }
     } on Exception catch (e, s) {
@@ -211,7 +211,10 @@ class _EffectiveControlState extends State<EffectiveControl> {
 
         return {'log': 'false'};
       } else {
-        print(response.statusCode.toString());
+        print("has appointment error: " +
+            response.statusCode.toString() +
+            " " +
+            jsonDecode(await response.stream.bytesToString()));
         return {'log': 'error'};
       }
     } catch (e) {
@@ -266,7 +269,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
 
         return {'log': 'false'};
       } else {
-        print(response.statusCode);
+        print('hasAppointmentQueue: ' + (response.statusCode.toString()));
         return {'log': 'error'};
       }
     } catch (e, s) {

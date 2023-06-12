@@ -32,12 +32,15 @@ void main() {
           debugShowCheckedModeBanner: false,
           title: "Constata - Apontamento Digital",
           theme: ThemeData(
-            brightness: Provider.of<DarkMode>(context).isDarkMode
-                ? Brightness.dark
-                : Brightness.light,
-            useMaterial3: false,
-            primarySwatch: Palette.customSwatch,
-          ),
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF0e386f),
+                brightness: Provider.of<DarkMode>(context).isDarkMode
+                    ? Brightness.dark
+                    : Brightness.light,
+              )
+              // primarySwatch: Palette.customSwatch,
+              ),
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -55,7 +58,7 @@ void main() {
                   ),
                   splashTransition: SplashTransition.fadeTransition,
                   backgroundColor: Provider.of<DarkMode>(context).isDarkMode
-                      ? Colors.black
+                      ? Colors.black87
                       : Colors.white,
                   splashIconSize: 100,
                   animationDuration: const Duration(seconds: 2),

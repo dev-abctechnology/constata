@@ -193,12 +193,12 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
       appBar: AppBar(
         title: const Text('Criar Transferência'),
         actions: [
-          IconButton(
-            onPressed: () {
-              listaEfetivo();
-            },
-            icon: const Icon(Icons.list),
-          )
+          // IconButton(
+          //   onPressed: () {
+          //     listaEfetivo();
+          //   },
+          //   icon: const Icon(Icons.list),
+          // )
         ],
       ),
       body: Stepper(
@@ -396,8 +396,6 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                           onPressed: () {
                             sendTransfer();
                           },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green),
                           child: const Text('Enviar'),
                         ),
                       ],

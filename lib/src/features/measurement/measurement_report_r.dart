@@ -20,14 +20,17 @@ import 'data/measurement_data.dart';
 import 'model/measurement_model.dart';
 
 class MeasurementReportReworked extends StatefulWidget {
-  final dataLogged;
+  final Map dataLogged;
 
-  final date;
+  final String date;
 
   final bool edittingMode;
 
   const MeasurementReportReworked(
-      {Key? key, this.dataLogged, this.date, this.edittingMode = false})
+      {Key? key,
+      required this.dataLogged,
+      required this.date,
+      this.edittingMode = false})
       : super(key: key);
 
   @override
@@ -397,15 +400,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                     GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount:
-                            colaborators == null ? 0 : colaborators.length,
+                        itemCount: colaborators.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1.5,
+                                childAspectRatio: 0.7,
                                 crossAxisSpacing: 2,
                                 crossAxisCount: 2),
                         itemBuilder: (context, index) {
-                          late Task selected;
                           return Card(
                             shadowColor: measurementBody.measurements
                                     .where((element) =>
@@ -433,11 +434,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                           dropdownMenuItems = [];
                                       for (Task task in storedBuild.tasks!) {
                                         dropdownMenuItems.add(DropdownMenuItem(
-                                          child: Text(task.local!.name +
-                                              ' | ' +
-                                              task.sector!.name +
-                                              ' | ' +
-                                              task.service!.name),
+                                          child: Text(
+                                            task.local!.name +
+                                                ' | ' +
+                                                task.sector!.name +
+                                                ' | ' +
+                                                task.service!.name,
+                                          ),
                                           value: task,
                                         ));
                                       }
@@ -460,8 +463,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                     });
                               },
                               child: ListTile(
-                                  title: Center(
-                                child: Text(
+                                titleAlignment: ListTileTitleAlignment.center,
+                                title: Text(
                                   colaborators[index]['data']['tb01_cp002']
                                           .toString()
                                           .toUpperCase() +
@@ -470,10 +473,15 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                           .toString()
                                           .toUpperCase(),
                                   textAlign: TextAlign.center,
-                                  maxLines: 4,
-                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87),
                                 ),
-                              )),
+                                subtitle: Image.asset(
+                                  'assets/images/colaborador2.png',
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ),
                             ),
                           );
                         }),
@@ -483,13 +491,15 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,
           animatedIconTheme: IconThemeData(size: 28),
-          backgroundColor: Palette.customSwatch,
+          // backgroundColor: Palette.customSwatch,
           visible: true,
           curve: Curves.bounceInOut,
           children: [
             SpeedDialChild(
-              child: const Icon(Icons.send, color: Colors.white),
-              backgroundColor: Palette.customSwatch,
+              child: const Icon(
+                Icons.send,
+              ),
+              // backgroundColor: Palette.customSwatch,
               onTap: () async {
                 if (colaborators
                     .where((element) => measurementBody.measurements
@@ -531,8 +541,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
               },
               label: 'Enviar',
               labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500, color: Colors.white),
-              labelBackgroundColor: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),

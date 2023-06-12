@@ -48,7 +48,7 @@ class MeasurementBody {
 
   MeasurementBody.fromJson(Map<String, dynamic> json) {
     type = json['h0_cp002'];
-    code = json['h0_cp003'] ?? null;
+    code = json['h0_cp003'];
     description = json['h0_cp004'];
     if (json['tb01_cp050'] != null) {
       measurements = <MeasurementModel>[];

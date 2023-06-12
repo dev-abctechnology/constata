@@ -239,7 +239,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
     return Scaffold(
       appBar: _isOffline
           ? AppBar(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.redAccent,
               title: Text('EPIs - ${widget.date}\nVocê está offline'),
               centerTitle: true,
             )

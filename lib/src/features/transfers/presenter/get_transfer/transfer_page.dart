@@ -147,8 +147,8 @@ class _TransferPageState extends State<TransferPage> {
       },
       title: Text(transfer.nameEffective!),
       // subtitle: Text('${transfer.originBuild} (arrow icon here) ${transfer.targetBuild}'),
-      subtitle: TextWithIcon(
-          origin: transfer.originBuild!, target: transfer.targetBuild!),
+      subtitle:
+          Text('De: ${transfer.originBuild}\nPara: ${transfer.targetBuild} '),
 
       trailing: Text(transfer.status!),
       children: [
@@ -156,22 +156,16 @@ class _TransferPageState extends State<TransferPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
-              onPressed: () async {
-                await _showConfirmDialog(transfer, index);
-              },
-              child: const Text('Confirmar'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
               onPressed: () async {
                 await _showCancelDialog(transfer, index);
               },
               child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _showConfirmDialog(transfer, index);
+              },
+              child: const Text('Confirmar'),
             ),
           ],
         ),
@@ -196,9 +190,6 @@ class _TransferPageState extends State<TransferPage> {
               child: const Text('Não'),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
               onPressed: () async {
                 final accepted = await _controller.acceptTransfer(transfer);
                 if (accepted) {
@@ -228,15 +219,6 @@ class _TransferPageState extends State<TransferPage> {
           actionsAlignment: MainAxisAlignment.spaceEvenly,
           actions: [
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Não'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
               onPressed: () async {
                 Navigator.of(context).pop();
 
@@ -250,6 +232,12 @@ class _TransferPageState extends State<TransferPage> {
                 }
               },
               child: const Text('Sim'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Não'),
             ),
           ],
         );

@@ -6,20 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectObra extends StatefulWidget {
-  var localDeNegocio;
-  var empresa;
-  var filial;
   var user;
 
   var obraData;
 
-  SelectObra(
-      {Key? key,
-      this.user,
-      this.localDeNegocio,
-      this.empresa,
-      this.filial,
-      this.obraData})
+  SelectObra({Key? key, required this.user, required this.obraData})
       : super(key: key);
 
   @override

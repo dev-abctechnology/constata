@@ -12,7 +12,7 @@ class MeasurementDetails extends StatefulWidget {
 class _MeasurementDetailsState extends State<MeasurementDetails> {
   @override
   Widget build(BuildContext context) {
-    TextStyle style = const TextStyle(color: Colors.black, fontSize: 16);
+    TextStyle style = const TextStyle(fontSize: 16);
     TextStyle titleStyle = const TextStyle(fontWeight: FontWeight.bold);
     List measurements = widget.measurement['data']['tb01_cp050'];
     return Scaffold(

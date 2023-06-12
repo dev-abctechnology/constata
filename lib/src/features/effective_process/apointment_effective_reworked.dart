@@ -244,36 +244,42 @@ class _ApointmentEffectiveReworkedState
     return SpeedDial(
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: const IconThemeData(size: 28),
-      backgroundColor: Palette.customSwatch,
+      // backgroundColor: Palette.customSwatch,
       visible: true,
       curve: Curves.bounceInOut,
       children: [
         SpeedDialChild(
-          child: const Icon(Icons.send, color: Colors.white),
-          backgroundColor: Palette.customSwatch,
+          child: const Icon(
+            Icons.send,
+          ),
+          // backgroundColor: Palette.customSwatch,
           onTap: () => sendValidator(),
-          label: 'Enviar',
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-          labelBackgroundColor: Colors.black,
+          label: 'Enviar', backgroundColor: Colors.blue,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         SpeedDialChild(
-          child: const Icon(Icons.check, color: Colors.white),
+          child: const Icon(
+            Icons.check,
+          ),
           backgroundColor: Colors.green,
           onTap: () => updateAll('Presente'),
           label: 'Completar presenças',
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-          labelBackgroundColor: Colors.black,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         SpeedDialChild(
-          child: const Icon(Icons.cancel_outlined, color: Colors.white),
+          child: const Icon(
+            Icons.cancel_outlined,
+          ),
           backgroundColor: Colors.red,
           onTap: () => updateAll('Ausente'),
           label: 'Completar Ausências',
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-          labelBackgroundColor: Colors.black,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -339,7 +345,6 @@ class _ApointmentEffectiveReworkedState
                                 flex: 1,
                                 backgroundColor:
                                     const Color.fromARGB(255, 25, 13, 149),
-                                foregroundColor: Colors.white,
                                 spacing: 4,
                                 borderRadius: BorderRadius.circular(8),
                                 padding: const EdgeInsets.all(1),
@@ -354,7 +359,6 @@ class _ApointmentEffectiveReworkedState
                                 flex: 1,
                                 backgroundColor:
                                     const Color.fromARGB(255, 230, 167, 23),
-                                foregroundColor: Colors.white,
                                 spacing: 4,
                                 borderRadius: BorderRadius.circular(8),
                                 padding: const EdgeInsets.all(2),
@@ -370,7 +374,6 @@ class _ApointmentEffectiveReworkedState
                                 borderRadius: BorderRadius.circular(8),
                                 backgroundColor:
                                     const Color.fromARGB(255, 199, 37, 37),
-                                foregroundColor: Colors.white,
                                 spacing: 4,
                                 padding: const EdgeInsets.all(2),
                                 icon: Icons.cancel_outlined,
@@ -398,7 +401,6 @@ class _ApointmentEffectiveReworkedState
                                 autoClose: true,
                                 flex: 1,
                                 backgroundColor: const Color(0xFF7BC043),
-                                foregroundColor: Colors.white,
                                 spacing: 0,
                                 padding: const EdgeInsets.all(8),
                                 borderRadius: BorderRadius.circular(8),
@@ -419,16 +421,16 @@ class _ApointmentEffectiveReworkedState
                                 ],
                                 // color: effective.effectiveStatus == ""
                                 //     ? Color.fromARGB(255, 230, 60, 60)
-                                //     : Colors.white,
+                                //     ,
                                 borderRadius: BorderRadius.circular(8)),
                             padding: const EdgeInsets.symmetric(vertical: 1),
                             margin: const EdgeInsets.all(2),
                             duration: const Duration(seconds: 2),
                             curve: Curves.easeOutCirc,
                             child: Card(
-                              color: effective.effectiveStatus == ''
-                                  ? Colors.grey.shade100
-                                  : Colors.white,
+                              // color: effective.effectiveStatus == ''
+                              //     ? Colors.grey.shade100
+                              //     : Colors.white,
                               // shadowColor: effective.effectiveStatus == ''
                               //     ? Color.fromARGB(255, 247, 0, 0)
                               //     : Colors.black,
@@ -480,7 +482,7 @@ class _ApointmentEffectiveReworkedState
         extendBody: true,
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: BottomAppBar(
-            color: Palette.customSwatch,
+            // color: Palette.customSwatch,
             child: Row(
               children: [
                 const SizedBox(
@@ -488,11 +490,9 @@ class _ApointmentEffectiveReworkedState
                   width: 8,
                 ),
                 Text(
-                  '${effectives.length} funcionários cadastrados',
+                  ' funcionários cadastrados: ${effectives.length}',
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 )
               ],
             ),

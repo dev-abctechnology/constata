@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../features/transfers/presenter/get_transfer/transfer_page.dart';
 import '../models/token.dart';
 import '../shared/company_refresh_controller.dart';
+import '../shared/dark_mode.dart';
 import '../shared/load_controller.dart';
 import '../features/effective_process/effective_control.dart';
 import '../features/epi_process/epi_home_page.dart';
@@ -149,12 +150,14 @@ class _HomePageBodyState extends State<HomePageBody> {
         padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.sizeOf(context).width * 0.02),
         height: MediaQuery.sizeOf(context).height * 0.9,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           // color: Colors.green,
           image: DecorationImage(
             isAntiAlias: true,
             fit: BoxFit.cover,
-            image: AssetImage('assets/constata.png'),
+            image: AssetImage(
+              'assets/constata.png',
+            ),
             opacity: 0.25,
           ),
         ),
@@ -175,10 +178,13 @@ class _HomePageBodyState extends State<HomePageBody> {
               SizedBox(
                 height: MediaQuery.sizeOf(context).height * 0.02,
               ),
-              Container(
-                alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/constata_big.png',
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/constata_big.png',
+                    color: Colors.blue,
+                  ),
                 ),
               ),
               SizedBox(
@@ -270,7 +276,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             size: 30,
                           )),
                       GridButton(
-                          color: Colors.red,
+                          // color: Colors.red,
                           onPressed: () {
                             exitApplication(context);
                           },
