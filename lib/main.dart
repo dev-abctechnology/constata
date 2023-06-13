@@ -1,4 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:constata/firebase_options.dart';
 import 'package:constata/src/features/login/login_page.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/models/token.dart';
@@ -13,7 +14,7 @@ import 'src/features/effective_process/data/appointment_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -22,6 +23,11 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+
+  //TODO: request permission
+  //TODO: Register with FCM
+  //TODO: Set up foreground message handler
+  //TODO: Set up background message handler
 
   runApp(
     MultiProvider(
