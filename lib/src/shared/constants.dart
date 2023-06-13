@@ -1,1 +1,1 @@
-const kUrlJarvis = 'http://abctaech.ddns.net:4230/jarvis/api';
+const kUrlJarvis = 'http://abctech.ddns.net:4230/jarvis/api';

@@ -103,12 +103,15 @@ class _SelectObraState extends State<SelectObra> {
           child: Center(
             child: Column(
               children: [
-                Container(
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      'assets/images/constata_big.png',
-                      width: double.infinity,
-                    )),
+                Card(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/constata_big.png',
+                    color: Colors.blue,
+                    width: double.infinity,
+                  ),
+                )),
                 const Divider(),
                 listagem(),
               ],

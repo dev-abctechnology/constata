@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
       Dio(),
     ),
   );
-  void login(String username, String password) async {
+  Future<void> login(String username, String password) async {
     try {
       await loginController.generateToken(username, password);
 
@@ -46,11 +46,19 @@ class _LoginState extends State<Login> {
           user: user,
         ),
       );
-      Navigator.of(context).push(route);
+      _usernameController.clear();
+      _passwordController.clear();
+      await Navigator.of(context).push(route).then((value) async {
+        print(value);
+        _usernameController.text = 'kkkkkkkkkkk';
+        _passwordController.text = 'kkkkkkkkkkk';
+        setState(() {});
+        await login(value['user'], value['password']);
+      });
     } catch (e, s) {
       print(s);
       String error = e.toString();
-      error.replaceAll('Exception: ', '');
+      error = error.replaceAll('Exception: ', '');
       showDialog(
         context: context,
         builder: (context) {
@@ -71,6 +79,27 @@ class _LoginState extends State<Login> {
     }
   }
 
+  Future<void> isLogged() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("data")) {
+      Map dataLogged = await json.decode(prefs.getString("data")!);
+      Provider.of<Token>(context, listen: false).setToken(dataLogged['token']);
+
+      var route = MaterialPageRoute(
+        builder: (BuildContext context) => HomePage(
+          dataLogged: dataLogged,
+        ),
+      );
+      Navigator.of(context).push(route);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isLogged();
+  }
+
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -78,42 +107,72 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
       body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
           child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _usernameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 50),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'assets/images/constata_big.png',
+                      color: Colors.blue,
+                      height: 100,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'nome de usuário',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Senha',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // Coloque aqui a lógica de login
+                      String username = _usernameController.text;
+                      String password = _passwordController.text;
+                      // Chame a função de login com os dados inseridos
+                      login(username, password);
+                    }
+                  },
+                  child: const Text('Entrar'),
+                ),
+              ],
             ),
-            TextFormField(
-              controller: _passwordController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    login(_usernameController.text, _passwordController.text);
-                  }
-                },
-                child: const Text('Login'))
-          ],
+          ),
         ),
-      )),
+      ),
     );
   }
 

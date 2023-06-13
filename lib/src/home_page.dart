@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:constata/src/features/login/login_controller.dart';
+import 'package:constata/src/features/login/login_repository.dart';
+import 'package:constata/src/features/login/select_build_page.dart';
 import 'package:constata/src/shared/dark_mode.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -213,16 +217,37 @@ class _HomePageState extends State<HomePage> {
                 Provider.of<MeasurementData>(context, listen: false)
                     .clearMeasurementData();
                 Navigator.of(context).pop();
-                Navigator.of(context).pop({
-                  "username": username['user'],
-                  "password": username['password']
-                });
+                login();
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  final loginController = LoginController(LoginRepository(Dio()));
+
+  void login() async {
+    var prefs = await SharedPreferences.getInstance();
+    Map authParam = jsonDecode(prefs.getString('authentication')!);
+    await loginController.generateToken(
+        authParam['user'], authParam['password']);
+    final user = await loginController.fetchUserSigned(authParam['user']);
+
+    final userData =
+        await loginController.pegarParceiroDeNegocio(authParam['user']);
+
+    final obraData =
+        await loginController.fetchObraData(userData['tb01_cp004']);
+
+    var route = MaterialPageRoute(
+      builder: (BuildContext context) => SelectObra(
+        obraData: obraData,
+        user: user,
+      ),
+    );
+    Navigator.of(context).push(route);
   }
 
   bool botao = false;

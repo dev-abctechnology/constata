@@ -29,11 +29,15 @@ class LoginRepository {
       token = response.data['access_token'];
       return response.data['access_token'];
     } on DioException catch (e) {
-      if (e.response!.statusCode != null && e.response!.statusCode == 400) {
-        throw Exception('Usuário ou senha inválidos');
+      print(e.stackTrace);
+      if (e.response != null) {
+        if (e.response!.statusCode == 400) {
+          throw Exception('Usuário ou senha inválidos');
+        }
+        throw Exception('Falha ao entrar no sistema');
       }
-      throw Exception('Falha ao entrar no sistema');
     }
+    throw Exception('Falha ao entrar no sistema');
   }
 
   Future<Map<String, dynamic>> fetchUserSigned(String username) async {
@@ -92,9 +96,10 @@ class LoginRepository {
               jsonDecode(await response.stream.bytesToString());
           final collaborators = responseData[0]['data'];
           return collaborators;
-        } catch (e) {
-          throw Exception(
-              'Usuário sem perfil cadastrado, por favor, entre em contato com o escritório!');
+        } catch (e, s) {
+          print(e);
+          print(s);
+          throw Exception(jsonDecode(await response.stream.bytesToString()));
         }
       } else {
         throw Exception('Falha ao baixar dados do usuário');
