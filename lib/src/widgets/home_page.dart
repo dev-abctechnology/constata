@@ -1,4 +1,5 @@
 // import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,7 +86,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
                 );
               }).then((value) {
-            var route = MaterialPageRoute(
+            var route = CustomPageRoute(
               builder: (BuildContext context) => Measurement(
                 dataLogged: widget.arguments,
               ),
@@ -96,7 +97,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         } else if (value.isNotEmpty) {
           Navigator.of(context).pop();
           widget.arguments['obra'] = value[0];
-          var route = MaterialPageRoute(
+          var route = CustomPageRoute(
             builder: (BuildContext context) => Measurement(
               dataLogged: widget.arguments,
             ),
@@ -114,7 +115,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
                 );
               }).then((value) {
-            var route = MaterialPageRoute(
+            var route = CustomPageRoute(
               builder: (BuildContext context) => Measurement(
                 dataLogged: widget.arguments,
               ),
@@ -209,7 +210,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           label: "Efetivo",
                           onPressed: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) =>
                                     EffectiveControl(
                                   dataLogged: widget.arguments,
@@ -217,7 +218,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                               );
                               Navigator.of(context).push(route);
 
-                              // var route = MaterialPageRoute(
+                              // var route = CustomPageRoute(
                               //     builder: (BuildContext context) =>
                               //         EffectiveClean());
                               // Navigator.of(context).push(route);
@@ -232,7 +233,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           label: "EPI",
                           onPressed: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) => EpiHome(
                                   dataLogged: widget.arguments,
                                 ),
@@ -244,7 +245,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           icon: const Icon(Icons.health_and_safety, size: 30)),
                       GridButton(
                           onPressed: () {
-                            var route = MaterialPageRoute(
+                            var route = CustomPageRoute(
                               builder: (BuildContext context) => SelectDatePage(
                                 dataLogged: widget.arguments,
                               ),
@@ -263,7 +264,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             await prefs.remove('obra_id');
                             await prefs.setString('obra_id', obraId);
 
-                            var route = MaterialPageRoute(
+                            var route = CustomPageRoute(
                               builder: (BuildContext context) => TransferPage(
                                   obra: {'id': obraId, 'name': obra}),
                             );

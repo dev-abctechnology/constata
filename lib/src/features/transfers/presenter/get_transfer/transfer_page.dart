@@ -7,6 +7,7 @@ import 'package:constata/src/features/transfers/external/datasources/accept_tran
 import 'package:constata/src/features/transfers/external/datasources/get_transfers_datasource.dart';
 import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_page.dart';
 import 'package:constata/src/features/transfers/presenter/get_transfer/get_transfer_controller.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 
 import 'package:flutter/material.dart';
 
@@ -63,7 +64,7 @@ class _TransferPageState extends State<TransferPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          var route = MaterialPageRoute(
+          var route = CustomPageRoute(
             builder: (BuildContext context) =>
                 CreateTransferPage(originObra: widget.obra),
           );
@@ -114,7 +115,16 @@ class _TransferPageState extends State<TransferPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: _controller.transfers.isEmpty
             ? [
-                const Text('Nenhuma transferência pendente!'),
+                const Text(
+                  'Nenhuma transferência pendente!' +
+                      '\n' +
+                      'Clique no botão + para criar uma nova transferência!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
               ]
             : [
                 const SizedBox(height: 20),

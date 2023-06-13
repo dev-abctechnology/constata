@@ -13,7 +13,8 @@ class _ReportDetailsState extends State<ReportDetails> {
   @override
   Widget build(BuildContext context) {
     List efetivo = widget.reportDetail['data']['tb01_cp011'];
-    TextStyle style = const TextStyle(fontSize: 16);
+    TextStyle style = TextStyle(
+        fontSize: 16, color: Theme.of(context).textTheme.bodySmall!.color);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalhes do efetivo'),

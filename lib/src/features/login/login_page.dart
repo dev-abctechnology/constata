@@ -4,6 +4,7 @@ import 'package:constata/src/features/login/login_controller.dart';
 import 'package:constata/src/features/login/login_repository.dart';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
@@ -40,7 +41,7 @@ class _LoginState extends State<Login> {
       final obraData =
           await loginController.fetchObraData(userData['tb01_cp004']);
 
-      var route = MaterialPageRoute(
+      var route = CustomPageRoute(
         builder: (BuildContext context) => SelectObra(
           obraData: obraData,
           user: user,
@@ -85,7 +86,7 @@ class _LoginState extends State<Login> {
       Map dataLogged = await json.decode(prefs.getString("data")!);
       Provider.of<Token>(context, listen: false).setToken(dataLogged['token']);
 
-      var route = MaterialPageRoute(
+      var route = CustomPageRoute(
         builder: (BuildContext context) => HomePage(
           dataLogged: dataLogged,
         ),
@@ -363,7 +364,7 @@ class _LoginState extends State<Login> {
 //     // SharedPreferences.getInstance().then((value) => value.setString("user", json.encode(userLogged[0])));
 //     // SharedPreferences.getInstance().then((value) => value.setString("token", json.encode(tokenGenerated)));
 //     setState(() {
-//       var route = MaterialPageRoute(
+//       var route = CustomPageRoute(
 //         builder: (BuildContext context) => SelectObra(
 //           obraData: obraData,
 //           user: userLogged[0],
@@ -383,7 +384,7 @@ class _LoginState extends State<Login> {
 //       Map dataLogged = await json.decode(sharedPreferences.getString("data")!);
 //       Provider.of<Token>(context, listen: false).setToken(dataLogged['token']);
 
-//       var route = MaterialPageRoute(
+//       var route = CustomPageRoute(
 //         builder: (BuildContext context) => HomePage(
 //           dataLogged: dataLogged,
 //         ),

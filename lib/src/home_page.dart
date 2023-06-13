@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:constata/src/features/login/login_controller.dart';
 import 'package:constata/src/features/login/login_repository.dart';
 import 'package:constata/src/features/login/select_build_page.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/dark_mode.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,8 @@ class _HomePageState extends State<HomePage> {
       debugPrint('gravou na memoria');
       return true;
     } else {
-      debugPrint(response.reasonPhrase);
+      debugPrint(await response.stream.bytesToString());
+
       return false;
     }
   }
@@ -217,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                 Provider.of<MeasurementData>(context, listen: false)
                     .clearMeasurementData();
                 Navigator.of(context).pop();
-                login();
+                changeBuild();
               },
             ),
           ),
@@ -228,7 +230,7 @@ class _HomePageState extends State<HomePage> {
 
   final loginController = LoginController(LoginRepository(Dio()));
 
-  void login() async {
+  void changeBuild() async {
     var prefs = await SharedPreferences.getInstance();
     Map authParam = jsonDecode(prefs.getString('authentication')!);
     await loginController.generateToken(
@@ -241,20 +243,13 @@ class _HomePageState extends State<HomePage> {
     final obraData =
         await loginController.fetchObraData(userData['tb01_cp004']);
 
-    var route = MaterialPageRoute(
+    var route = CustomPageRoute(
       builder: (BuildContext context) => SelectObra(
         obraData: obraData,
         user: user,
       ),
     );
     Navigator.of(context).push(route);
-  }
-
-  bool botao = false;
-
-  void initializer() {
-    fetchColaboradores();
-    fetchEquipments();
   }
 
   @override
@@ -265,9 +260,9 @@ class _HomePageState extends State<HomePage> {
 
   void checkInitToken() {
     tokenSerilizado = Provider.of<Token>(context, listen: false).token;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       AuthRefreshController authRefreshcontroller = AuthRefreshController();
-      authRefreshcontroller.checkAuth(tokenSerilizado).then((value) {
+      await authRefreshcontroller.checkAuth(tokenSerilizado).then((value) {
         debugPrint('Checking Expired Auth Token');
         // Navigator.pop(context);
         if (value.isNotEmpty) {
@@ -278,7 +273,8 @@ class _HomePageState extends State<HomePage> {
         debugPrint('Token Not Expired');
       });
 
-      initializer();
+      fetchColaboradores();
+      fetchEquipments();
     });
   }
 
@@ -298,9 +294,9 @@ class _HomePageState extends State<HomePage> {
               changeTheme();
             },
             icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
-                ? Icon(Icons.wb_sunny)
-                : Icon(Icons.nightlight_round),
-          )
+                ? const Icon(Icons.wb_sunny)
+                : const Icon(Icons.nightlight_round),
+          ),
         ],
       ),
       drawer: customDrawer(context),

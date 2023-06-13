@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:constata/src/features/epi_process/epi_report_task_page.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -200,7 +201,7 @@ class _EpiProcessState extends State<EpiProcess> {
                   _selectedColaborator.isNotEmpty) {
                 try {
                   var result = await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
+                      CustomPageRoute(builder: (context) {
                     return EpiReportTask(
                       dataLogged: widget.dataLogged,
                       date: _date,

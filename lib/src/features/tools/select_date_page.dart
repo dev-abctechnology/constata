@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:constata/src/features/tools/tools_process_page.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -262,7 +263,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
                             onPressed: status == true && dateStatus == true
                                 ? () {
                                     setState(() {
-                                      var route = MaterialPageRoute(
+                                      var route = CustomPageRoute(
                                         builder: (BuildContext context) =>
                                             ToolsProcessPage(
                                           dataLogged: widget.dataLogged,
@@ -332,7 +333,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
                       child: InkWell(
                         onTap: () {
                           // setState(() {
-                          //   var route = MaterialPageRoute(
+                          //   var route = CustomPageRoute(
                           //     builder: (BuildContext context) => ToolsDetails(
                           //       tool: res[index],
                           //     ),

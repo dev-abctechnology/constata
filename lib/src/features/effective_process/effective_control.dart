@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:constata/src/features/effective_process/apointment_effective_reworked.dart';
 import 'package:constata/src/features/effective_process/data/appointment_data.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -72,7 +73,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                     child: const Text('Não')),
                 TextButton(
                     onPressed: () {
-                      var route = MaterialPageRoute(
+                      var route = CustomPageRoute(
                         builder: (BuildContext context) =>
                             ApointmentEffectiveReworked(
                           editingMode: true,
@@ -218,7 +219,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
         return {'log': 'error'};
       }
     } catch (e) {
-      Navigator.of(context).pop();
+      // Navigator.of(context).pop();
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -443,7 +444,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                           onPressed: status
                               ? () {
                                   setState(() {
-                                    var route = MaterialPageRoute(
+                                    var route = CustomPageRoute(
                                       builder: (BuildContext context) =>
                                           ApointmentEffectiveReworked(
                                         dataLogged: widget.dataLogged,
@@ -513,13 +514,19 @@ class _EffectiveControlState extends State<EffectiveControl> {
                 itemCount: res.isEmpty ? 0 : res.length,
                 itemBuilder: (BuildContext context, int index) {
                   List efetivo = res[index]['data']['tb01_cp011'];
+                  int efetivoPresente = 0;
+                  for (var i = 0; i < efetivo.length; i++) {
+                    if (efetivo[i]['tp_cp015'] == 'Presente') {
+                      efetivoPresente++;
+                    }
+                  }
                   return Column(
                     children: [
                       Card(
                         child: InkWell(
                           onTap: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) =>
                                     ReportDetails(
                                   reportDetail: res[index],
@@ -529,10 +536,11 @@ class _EffectiveControlState extends State<EffectiveControl> {
                             });
                           },
                           child: ListTile(
-                            title:
-                                Text('data: ${res[index]['data']['h0_cp008']}'),
+                            title: Text(
+                                'Apontador: ${res[index]['data']['h0_cp009']}'),
                             subtitle: Text(
-                                'quantidade do efetivo: ${efetivo == null ? "0" : efetivo.length}'),
+                                // mostrar o numero de efetivo e o numero de efetivo presente
+                                'Total: ${efetivo.length}\nPresentes: $efetivoPresente'),
                           ),
                         ),
                       ),

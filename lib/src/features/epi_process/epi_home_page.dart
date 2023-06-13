@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'dart:developer' as developer;
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -270,7 +271,7 @@ class _EpiHomeState extends State<EpiHome> {
                             onPressed: dateStatus
                                 ? () {
                                     setState(() {
-                                      var route = MaterialPageRoute(
+                                      var route = CustomPageRoute(
                                         builder: (BuildContext context) =>
                                             EpiProcess(
                                           dataLogged: widget.dataLogged,
@@ -359,7 +360,7 @@ class _EpiHomeState extends State<EpiHome> {
                   return InkWell(
                     onTap: () {
                       setState(() {
-                        var route = MaterialPageRoute(
+                        var route = CustomPageRoute(
                           builder: (BuildContext context) =>
                               EpiAppointmentDetails(
                             epiAppointment: resAppointment[index],

@@ -5,6 +5,7 @@ import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/features/measurement/measurement_details.dart';
 import 'package:constata/src/features/measurement/measurement_report_r.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -57,7 +58,7 @@ class _MeasurementState extends State<Measurement> {
                     Navigator.of(context).pop();
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CustomPageRoute(
                             builder: (context) => MeasurementReportReworked(
                                   dataLogged: widget.dataLogged,
                                   date: Provider.of<MeasurementData>(context,
@@ -381,7 +382,7 @@ class _MeasurementState extends State<Measurement> {
                             onPressed: status == true && dateStatus == true
                                 ? () {
                                     setState(() {
-                                      var route = MaterialPageRoute(
+                                      var route = CustomPageRoute(
                                         builder: (BuildContext context) =>
                                             MeasurementReportReworked(
                                           dataLogged: widget.dataLogged,
@@ -467,7 +468,7 @@ class _MeasurementState extends State<Measurement> {
                         child: InkWell(
                           onTap: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) =>
                                     MeasurementDetails(
                                   measurement: res[index],

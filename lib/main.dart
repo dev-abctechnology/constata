@@ -3,14 +3,26 @@ import 'package:constata/src/features/login/login_page.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/dark_mode.dart';
-import 'package:constata/src/shared/pallete.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'src/features/effective_process/data/appointment_data.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   runApp(
     MultiProvider(
       providers: [
@@ -32,15 +44,15 @@ void main() {
           debugShowCheckedModeBanner: false,
           title: "Constata - Apontamento Digital",
           theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF0e386f),
-                brightness: Provider.of<DarkMode>(context).isDarkMode
-                    ? Brightness.dark
-                    : Brightness.light,
-              )
-              // primarySwatch: Palette.customSwatch,
-              ),
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blueAccent,
+              brightness: Provider.of<DarkMode>(context).isDarkMode
+                  ? Brightness.dark
+                  : Brightness.light,
+            ),
+            // primarySwatch: Palette.customSwatch,
+          ),
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -56,12 +68,13 @@ void main() {
                   splash: Image.asset(
                     'assets/images/constata.png',
                   ),
-                  splashTransition: SplashTransition.fadeTransition,
+                  splashTransition: SplashTransition.slideTransition,
+                  curve: Curves.easeInOutCubic,
                   backgroundColor: Provider.of<DarkMode>(context).isDarkMode
-                      ? Colors.black87
-                      : Colors.white,
+                      ? const Color.fromARGB(221, 27, 27, 27)
+                      : const Color.fromARGB(255, 231, 231, 231),
                   splashIconSize: 100,
-                  animationDuration: const Duration(seconds: 2),
+                  animationDuration: const Duration(milliseconds: 1000),
                 ),
             // '/home': (context) => const HomePage(),
           },

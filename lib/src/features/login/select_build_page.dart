@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,7 +47,7 @@ class _SelectObraState extends State<SelectObra> {
               elevation: 3,
               child: InkWell(
                 onTap: () {
-                  var route = MaterialPageRoute(
+                  var route = CustomPageRoute(
                     builder: (BuildContext context) => HomePage(
                       dataLogged: generateDataLogged(index),
                     ),
