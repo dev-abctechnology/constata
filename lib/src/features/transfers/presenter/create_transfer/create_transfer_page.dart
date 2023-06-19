@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/features/transfers/data/repositories/create_transfer_repository.dart';
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
 import 'package:constata/src/features/transfers/domain/usecases/create_transfer/create_transfer_usercase_impl.dart';
@@ -12,6 +13,9 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+import '../../../../shared/utils.dart';
 
 class CreateTransferPage extends StatefulWidget {
   final Map<String, dynamic> originObra;
@@ -39,6 +43,9 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
       final response = await _createTransferController.createTransfer();
       if (response) {
         _isSuccess.value = true;
+
+        Provider.of<FirebaseMessagingService>(context, listen: false)
+            .sendMessageNewTranfer(_transferEntity.targetBuild!);
       } else {
         _isError.value = true;
       }

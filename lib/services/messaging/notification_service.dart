@@ -1,8 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:flutter_notifications/routes.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
@@ -61,13 +59,12 @@ class NotificationService {
       const InitializationSettings(
         android: android,
       ),
-      onSelectNotification: _onSelectNotification,
     );
   }
 
   _onSelectNotification(String? payload) {
     if (payload != null && payload.isNotEmpty) {
-      Navigator.of(Routes.navigatorKey!.currentContext!).pushNamed(payload);
+      print('Notification payload: $payload');
     }
   }
 
@@ -106,7 +103,24 @@ class NotificationService {
     final details =
         await localNotificationsPlugin.getNotificationAppLaunchDetails();
     if (details != null && details.didNotificationLaunchApp) {
-      _onSelectNotification(details.payload);
+      _onSelectNotification(details.notificationResponse!.payload);
+    }
+  }
+
+  showNotification(RemoteMessage message) {
+    final notification = message.notification;
+    final data = message.data;
+
+    if (notification != null) {
+      final customNotification = CustomNotification(
+        id: int.parse(data['id']!),
+        title: notification.title!,
+        body: notification.body!,
+        payload: data['payload'],
+        remoteMessage: message,
+      );
+
+      showLocalNotification(customNotification);
     }
   }
 }

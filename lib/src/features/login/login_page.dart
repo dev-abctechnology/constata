@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
+import 'package:constata/services/messaging/notification_service.dart';
 import 'package:constata/src/features/login/login_controller.dart';
 import 'package:constata/src/features/login/login_repository.dart';
 import 'package:constata/src/home_page.dart';
@@ -7,6 +9,7 @@ import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,7 +101,27 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    initializeFirebaseMessaging();
+    checkNotifications();
     isLogged();
+    subscribeToTopic();
+  }
+
+  unsubscribeFromTopic() async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic('all');
+  }
+
+  subscribeToTopic() async {
+    await FirebaseMessaging.instance.subscribeToTopic('all');
+  }
+
+  initializeFirebaseMessaging() async {
+    await Provider.of<FirebaseMessagingService>(context, listen: false).init();
+  }
+
+  checkNotifications() async {
+    await Provider.of<NotificationService>(context, listen: false)
+        .checkForNotifications();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -108,6 +131,17 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              unsubscribeFromTopic();
+            },
+            icon: const Icon(Icons.logout),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(16.0),

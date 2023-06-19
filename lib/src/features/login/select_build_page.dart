@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../shared/utils.dart';
 
 class SelectObra extends StatefulWidget {
   var user;
@@ -46,7 +49,7 @@ class _SelectObraState extends State<SelectObra> {
             return Card(
               elevation: 3,
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   var route = CustomPageRoute(
                     builder: (BuildContext context) => HomePage(
                       dataLogged: generateDataLogged(index),
@@ -58,6 +61,15 @@ class _SelectObraState extends State<SelectObra> {
                           json.encode(
                               generateStoredDataLogged(context, index))));
 
+                  final topicName = convertToValidTopicName(
+                      listaDeObras[index]['data']['tb01_cp002']);
+
+                  final subscribe = await Provider.of<FirebaseMessagingService>(
+                          context,
+                          listen: false)
+                      .subscribeToTopic(topicName);
+                  print(
+                      'inscrição no tópico ${listaDeObras[index]['data']['tb01_cp002']}: $subscribe');
                   Navigator.of(context).push(route);
                 },
                 child: ListTile(

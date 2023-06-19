@@ -1,15 +1,19 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:constata/firebase_options.dart';
-import 'package:constata/src/features/login/login_page.dart';
-import 'package:constata/src/features/measurement/data/measurement_data.dart';
-import 'package:constata/src/models/token.dart';
-import 'package:constata/src/shared/dark_mode.dart';
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
+import 'package:constata/services/messaging/notification_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
+
+import 'package:constata/firebase_options.dart';
+import 'package:constata/src/features/login/login_page.dart';
+import 'package:constata/src/features/measurement/data/measurement_data.dart';
+import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/dark_mode.dart';
+
 import 'src/features/effective_process/data/appointment_data.dart';
 
 void main() async {
@@ -44,6 +48,12 @@ void main() async {
         ChangeNotifierProvider<MeasurementData>(
           create: (context) => MeasurementData(),
         ),
+        Provider<NotificationService>(
+          create: (context) => NotificationService(),
+        ),
+        Provider<FirebaseMessagingService>(
+            create: (context) =>
+                FirebaseMessagingService(context.read<NotificationService>())),
       ],
       builder: (context, child) {
         return MaterialApp(

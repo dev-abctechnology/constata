@@ -10,6 +10,9 @@ import 'package:constata/src/features/transfers/presenter/get_transfer/get_trans
 import 'package:constata/src/shared/custom_page_route.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../services/messaging/firebase_messaging_service.dart';
 
 class TransferPage extends StatefulWidget {
   final Map<String, dynamic> obra;
@@ -54,6 +57,12 @@ class _TransferPageState extends State<TransferPage> {
   void initState() {
     super.initState();
     getData();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -206,6 +215,10 @@ class _TransferPageState extends State<TransferPage> {
                   _controller.transfers.removeAt(index);
                   setState(() {});
                   _showSuccessDialog('Transferência aceita com sucesso!');
+                  await Provider.of<FirebaseMessagingService>(context,
+                          listen: false)
+                      .sendMessageConfirmedTranfer(
+                          transfer.originBuild!, transfer.nameEffective!);
                 } else {
                   print('Erro ao aceitar transferência!');
                 }
@@ -218,7 +231,10 @@ class _TransferPageState extends State<TransferPage> {
     );
   }
 
-  Future<void> _showCancelDialog(TransferEntity transfer, int index) async {
+  Future<void> _showCancelDialog(
+    TransferEntity transfer,
+    int index,
+  ) async {
     showDialog(
       context: context,
       builder: (context) {
@@ -237,6 +253,10 @@ class _TransferPageState extends State<TransferPage> {
                   _controller.transfers.removeAt(index);
                   setState(() {});
                   _showSuccessDialog('Transferência cancelada com sucesso!');
+                  await Provider.of<FirebaseMessagingService>(context,
+                          listen: false)
+                      .sendMessageDeniedTransfer(transfer.originBuild!,
+                          transfer.targetBuild!, transfer.nameEffective!);
                 } else {
                   print('Erro ao cancelar transferência!');
                 }
