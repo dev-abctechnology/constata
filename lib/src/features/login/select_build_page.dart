@@ -63,7 +63,9 @@ class _SelectObraState extends State<SelectObra> {
 
                   final topicName = convertToValidTopicName(
                       listaDeObras[index]['data']['tb01_cp002']);
-
+                  await Provider.of<FirebaseMessagingService>(context,
+                          listen: false)
+                      .unsubscribeFromAllTopics();
                   final subscribe = await Provider.of<FirebaseMessagingService>(
                           context,
                           listen: false)

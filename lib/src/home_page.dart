@@ -250,6 +250,7 @@ class _HomePageState extends State<HomePage> {
         user: user,
       ),
     );
+
     Navigator.of(context).push(route);
   }
 

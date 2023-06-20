@@ -142,8 +142,8 @@ class FirebaseMessagingService {
   }
 
   Future<bool> sendMessageConfirmedTranfer(
-      String obraName, String effectiveName) async {
-    final obraConverted = convertToValidTopicName(obraName);
+      String obraOrigin, String obraTarget, String effectiveName) async {
+    final obraConverted = convertToValidTopicName(obraOrigin);
 
     var headers = {
       'Authorization':
@@ -156,7 +156,7 @@ class FirebaseMessagingService {
       "to": "/topics/$obraConverted",
       "notification": {
         "body":
-            "✅ Transferência de $effectiveName confirmada para a obra $obraName!",
+            "✅ Transferência de $effectiveName confirmada para a obra $obraTarget!",
         "title": "Confirmação de Transferência"
       },
       "data": {}
