@@ -132,7 +132,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Seja bem-vindo!'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -157,12 +157,12 @@ class _LoginState extends State<Login> {
                 TextFormField(
                   controller: _usernameController,
                   decoration: const InputDecoration(
-                    labelText: 'nome de usuário',
+                    labelText: 'Nome de usuário',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
+                      return 'Por favor, digite seu nome de usuário';
                     }
                     return null;
                   },
@@ -177,7 +177,7 @@ class _LoginState extends State<Login> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Por favor, digite sua senha';
                     }
                     return null;
                   },

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:constata/src/constants.dart';
@@ -16,9 +18,9 @@ import 'model/measurement_model.dart';
 import 'model/measurement_object_r.dart';
 
 class Measurement extends StatefulWidget {
-  var dataLogged;
+  final Map dataLogged;
 
-  Measurement({Key? key, required this.dataLogged}) : super(key: key);
+  const Measurement({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _MeasurementState createState() => _MeasurementState();
@@ -208,7 +210,6 @@ class _MeasurementState extends State<Measurement> {
       print(response.reasonPhrase);
       return false;
     }
-    return false;
   }
 
   Future<Map<String, dynamic>> effectiveValidator(

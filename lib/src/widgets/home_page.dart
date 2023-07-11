@@ -197,9 +197,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     crossAxisCount: 2,
-                    childAspectRatio: 1.8,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
+                    childAspectRatio: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
                     children: <Widget>[
                       GridButton(
                           icon: const Icon(

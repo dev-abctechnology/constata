@@ -125,7 +125,9 @@ class _TransferPageState extends State<TransferPage> {
         children: _controller.transfers.isEmpty
             ? [
                 const Text(
-                  'Nenhuma transferência pendente!' '\n' 'Clique no botão + para criar uma nova transferência!',
+                  'Nenhuma transferência pendente!'
+                  '\n'
+                  'Clique no botão + para criar uma nova transferência!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 20,
@@ -252,8 +254,8 @@ class _TransferPageState extends State<TransferPage> {
                       .sendMessageDeniedTransfer(transfer.originBuild!,
                           transfer.targetBuild!, transfer.nameEffective!);
                   setState(() {});
-                  _showSuccessDialog('Transferência cancelada com sucesso!');
                   Navigator.of(context).pop();
+                  _showSuccessDialog('Transferência cancelada com sucesso!');
                 } else {
                   _showErrorDialog('Erro ao cancelar transferência!');
                 }
