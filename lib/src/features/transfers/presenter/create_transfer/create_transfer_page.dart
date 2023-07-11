@@ -9,13 +9,9 @@ import 'package:constata/src/features/transfers/presenter/create_transfer/create
 import 'package:constata/src/models/seletor_obra_model.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import '../../../../shared/utils.dart';
 
 class CreateTransferPage extends StatefulWidget {
   final Map<String, dynamic> originObra;
@@ -199,7 +195,7 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Criar Transferência'),
-        actions: [
+        actions: const [
           // IconButton(
           //   onPressed: () {
           //     listaEfetivo();
@@ -391,11 +387,11 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                         Text(
                             'Saindo de: ${_transferEntity.originBuild.toString()}',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text(
                             'Indo para: ${_transferEntity.targetBuild.toString()}',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                         const SizedBox(
                           height: 20,
                         ),

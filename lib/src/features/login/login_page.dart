@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/services/messaging/notification_service.dart';
 import 'package:constata/src/features/login/login_controller.dart';
@@ -7,13 +6,9 @@ import 'package:constata/src/features/login/login_repository.dart';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/custom_page_route.dart';
-import 'package:constata/src/shared/load_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'select_build_page.dart';
@@ -34,7 +29,7 @@ class _LoginState extends State<Login> {
     ),
   );
 
-  ValueNotifier _isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier _isLoading = ValueNotifier<bool>(false);
 
   Future<void> login(String username, String password) async {
     _isLoading.value = true;
@@ -161,7 +156,7 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 50),
                 TextFormField(
                   controller: _usernameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'nome de usuário',
                     border: OutlineInputBorder(),
                   ),
@@ -176,7 +171,7 @@ class _LoginState extends State<Login> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Senha',
                     border: OutlineInputBorder(),
                   ),

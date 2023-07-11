@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:constata/main.dart';
 import 'package:constata/src/features/measurement/controllers/measurement_jarvis.dart';
 
 import 'package:constata/src/features/measurement/model/measurement_object_r.dart';
@@ -8,13 +7,10 @@ import 'package:constata/src/models/build_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../shared/currency_input.dart';
-import '../../shared/pallete.dart';
 import '../../shared/seletor_model.dart';
 import 'data/measurement_data.dart';
 import 'model/measurement_model.dart';
@@ -156,8 +152,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Sair do apontamento'),
-              content: Text('Deseja salvar um rascunho?'),
+              title: const Text('Sair do apontamento'),
+              content: const Text('Deseja salvar um rascunho?'),
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -175,13 +171,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                           showDialog(
                               context: context,
                               builder: (ctx) {
-                                return AlertDialog(
+                                return const AlertDialog(
                                   content: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
-                                    children: const [
+                                    children: [
                                       CircularProgressIndicator(),
                                       Text('Salvando...')
                                     ],
@@ -195,7 +191,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                               .setMeasurementData(measurementAppointment);
                           developer.log(
                               'measurementAppointment: ${jsonEncode(measurementAppointment.toJson())}');
-                          await Future.delayed(Duration(seconds: 1));
+                          await Future.delayed(const Duration(seconds: 1));
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
@@ -210,7 +206,6 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             );
           });
     }
-    ;
   }
 
   @override
@@ -261,57 +256,57 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons.person),
+                                                icon: const Icon(Icons.person),
                                                 label: 'Nome',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .namePerson),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons.location_on),
+                                                icon: const Icon(Icons.location_on),
                                                 label: 'Local',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .local
                                                     ?.name),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons
+                                                icon: const Icon(Icons
                                                     .construction_outlined),
                                                 label: 'Setor',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .sector
                                                     ?.name),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons.handyman),
+                                                icon: const Icon(Icons.handyman),
                                                 label: 'Serviço',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .service
                                                     ?.name),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: Icon(Icons.account_balance),
+                                              icon: const Icon(Icons.account_balance),
                                               label: 'Quantidade',
                                               value: measurementBody
                                                   .measurements[index].quantity
                                                   .toString(),
                                             ),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: SizedBox(
+                                              icon: const SizedBox(
                                                 height: 20,
                                                 width: 0,
                                               ),
@@ -322,11 +317,11 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                       .unitValue
                                                       .toStringAsFixed(2),
                                             ),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: SizedBox(
+                                              icon: const SizedBox(
                                                 height: 20,
                                                 width: 0,
                                               ),
@@ -337,11 +332,11 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                       .totalValue
                                                       .toStringAsFixed(2),
                                             ),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: SizedBox(
+                                              icon: const SizedBox(
                                                 height: 20,
                                                 width: 0,
                                               ),
@@ -365,13 +360,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                             Navigator.pop(context);
                                             setState(() {});
                                           },
-                                          child: Text('Excluir'),
+                                          child: const Text('Excluir'),
                                         ),
                                         TextButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text('Voltar'),
+                                          child: const Text('Voltar'),
                                         ),
                                       ],
                                     );
@@ -392,7 +387,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                     '\n' +
                                     measurementBody
                                         .measurements[index].local!.name),
-                                trailing: Icon(Icons.search),
+                                trailing: const Icon(Icons.search),
                               ),
                             ),
                           );
@@ -473,7 +468,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                           .toString()
                                           .toUpperCase(),
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black87),
                                 ),
@@ -490,7 +485,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         ),
         floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 28),
+          animatedIconTheme: const IconThemeData(size: 28),
           // backgroundColor: Palette.customSwatch,
           visible: true,
           curve: Curves.bounceInOut,
@@ -626,7 +621,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\,?\d{0,2}')),
             ],
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Quantidade',
             ),
           ),
@@ -639,7 +634,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             },
             controller: valorUnitarioController,
             keyboardType: const TextInputType.numberWithOptions(),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Valor Unitário',
             ),
             inputFormatters: [
@@ -648,7 +643,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           ),
           TextFormField(
             controller: observacaoController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Observação',
             ),
           ),
@@ -659,7 +654,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Cancelar'),
+          child: const Text('Cancelar'),
         ),
         TextButton(
           onPressed: () {
@@ -676,7 +671,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
               showSnackBar('Medição criada!', Colors.green);
             }
           },
-          child: Text('Adicionar'),
+          child: const Text('Adicionar'),
         ),
       ],
     );
@@ -689,9 +684,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Erro no envio!'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Parece que você está sem internet.'),
                 Text(
                     'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),

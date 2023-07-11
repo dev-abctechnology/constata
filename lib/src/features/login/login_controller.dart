@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:constata/src/features/login/login_repository.dart';
-import 'package:constata/src/shared/constants.dart';
-import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController {

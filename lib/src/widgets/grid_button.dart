@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../shared/pallete.dart';
 
 class GridButton extends StatelessWidget {
   final void Function() onPressed;

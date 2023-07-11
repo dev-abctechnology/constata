@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';

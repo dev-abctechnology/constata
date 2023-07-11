@@ -125,9 +125,7 @@ class _TransferPageState extends State<TransferPage> {
         children: _controller.transfers.isEmpty
             ? [
                 const Text(
-                  'Nenhuma transferência pendente!' +
-                      '\n' +
-                      'Clique no botão + para criar uma nova transferência!',
+                  'Nenhuma transferência pendente!' '\n' 'Clique no botão + para criar uma nova transferência!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 20,

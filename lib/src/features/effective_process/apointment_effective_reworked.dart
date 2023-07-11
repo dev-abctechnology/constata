@@ -11,7 +11,6 @@ import 'package:uuid/uuid.dart';
 import 'package:constata/src/features/effective_process/controllers/effective_jarvis.dart';
 import 'package:constata/src/features/effective_process/data/appointment_data.dart';
 import 'package:constata/src/features/effective_process/models/effective_model.dart';
-import 'package:constata/src/shared/pallete.dart';
 
 class ApointmentEffectiveReworked extends StatefulWidget {
   final String date;

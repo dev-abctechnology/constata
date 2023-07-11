@@ -375,7 +375,7 @@ class _MeasurementState extends State<Measurement> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.sizeOf(context).width * 0.95,
                           height: MediaQuery.sizeOf(context).height * 0.065,
                           child: ElevatedButton(
@@ -395,7 +395,7 @@ class _MeasurementState extends State<Measurement> {
                                     });
                                   }
                                 : null,
-                            child: Text("Apontar"),
+                            child: const Text("Apontar"),
                           ),
                         ),
                       ),

@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../features/transfers/presenter/get_transfer/transfer_page.dart';
 import '../models/token.dart';
 import '../shared/company_refresh_controller.dart';
-import '../shared/dark_mode.dart';
 import '../shared/load_controller.dart';
 import '../features/effective_process/effective_control.dart';
 import '../features/epi_process/epi_home_page.dart';
@@ -151,7 +150,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.sizeOf(context).width * 0.02),
         height: MediaQuery.sizeOf(context).height * 0.9,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           // color: Colors.green,
           image: DecorationImage(
             isAntiAlias: true,

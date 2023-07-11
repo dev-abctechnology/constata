@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/features/login/login_controller.dart';
 import 'package:constata/src/features/login/login_repository.dart';
 import 'package:constata/src/features/login/select_build_page.dart';
