@@ -30,6 +30,7 @@ class LoginRepository {
       return response.data['access_token'];
     } on DioException catch (e) {
       print(e.stackTrace);
+      print(e.toString());
       if (e.response != null) {
         if (e.response!.statusCode == 400) {
           throw Exception('Usuário ou senha inválidos');
@@ -37,6 +38,7 @@ class LoginRepository {
         throw Exception('Falha ao entrar no sistema');
       }
     }
+
     throw Exception('Falha ao entrar no sistema');
   }
 

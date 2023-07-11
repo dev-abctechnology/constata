@@ -163,8 +163,6 @@ class _EffectiveControlState extends State<EffectiveControl> {
         Navigator.of(context).pop();
         print(res.length);
       } else {
-        print('efetivo error: ' +
-            jsonDecode(await response.stream.bytesToString()));
         Navigator.of(context).pop();
       }
     } on Exception catch (e, s) {

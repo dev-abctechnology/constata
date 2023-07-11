@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_native_timezone_updated_gradle/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
@@ -42,24 +43,36 @@ class NotificationService {
   }
 
   _setupNotifications() async {
-    await _setupTimezone();
-    await _initializeNotifications();
+    try {
+      await _setupTimezone();
+      await _initializeNotifications();
+    } catch (e) {
+      debugPrint('Erro ao configurar notificações: $e');
+    }
   }
 
   Future<void> _setupTimezone() async {
     tz.initializeTimeZones();
     final String? timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName!));
+    if (timeZoneName == null) {
+      // handle error
+    } else {
+      tz.setLocalLocation(tz.getLocation(timeZoneName));
+    }
   }
 
-  _initializeNotifications() async {
+  Future<void> _initializeNotifications() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     // Fazer: macOs, iOS, Linux...
-    await localNotificationsPlugin.initialize(
-      const InitializationSettings(
-        android: android,
-      ),
-    );
+    try {
+      await localNotificationsPlugin.initialize(
+        const InitializationSettings(
+          android: android,
+        ),
+      );
+    } catch (e) {
+      debugPrint('Erro ao iniciar plugin de notificações: $e');
+    }
   }
 
   _onSelectNotification(String? payload) {
@@ -87,16 +100,20 @@ class NotificationService {
     );
   }
 
-  showLocalNotification(CustomNotification notification) {
-    localNotificationsPlugin.show(
-      notification.id,
-      notification.title,
-      notification.body,
-      NotificationDetails(
-        android: androidDetails,
-      ),
-      payload: notification.payload,
-    );
+  showLocalNotification(CustomNotification notification) async {
+    try {
+      await localNotificationsPlugin.show(
+        notification.id,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: androidDetails,
+        ),
+        payload: notification.payload,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   checkForNotifications() async {
@@ -104,6 +121,9 @@ class NotificationService {
         await localNotificationsPlugin.getNotificationAppLaunchDetails();
     if (details != null && details.didNotificationLaunchApp) {
       _onSelectNotification(details.notificationResponse!.payload);
+    } else if (details == null) {
+      // The app was launched without any notification
+      _onSelectNotification(null);
     }
   }
 
@@ -113,9 +133,9 @@ class NotificationService {
 
     if (notification != null) {
       final customNotification = CustomNotification(
-        id: int.parse(data['id']!),
-        title: notification.title!,
-        body: notification.body!,
+        id: int.tryParse(data['id'] ?? '') ?? 0,
+        title: notification.title ?? '',
+        body: notification.body ?? '',
         payload: data['payload'],
         remoteMessage: message,
       );

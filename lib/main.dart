@@ -28,13 +28,9 @@ void main() async {
     return true;
   };
 
-  //TODO: request permission
-  //TODO: Register with FCM
-  //TODO: Set up foreground message handler
-  //TODO: Set up background message handler
-
   runApp(
     MultiProvider(
+      //explain the code below
       providers: [
         ChangeNotifierProvider<DarkMode>(
           create: (context) => DarkMode(),
@@ -52,9 +48,12 @@ void main() async {
           create: (context) => NotificationService(),
         ),
         Provider<FirebaseMessagingService>(
-            create: (context) =>
-                FirebaseMessagingService(context.read<NotificationService>())),
+          create: (context) => FirebaseMessagingService(
+            context.read<NotificationService>(),
+          ),
+        ),
       ],
+
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,

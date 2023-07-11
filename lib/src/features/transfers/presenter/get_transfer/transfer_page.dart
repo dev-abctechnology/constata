@@ -249,16 +249,16 @@ class _TransferPageState extends State<TransferPage> {
                 final canceled = await _controller.denyTransfer(transfer);
                 if (canceled) {
                   _controller.transfers.removeAt(index);
-                  setState(() {});
-                  _showSuccessDialog('Transferência cancelada com sucesso!');
                   await Provider.of<FirebaseMessagingService>(context,
                           listen: false)
                       .sendMessageDeniedTransfer(transfer.originBuild!,
                           transfer.targetBuild!, transfer.nameEffective!);
+                  setState(() {});
+                  _showSuccessDialog('Transferência cancelada com sucesso!');
+                  Navigator.of(context).pop();
                 } else {
-                  print('Erro ao cancelar transferência!');
+                  _showErrorDialog('Erro ao cancelar transferência!');
                 }
-                Navigator.of(context).pop();
               },
               child: const Text('Sim'),
             ),
@@ -285,6 +285,26 @@ class _TransferPageState extends State<TransferPage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(String s) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Erro!'),
+          content: Text(s),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
                 Navigator.of(context).pop();
               },
               child: const Text('Ok'),

@@ -33,7 +33,11 @@ class _LoginState extends State<Login> {
       Dio(),
     ),
   );
+
+  ValueNotifier _isLoading = ValueNotifier<bool>(false);
+
   Future<void> login(String username, String password) async {
+    _isLoading.value = true;
     try {
       await loginController.generateToken(username, password);
 
@@ -81,6 +85,7 @@ class _LoginState extends State<Login> {
         },
       );
     }
+    _isLoading.value = false;
   }
 
   Future<void> isLogged() async {
@@ -104,7 +109,7 @@ class _LoginState extends State<Login> {
     initializeFirebaseMessaging();
     checkNotifications();
     isLogged();
-    subscribeToTopic();
+    // subscribeToTopic();
   }
 
   unsubscribeFromTopic() async {
@@ -133,14 +138,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              unsubscribeFromTopic();
-            },
-            icon: const Icon(Icons.logout),
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -191,17 +188,26 @@ class _LoginState extends State<Login> {
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Coloque aqui a lógica de login
-                      String username = _usernameController.text;
-                      String password = _passwordController.text;
-                      // Chame a função de login com os dados inseridos
-                      login(username, password);
+                ValueListenableBuilder(
+                  valueListenable: _isLoading,
+                  builder: (context, value, child) {
+                    if (value == true) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
+                    return ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          await login(
+                            _usernameController.text,
+                            _passwordController.text,
+                          );
+                        }
+                      },
+                      child: const Text('Entrar'),
+                    );
                   },
-                  child: const Text('Entrar'),
                 ),
               ],
             ),
