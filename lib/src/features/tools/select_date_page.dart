@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:constata/src/features/tools/tools_details_page.dart';
 import 'package:constata/src/features/tools/tools_process_page.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 class SelectDatePage extends StatefulWidget {
   var dataLogged;
 
-  SelectDatePage({Key key, this.dataLogged}) : super(key: key);
+  SelectDatePage({Key? key, this.dataLogged}) : super(key: key);
 
   @override
   _SelectDatePagState createState() => _SelectDatePagState();
@@ -21,7 +21,7 @@ class SelectDatePage extends StatefulWidget {
 
 class _SelectDatePagState extends State<SelectDatePage> {
   String _selectedDate = "Data do apontamento";
-  String _date = null;
+  String _date = '';
   bool status = false;
   bool rstatus = false;
   List medicaoPendente = [];
@@ -33,19 +33,19 @@ class _SelectDatePagState extends State<SelectDatePage> {
       res = [];
     });
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
-        Duration(days: 1000),
+        const Duration(days: 1000),
       ),
       lastDate: DateTime.now().add(
-        Duration(days: 0),
+        const Duration(days: 0),
       ),
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(Duration(days: 3)));
+        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
         if (k == true) {
           dateStatus = false;
         }
@@ -75,7 +75,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
         setState(() {
           status = false;
         });
-        medicaoPendente = [jsonDecode(value.getString('filaFerramentas'))];
+        medicaoPendente = [jsonDecode(value.getString('filaFerramentas')!)];
         setState(() {});
       }
     });
@@ -102,9 +102,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
       'Content-Type': 'application/json'
     };
-    if (date == null) {
-      date = transformDate(_date);
-    }
+    date ??= transformDate(_date);
     print(date);
     var request = http.Request(
         'POST',
@@ -122,19 +120,13 @@ class _SelectDatePagState extends State<SelectDatePage> {
         Navigator.of(context).pop();
         print('hahahaha');
         res = jsonDecode(await response.stream.bytesToString());
-        setState(() {
-          res;
-
-          return true;
-        });
-
-        print(res.length);
-        return false;
+        setState(() {});
+        return true;
       } else {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
+              return const AlertDialog(
                 content: Text(
                     'Não foi possivel verificar se houve uma medição no dia '),
               );
@@ -147,7 +139,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Não foi possível verificar se há apontamentos.'),
               content: Text(
                 "Verifique sua conexão e tente novamente!\n\nAtenção!\nPode ocorrer inconsistências.",
@@ -197,7 +189,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
+              return const AlertDialog(
                 content: Text("Apontamento enviado com sucesso!"),
               );
             });
@@ -206,7 +198,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
+              return const AlertDialog(
                 content: Text("Erro inesperado tente novamente"),
               );
             });
@@ -227,7 +219,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('4 - Controle de Ferramentas'),
+        title: const Text('4 - Controle de Ferramentas'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -240,9 +232,9 @@ class _SelectDatePagState extends State<SelectDatePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.95,
-                        height: MediaQuery.of(context).size.height * 0.065,
+                      child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        height: MediaQuery.sizeOf(context).height * 0.065,
                         child: ElevatedButton(
                           onPressed: () {
                             _openDatePicker(context);
@@ -255,7 +247,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
                                   onPressed: () {
                                     _openDatePicker(context);
                                   },
-                                  icon: Icon(Icons.calendar_today)),
+                                  icon: const Icon(Icons.calendar_today)),
                             ],
                           ),
                         ),
@@ -264,14 +256,14 @@ class _SelectDatePagState extends State<SelectDatePage> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          height: MediaQuery.of(context).size.height * 0.065,
+                        child: SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.95,
+                          height: MediaQuery.sizeOf(context).height * 0.065,
                           child: ElevatedButton(
                             onPressed: status == true && dateStatus == true
                                 ? () {
                                     setState(() {
-                                      var route = MaterialPageRoute(
+                                      var route = CustomPageRoute(
                                         builder: (BuildContext context) =>
                                             ToolsProcessPage(
                                           dataLogged: widget.dataLogged,
@@ -282,7 +274,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
                                     });
                                   }
                                 : null,
-                            child: Text("Apontar"),
+                            child: const Text("Apontar"),
                           ),
                         ),
                       ),
@@ -291,11 +283,12 @@ class _SelectDatePagState extends State<SelectDatePage> {
                 ),
               ),
               Center(
-                child: Text(
-                    "${medicaoPendente.isEmpty ? '' : 'Apontamentos aguardando envio'}"),
+                child: Text(medicaoPendente.isEmpty
+                    ? ''
+                    : 'Apontamentos aguardando envio'),
               ),
               ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount:
                       medicaoPendente.isEmpty ? 0 : medicaoPendente.length,
@@ -303,12 +296,12 @@ class _SelectDatePagState extends State<SelectDatePage> {
                     return Card(
                       child: ListTile(
                         leading: ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(primary: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             onPressed: () {
                               eliminateQueue();
                             },
-                            child: Icon(Icons.delete)),
+                            child: const Icon(Icons.delete)),
                         title: Text(
                             '${medicaoPendente[index]['data']['h0_cp016']}'),
                         subtitle: Text(
@@ -322,17 +315,17 @@ class _SelectDatePagState extends State<SelectDatePage> {
                                   makeRequestOffline(medicaoPendente[index]);
                                 }
                               : null,
-                          child: Icon(Icons.arrow_circle_up),
+                          child: const Icon(Icons.arrow_circle_up),
                         ),
                       ),
                     );
                   }),
               Center(
                 child: Text(
-                    "${res.isEmpty ? '' : 'Apontamentos do dia $_selectedDate'}"),
+                    res.isEmpty ? '' : 'Apontamentos do dia $_selectedDate'),
               ),
               ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: res.isEmpty ? 0 : res.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -340,7 +333,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
                       child: InkWell(
                         onTap: () {
                           // setState(() {
-                          //   var route = MaterialPageRoute(
+                          //   var route = CustomPageRoute(
                           //     builder: (BuildContext context) => ToolsDetails(
                           //       tool: res[index],
                           //     ),

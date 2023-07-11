@@ -16,7 +16,7 @@ class CreateTransferRepositoryImpl implements CreateTransferRepository {
       } else {
         return true;
       }
-    } catch (e, s) {
+    } catch (e) {
       rethrow;
     }
   }

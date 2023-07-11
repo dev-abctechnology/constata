@@ -15,7 +15,7 @@ class CreateTransferUseCaseImpl implements CreateTransferUseCase {
       await repository(params);
       return ResponseEither.success(true);
     } catch (e, s) {
-      return ResponseEither.error(e.toString(), s);
+      return ResponseEither.exception(e.toString(), s);
     }
   }
 }

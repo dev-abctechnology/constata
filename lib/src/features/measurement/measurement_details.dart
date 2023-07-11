@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class MeasurementDetails extends StatefulWidget {
   Map measurement;
 
-  MeasurementDetails({Key key, this.measurement}) : super(key: key);
+  MeasurementDetails({Key? key, required this.measurement}) : super(key: key);
   @override
   _MeasurementDetailsState createState() => _MeasurementDetailsState();
 }
@@ -12,17 +12,17 @@ class MeasurementDetails extends StatefulWidget {
 class _MeasurementDetailsState extends State<MeasurementDetails> {
   @override
   Widget build(BuildContext context) {
-    TextStyle style = TextStyle(color: Colors.black, fontSize: 16);
-    TextStyle titleStyle = TextStyle(fontWeight: FontWeight.bold);
+    TextStyle style = const TextStyle(fontSize: 16);
+    TextStyle titleStyle = const TextStyle(fontWeight: FontWeight.bold);
     List measurements = widget.measurement['data']['tb01_cp050'];
     return Scaffold(
         appBar: AppBar(
-          title: Text('Detalhes da medição'),
+          title: const Text('Detalhes da medição'),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
                 ListTile(

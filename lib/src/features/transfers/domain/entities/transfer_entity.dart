@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 class TransferEntity {
-  String id;
-  String innerId;
-  String nameEffective;
-  String codeEffective;
-  String originBuild;
-  String originBuildId;
-  String targetBuild;
-  String targetBuildId;
-  String status;
-  String date;
+  late String? id;
+  late String? innerId;
+  late String? nameEffective;
+  late String? codeEffective;
+  late String? originBuild;
+  late String? originBuildId;
+  late String? targetBuild;
+  late String? targetBuildId;
+  late String? status;
+  late String? date;
 
   TransferEntity({
     this.id,
@@ -53,6 +53,34 @@ class TransferEntity {
     data['tb01_cp005'] = {"name": targetBuild, "_id": targetBuildId};
     data['tb01_cp006'] = status;
     return data;
+  }
+
+  // copywith
+
+  TransferEntity.copyWith({
+    String? id,
+    String? innerId,
+    String? nameEffective,
+    String? codeEffective,
+    String? originBuild,
+    String? originBuildId,
+    String? targetBuild,
+    String? targetBuildId,
+    String? status,
+    String? date,
+  }) {
+    TransferEntity(
+      id: id ?? this.id,
+      innerId: innerId ?? this.innerId,
+      nameEffective: nameEffective ?? this.nameEffective,
+      codeEffective: codeEffective ?? this.codeEffective,
+      originBuild: originBuild ?? this.originBuild,
+      originBuildId: originBuildId ?? this.originBuildId,
+      targetBuild: targetBuild ?? this.targetBuild,
+      targetBuildId: targetBuildId ?? this.targetBuildId,
+      status: status ?? this.status,
+      date: date ?? this.date,
+    );
   }
 
   @override

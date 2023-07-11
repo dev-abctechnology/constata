@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:constata/src/features/epi_process/epi_report_task_page.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -12,7 +13,8 @@ class EpiProcess extends StatefulWidget {
   Map dataLogged;
 
   final String selectedDate;
-  EpiProcess({Key key, this.dataLogged, this.selectedDate}) : super(key: key);
+  EpiProcess({Key? key, required this.dataLogged, required this.selectedDate})
+      : super(key: key);
 
   @override
   _EpiProcessState createState() => _EpiProcessState();
@@ -26,9 +28,8 @@ class _EpiProcessState extends State<EpiProcess> {
   List epiReport = [];
   List body = [];
   List effectiveList = [];
-  Map _selectedColaborator;
-  String _selectedDate;
-  String _date;
+  Map _selectedColaborator = {};
+  String _date = '';
   int opened = 0;
   bool pending = false;
   bool sending = false;
@@ -99,7 +100,7 @@ class _EpiProcessState extends State<EpiProcess> {
         print(response.reasonPhrase);
         return false;
       }
-    } catch (e, s) {
+    } catch (e) {
       return false;
     }
   }
@@ -141,8 +142,8 @@ class _EpiProcessState extends State<EpiProcess> {
     if (preferenciasCompartilhadas.containsKey('colaboradores')) {
       developer.log('Colaboradores na memoria');
       effectiveList =
-          jsonDecode(preferenciasCompartilhadas.getString("colaboradores"));
-      print(jsonDecode(preferenciasCompartilhadas.getString("colaboradores")));
+          jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!);
+      print(jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!));
       setState(() {
         _isOffline = true;
       });
@@ -156,7 +157,7 @@ class _EpiProcessState extends State<EpiProcess> {
     return Scaffold(
       appBar: _isOffline
           ? AppBar(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.redAccent,
               title: Text('EPIs - ${widget.selectedDate}\nVocê está offline'),
               centerTitle: true,
             )
@@ -170,7 +171,7 @@ class _EpiProcessState extends State<EpiProcess> {
             children: [
               const Text("Escolha o colaborador"),
               effectiveList.isEmpty
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : effectiveListing(),
             ],
           ),
@@ -200,7 +201,7 @@ class _EpiProcessState extends State<EpiProcess> {
                   _selectedColaborator.isNotEmpty) {
                 try {
                   var result = await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
+                      CustomPageRoute(builder: (context) {
                     return EpiReportTask(
                       dataLogged: widget.dataLogged,
                       date: _date,
@@ -211,6 +212,7 @@ class _EpiProcessState extends State<EpiProcess> {
                     developer.log(result.toString(), name: "Retorno da pagina");
                   } catch (error, s) {
                     print(error);
+                    print(s);
                   }
                 } catch (e, s) {
                   developer.log("error", error: e, stackTrace: s);

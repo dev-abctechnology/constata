@@ -1,8 +1,11 @@
 class Seletor {
-  String name;
-  String sId;
+  late String name;
+  late String sId;
 
-  Seletor({this.name, this.sId});
+  Seletor({
+    required this.name,
+    required this.sId,
+  });
 
   Seletor.fromJson(Map<String, dynamic> json) {
     name = json['name'];

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:constata/main.dart';
 import 'package:constata/src/features/measurement/controllers/measurement_jarvis.dart';
 
 import 'package:constata/src/features/measurement/model/measurement_object_r.dart';
@@ -8,26 +7,26 @@ import 'package:constata/src/models/build_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../shared/currency_input.dart';
-import '../../shared/pallete.dart';
 import '../../shared/seletor_model.dart';
 import 'data/measurement_data.dart';
 import 'model/measurement_model.dart';
 
 class MeasurementReportReworked extends StatefulWidget {
-  final dataLogged;
+  final Map dataLogged;
 
-  final date;
+  final String date;
 
   final bool edittingMode;
 
   const MeasurementReportReworked(
-      {Key key, this.dataLogged, this.date, this.edittingMode = false})
+      {Key? key,
+      required this.dataLogged,
+      required this.date,
+      this.edittingMode = false})
       : super(key: key);
 
   @override
@@ -38,21 +37,21 @@ class MeasurementReportReworked extends StatefulWidget {
 class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
   MeasurementJarvis measurementJarvis = MeasurementJarvis();
   List colaborators = [];
-  Build storedBuild;
-  MeasurementBody measurementBody;
-  MeasurementAppointment measurementAppointment;
+  late Build storedBuild;
+  late MeasurementBody measurementBody;
+  late MeasurementAppointment measurementAppointment;
   bool loading = false;
   void initialize() async {
     loading = true;
     try {
       try {
         storedBuild = Build.fromJson(widget.dataLogged['obra']['data']);
-        for (Task task in storedBuild.tasks) {
-          print(task.local.name +
+        for (Task task in storedBuild.tasks!) {
+          print(task.local!.name +
               ' | ' +
-              task.sector.name +
+              task.sector!.name +
               ' | ' +
-              task.service.name);
+              task.service!.name);
           print(task.budgetedQuantity);
           print('-----------------------');
         }
@@ -69,7 +68,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       showSnackBar(e.toString().substring(11), Colors.red);
       SharedPreferences.getInstance().then((value) {
         if (value.containsKey('colaboradores')) {
-          colaborators = jsonDecode(value.getString('colaboradores'));
+          colaborators = jsonDecode(value.getString('colaboradores')!);
           // print(colaboradores);
           colaborators = colaborators
               .where((element) =>
@@ -91,19 +90,19 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
 
   void addMeasurement(
       {colaborator,
-      Task task,
-      double quantity,
-      double unitValue,
+      required Task task,
+      required double quantity,
+      required double unitValue,
       String observation = ''}) {
     try {
       measurementBody.measurements.add(MeasurementModel(
         codePerson: colaborator['data']['tb01_cp004'],
         namePerson: colaborator['data']['tb01_cp002'],
         measurementUnit:
-            Seletor(name: task.measureUnit.name, sId: task.measureUnit.sId),
-        local: Seletor(name: task.local.name, sId: task.local.sId),
-        sector: Seletor(name: task.sector.name, sId: task.sector.sId),
-        service: Seletor(name: task.service.name, sId: task.service.sId),
+            Seletor(name: task.measureUnit!.name, sId: task.measureUnit!.sId),
+        local: Seletor(name: task.local!.name, sId: task.local!.sId),
+        sector: Seletor(name: task.sector!.name, sId: task.sector!.sId),
+        service: Seletor(name: task.service!.name, sId: task.service!.sId),
         quantity: quantity,
         totalValue: quantity * unitValue,
         unitValue: unitValue,
@@ -142,7 +141,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
     }
   }
 
-  Future<bool> returnScreenAlert(BuildContext context) {
+  returnScreenAlert(BuildContext context) {
     if (measurementBody.measurements.isEmpty) {
       Provider.of<MeasurementData>(context, listen: false)
           .clearMeasurementData();
@@ -153,8 +152,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Sair do apontamento'),
-              content: Text('Deseja salvar um rascunho?'),
+              title: const Text('Sair do apontamento'),
+              content: const Text('Deseja salvar um rascunho?'),
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,13 +171,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                           showDialog(
                               context: context,
                               builder: (ctx) {
-                                return AlertDialog(
+                                return const AlertDialog(
                                   content: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
-                                    children: const [
+                                    children: [
                                       CircularProgressIndicator(),
                                       Text('Salvando...')
                                     ],
@@ -192,7 +191,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                               .setMeasurementData(measurementAppointment);
                           developer.log(
                               'measurementAppointment: ${jsonEncode(measurementAppointment.toJson())}');
-                          await Future.delayed(Duration(seconds: 1));
+                          await Future.delayed(const Duration(seconds: 1));
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
@@ -207,7 +206,6 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             );
           });
     }
-    ;
   }
 
   @override
@@ -226,11 +224,11 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
           child: loading
-              ? Center(
+              ? const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
+                    children: [
                       CircularProgressIndicator(),
                       Text('Carregando...')
                     ],
@@ -241,9 +239,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: measurementBody.measurements != null
-                            ? measurementBody.measurements.length
-                            : 0,
+                        itemCount: measurementBody.measurements.length,
                         itemBuilder: (context, index) {
                           return Card(
                             elevation: 5,
@@ -260,57 +256,57 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons.person),
+                                                icon: const Icon(Icons.person),
                                                 label: 'Nome',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .namePerson),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons.location_on),
+                                                icon: const Icon(Icons.location_on),
                                                 label: 'Local',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .local
-                                                    .name),
-                                            Divider(
+                                                    ?.name),
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons
+                                                icon: const Icon(Icons
                                                     .construction_outlined),
                                                 label: 'Setor',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .sector
-                                                    .name),
-                                            Divider(
+                                                    ?.name),
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: Icon(Icons.handyman),
+                                                icon: const Icon(Icons.handyman),
                                                 label: 'Serviço',
                                                 value: measurementBody
                                                     .measurements[index]
                                                     .service
-                                                    .name),
-                                            Divider(
+                                                    ?.name),
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: Icon(Icons.account_balance),
+                                              icon: const Icon(Icons.account_balance),
                                               label: 'Quantidade',
                                               value: measurementBody
                                                   .measurements[index].quantity
                                                   .toString(),
                                             ),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: SizedBox(
+                                              icon: const SizedBox(
                                                 height: 20,
                                                 width: 0,
                                               ),
@@ -321,11 +317,11 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                       .unitValue
                                                       .toStringAsFixed(2),
                                             ),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: SizedBox(
+                                              icon: const SizedBox(
                                                 height: 20,
                                                 width: 0,
                                               ),
@@ -336,11 +332,11 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                       .totalValue
                                                       .toStringAsFixed(2),
                                             ),
-                                            Divider(
+                                            const Divider(
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: SizedBox(
+                                              icon: const SizedBox(
                                                 height: 20,
                                                 width: 0,
                                               ),
@@ -364,13 +360,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                             Navigator.pop(context);
                                             setState(() {});
                                           },
-                                          child: Text('Excluir'),
+                                          child: const Text('Excluir'),
                                         ),
                                         TextButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text('Voltar'),
+                                          child: const Text('Voltar'),
                                         ),
                                       ],
                                     );
@@ -384,14 +380,14 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                     measurementBody
                                         .measurements[index].codePerson),
                                 subtitle: Text(measurementBody
-                                        .measurements[index].sector.name +
+                                        .measurements[index].sector!.name +
                                     '\n' +
                                     measurementBody
-                                        .measurements[index].service.name +
+                                        .measurements[index].service!.name +
                                     '\n' +
                                     measurementBody
-                                        .measurements[index].local.name),
-                                trailing: Icon(Icons.search),
+                                        .measurements[index].local!.name),
+                                trailing: const Icon(Icons.search),
                               ),
                             ),
                           );
@@ -399,15 +395,13 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                     GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount:
-                            colaborators == null ? 0 : colaborators.length,
+                        itemCount: colaborators.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1.5,
+                                childAspectRatio: 0.7,
                                 crossAxisSpacing: 2,
                                 crossAxisCount: 2),
                         itemBuilder: (context, index) {
-                          Task selected;
                           return Card(
                             shadowColor: measurementBody.measurements
                                     .where((element) =>
@@ -418,20 +412,30 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                 ? Colors.green.shade100
                                 : Colors.red,
                             elevation: 5,
+                            color: measurementBody.measurements
+                                    .where((element) =>
+                                        element.namePerson ==
+                                        colaborators[index]['data']
+                                            ['tb01_cp002'])
+                                    .isNotEmpty
+                                ? Colors.green.shade100
+                                : Colors.red.shade100,
                             child: InkWell(
                               onTap: () {
                                 showDialog(
                                     context: context,
                                     builder: (context) {
-                                      List<DropdownMenuItem> dropdownMenuItems =
-                                          [];
-                                      for (Task task in storedBuild.tasks) {
+                                      List<DropdownMenuItem<Task>>
+                                          dropdownMenuItems = [];
+                                      for (Task task in storedBuild.tasks!) {
                                         dropdownMenuItems.add(DropdownMenuItem(
-                                          child: Text(task.local.name +
-                                              ' | ' +
-                                              task.sector.name +
-                                              ' | ' +
-                                              task.service.name),
+                                          child: Text(
+                                            task.local!.name +
+                                                ' | ' +
+                                                task.sector!.name +
+                                                ' | ' +
+                                                task.service!.name,
+                                          ),
                                           value: task,
                                         ));
                                       }
@@ -446,7 +450,6 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                       return searchService(
                                           _globalKey,
                                           dropdownMenuItems,
-                                          selected,
                                           quantidadeController,
                                           valorUnitarioController,
                                           observacaoController,
@@ -455,8 +458,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                     });
                               },
                               child: ListTile(
-                                  title: Center(
-                                child: Text(
+                                titleAlignment: ListTileTitleAlignment.center,
+                                title: Text(
                                   colaborators[index]['data']['tb01_cp002']
                                           .toString()
                                           .toUpperCase() +
@@ -465,10 +468,15 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                           .toString()
                                           .toUpperCase(),
                                   textAlign: TextAlign.center,
-                                  maxLines: 4,
-                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87),
                                 ),
-                              )),
+                                subtitle: Image.asset(
+                                  'assets/images/colaborador2.png',
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ),
                             ),
                           );
                         }),
@@ -477,14 +485,16 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         ),
         floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 28),
-          backgroundColor: Palette.customSwatch,
+          animatedIconTheme: const IconThemeData(size: 28),
+          // backgroundColor: Palette.customSwatch,
           visible: true,
           curve: Curves.bounceInOut,
           children: [
             SpeedDialChild(
-              child: const Icon(Icons.send, color: Colors.white),
-              backgroundColor: Palette.customSwatch,
+              child: const Icon(
+                Icons.send,
+              ),
+              // backgroundColor: Palette.customSwatch,
               onTap: () async {
                 if (colaborators
                     .where((element) => measurementBody.measurements
@@ -506,6 +516,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                       if (value == 'created') {
                         showSnackBar(
                             'Medição enviada com sucesso!', Colors.green);
+                        Navigator.of(context).pop();
+                        Provider.of<MeasurementData>(context, listen: false)
+                            .clearMeasurementData();
                       } else {
                         var nav = Navigator.of(context);
                         nav.pop();
@@ -523,8 +536,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
               },
               label: 'Enviar',
               labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500, color: Colors.white),
-              labelBackgroundColor: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -534,23 +547,22 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
 
   AlertDialog searchService(
       GlobalKey<FormState> _globalKey,
-      List<DropdownMenuItem<dynamic>> dropdownMenuItems,
-      Task selected,
+      List<DropdownMenuItem<Task>> dropdownMenuItems,
       TextEditingController quantidadeController,
       TextEditingController valorUnitarioController,
       TextEditingController observacaoController,
       BuildContext context,
       int index) {
+    late Task selected;
     return AlertDialog(
       content: Form(
         key: _globalKey,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           SearchChoices.single(
             items: dropdownMenuItems,
-            value: selected,
             hint: "Escolha um serviço",
             onClear: () {
-              selected = null;
+              setState(() {});
             },
             validator: (value) {
               if (value == null) {
@@ -599,7 +611,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           ),
           TextFormField(
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return 'Campo obrigatório';
               }
               return null;
@@ -609,20 +621,20 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\,?\d{0,2}')),
             ],
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Quantidade',
             ),
           ),
           TextFormField(
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return 'Campo obrigatório';
               }
               return null;
             },
             controller: valorUnitarioController,
             keyboardType: const TextInputType.numberWithOptions(),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Valor Unitário',
             ),
             inputFormatters: [
@@ -631,7 +643,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           ),
           TextFormField(
             controller: observacaoController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Observação',
             ),
           ),
@@ -642,11 +654,11 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Cancelar'),
+          child: const Text('Cancelar'),
         ),
         TextButton(
           onPressed: () {
-            if (_globalKey.currentState.validate()) {
+            if (_globalKey.currentState!.validate()) {
               addMeasurement(
                   colaborator: colaborators[index],
                   task: selected,
@@ -659,7 +671,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
               showSnackBar('Medição criada!', Colors.green);
             }
           },
-          child: Text('Adicionar'),
+          child: const Text('Adicionar'),
         ),
       ],
     );
@@ -672,9 +684,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Erro no envio!'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Parece que você está sem internet.'),
                 Text(
                     'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),
@@ -698,7 +710,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
 
 class MeasurementDetailTile extends StatelessWidget {
   const MeasurementDetailTile({
-    Key key,
+    Key? key,
     this.label,
     this.value,
     this.icon,
@@ -708,32 +720,6 @@ class MeasurementDetailTile extends StatelessWidget {
   final value;
   @override
   Widget build(BuildContext context) {
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   children: [
-    //     Text(
-    //       label,
-    //       style: const TextStyle(
-    //         fontWeight: FontWeight.w500,
-    //         color: Colors.black,
-    //       ),
-    //     ),
-    //     const SizedBox(
-    //       height: 10,
-    //     ),
-    //     Text(
-    //       value,
-    //       maxLines: 3,
-    //       overflow: TextOverflow.ellipsis,
-    //       textAlign: TextAlign.right,
-    //       style: const TextStyle(
-    //         fontWeight: FontWeight.normal,
-    //         color: Colors.black,
-    //       ),
-    //     ),
-    //   ],
-    // );
-
     return ListTile(
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,

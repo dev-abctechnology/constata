@@ -16,10 +16,10 @@ class AcceptTransferUseCaseImpl implements AcceptTransferUseCase {
       if (response) {
         return ResponseEither.success(true);
       } else {
-        return ResponseEither.error('Erro ao aceitar transferência!', null);
+        return ResponseEither.error('Erro ao aceitar transferência!');
       }
     } catch (e, s) {
-      return ResponseEither.error('Erro ao aceitar transferência! - $e', s);
+      return ResponseEither.exception('Erro ao aceitar transferência! - $e', s);
     }
   }
 
@@ -32,10 +32,10 @@ class AcceptTransferUseCaseImpl implements AcceptTransferUseCase {
       if (response) {
         return ResponseEither.success(true);
       } else {
-        return ResponseEither.error('Erro ao negar transferência!', null);
+        return ResponseEither.error('Erro ao negar transferência!');
       }
     } catch (e, s) {
-      return ResponseEither.error('Erro ao negar transferência! - $e', s);
+      return ResponseEither.exception('Erro ao negar transferência! - $e', s);
     }
   }
 }

@@ -2,14 +2,11 @@ import 'dart:convert';
 
 import 'package:constata/src/constants.dart';
 import 'package:constata/src/features/transfers/data/datasources/get_transfers_datasource.dart';
-import 'package:constata/src/shared/http_client.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
-import 'package:constata/src/features/transfers/external/datasources/transfer_mock.dart';
 import 'package:http/http.dart' as http;
 
 class GetTransfersDataSouceImpl implements GetTransfersDataSource {
-  GetTransfersDataSouceImpl(this._client);
-  final HttpClientAdapter _client;
+  GetTransfersDataSouceImpl();
 
   @override
   Future<List<Map<String, dynamic>>> call() async {

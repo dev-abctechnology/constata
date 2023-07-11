@@ -3,7 +3,6 @@ import 'package:constata/src/features/transfers/domain/entities/transfer_entity.
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/transfer_repo.dart';
 import 'package:constata/src/shared/custom_either.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
-import 'package:flutter/material.dart';
 
 class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
   final prefs = SharedPrefs();
@@ -13,7 +12,7 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
   Future<ResponseEither> call(TransferEntity transfer, String label) async {
     try {
       final colaborator =
-          await repository.getColaborator(transfer.codeEffective);
+          await repository.getColaborator(transfer.codeEffective!);
       if (colaborator['status'] == false) {
         throw Exception(colaborator['message']);
       } else {
@@ -39,10 +38,8 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
 
   Future<ResponseEither> updateTransferQueue(
       TransferEntity entity, String label) async {
-    String token = await prefs.getString('token');
-
     try {
-      final transfer = await repository.getTransfer(entity.id);
+      final transfer = await repository.getTransfer(entity.id!);
       if (transfer['status'] == false) {
         throw Exception(transfer['message']);
       } else {
@@ -70,6 +67,9 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
       } else {
         throw Exception(updateResponse.message);
       }
-    } catch (e) {}
+    } catch (e, s) {
+      print(e);
+      return ResponseEither.exception(e.toString(), s);
+    }
   }
 }

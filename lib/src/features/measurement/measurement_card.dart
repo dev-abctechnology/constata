@@ -3,7 +3,11 @@ import 'package:intl/intl.dart';
 
 class MeasurementCard extends StatefulWidget {
   bool editing = true;
-  MeasurementCard({Key key, this.jsonBody, this.callback, this.editing})
+  MeasurementCard(
+      {Key? key,
+      required this.jsonBody,
+      required this.callback,
+      required this.editing})
       : super(key: key);
   Map jsonBody;
   final VoidCallback callback;
@@ -16,9 +20,9 @@ class _MeasurementCard extends State<MeasurementCard> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 6,
-      margin: EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(10.0),
       child: ListTile(
-        leading: Icon(Icons.handyman),
+        leading: const Icon(Icons.handyman),
         title: Text(widget.jsonBody["tp_cp052"]),
         subtitle: Text('Local: ' +
             widget.jsonBody["tp_cp053"]["name"] +
@@ -26,7 +30,7 @@ class _MeasurementCard extends State<MeasurementCard> {
             widget.jsonBody["tp_cp054"]["name"] +
             '\nTarefa: ' +
             widget.jsonBody["tp_cp055"]["name"]),
-        trailing: Icon(Icons.search),
+        trailing: const Icon(Icons.search),
         onTap: () {
           showDialog(
               context: context,
@@ -46,7 +50,8 @@ class _MeasurementCard extends State<MeasurementCard> {
 
 class MeasurementeDetails extends StatefulWidget {
   bool editing;
-  MeasurementeDetails({Key key, this.details, this.editing}) : super(key: key);
+  MeasurementeDetails({Key? key, required this.details, required this.editing})
+      : super(key: key);
   Map details;
   @override
   _MeasurementeDetailsState createState() => _MeasurementeDetailsState();
@@ -56,16 +61,16 @@ List<Widget> buildButton(editing, context) {
   if (editing) {
     return [
       ElevatedButton(
-          style: ElevatedButton.styleFrom(primary: Colors.red),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
           onPressed: () {
             Navigator.pop(context, true);
           },
-          child: Icon(Icons.delete_forever)),
+          child: const Icon(Icons.delete_forever)),
       ElevatedButton(
           onPressed: () {
             Navigator.pop(context, false);
           },
-          child: Icon(Icons.arrow_back)),
+          child: const Icon(Icons.arrow_back)),
     ];
   } else {
     return [
@@ -74,7 +79,7 @@ List<Widget> buildButton(editing, context) {
         onPressed: () {
           Navigator.pop(context, false);
         },
-        child: Text('voltar'),
+        child: const Text('voltar'),
       ))
     ];
   }
@@ -91,20 +96,20 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
           children: [
             Text(
               widget.details["tp_cp052"],
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             Container(
               child: RichText(
                   text: TextSpan(
                       text: '',
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
                       children: [
                     TextSpan(text: widget.details["tp_cp051"].toString())
                   ])),
             ),
-            Divider(color: Colors.black12, thickness: 2),
+            const Divider(color: Colors.black12, thickness: 2),
             ListTile(
-              leading: Column(
+              leading: const Column(
                 children: [
                   Icon(Icons.map),
                   Text("Local"),
@@ -112,9 +117,9 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
               ),
               title: Text(widget.details["tp_cp053"]["name"]),
             ),
-            Divider(color: Colors.black12, thickness: 2),
+            const Divider(color: Colors.black12, thickness: 2),
             ListTile(
-              leading: Column(
+              leading: const Column(
                 children: [
                   Icon(Icons.run_circle_outlined),
                   Text("Setor"),
@@ -122,9 +127,9 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
               ),
               title: Text(widget.details["tp_cp054"]["name"]),
             ),
-            Divider(color: Colors.black12, thickness: 2),
+            const Divider(color: Colors.black12, thickness: 2),
             ListTile(
-              leading: Column(
+              leading: const Column(
                 children: [
                   Icon(Icons.handyman),
                   Text("Tarefa"),
@@ -132,14 +137,14 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
               ),
               title: Text(widget.details["tp_cp055"]["name"]),
             ),
-            Divider(color: Colors.black12, thickness: 2),
-            Icon(Icons.account_balance),
+            const Divider(color: Colors.black12, thickness: 2),
+            const Icon(Icons.account_balance),
             RichText(
                 text: TextSpan(
                     text: '',
                     style: DefaultTextStyle.of(context).style,
                     children: [
-                  TextSpan(
+                  const TextSpan(
                       text: 'Quantidade: ',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: widget.details["tp_cp058"].toString())
@@ -149,7 +154,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                     text: '',
                     style: DefaultTextStyle.of(context).style,
                     children: [
-                  TextSpan(
+                  const TextSpan(
                       text: 'Valor unitario: ',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(
@@ -162,7 +167,7 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                     text: '',
                     style: DefaultTextStyle.of(context).style,
                     children: [
-                  TextSpan(
+                  const TextSpan(
                       text: 'Total: ',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(
@@ -170,19 +175,19 @@ class _MeasurementeDetailsState extends State<MeasurementeDetails> {
                           NumberFormat("#,##0.00", 'pt-Br')
                               .format(widget.details["tp_cp059"]))
                 ])),
-            Divider(color: Colors.black12, thickness: 2),
+            const Divider(color: Colors.black12, thickness: 2),
             Container(
                 child: Column(
               children: [
-                Text('Observações:',
+                const Text('Observações:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
                 Text(widget.details["tp_cp060"].toString(),
-                    style: TextStyle(fontSize: 20))
+                    style: const TextStyle(fontSize: 20))
               ],
             )),
-            Divider(color: Colors.black12, thickness: 2),
+            const Divider(color: Colors.black12, thickness: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: buildButton(widget.editing, context),

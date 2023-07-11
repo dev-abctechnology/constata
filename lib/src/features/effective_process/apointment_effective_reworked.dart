@@ -11,8 +11,6 @@ import 'package:uuid/uuid.dart';
 import 'package:constata/src/features/effective_process/controllers/effective_jarvis.dart';
 import 'package:constata/src/features/effective_process/data/appointment_data.dart';
 import 'package:constata/src/features/effective_process/models/effective_model.dart';
-import 'package:constata/src/features/effective_process/quantity_form.dart';
-import 'package:constata/src/shared/pallete.dart';
 
 class ApointmentEffectiveReworked extends StatefulWidget {
   final String date;
@@ -21,7 +19,10 @@ class ApointmentEffectiveReworked extends StatefulWidget {
   final bool editingMode;
 
   const ApointmentEffectiveReworked(
-      {Key key, this.dataLogged, this.date, this.editingMode = false})
+      {Key? key,
+      required this.dataLogged,
+      required this.date,
+      this.editingMode = false})
       : super(key: key);
 
   @override
@@ -38,7 +39,7 @@ class _ApointmentEffectiveReworkedState
 
   List<Effective> effectives = [];
   EffectiveController effectiveController = EffectiveController();
-  String nomeObra;
+  String nomeObra = '';
   @override
   void initState() {
     nomeObra = widget.dataLogged['obra']['data']['tb01_cp002'];
@@ -86,7 +87,7 @@ class _ApointmentEffectiveReworkedState
     List<Effective> list = [];
     if (sharedPreferences.containsKey("colaboradores")) {
       var effectiveList =
-          jsonDecode(sharedPreferences.getString("colaboradores"));
+          jsonDecode(sharedPreferences.getString("colaboradores")!);
 
       Uuid uuid = const Uuid();
 
@@ -110,7 +111,7 @@ class _ApointmentEffectiveReworkedState
     });
   }
 
-  EffectiveApointment _effectiveApointment;
+  late EffectiveApointment _effectiveApointment;
   void send() async {
     _effectiveApointment = EffectiveApointment(
         data: DataBody(
@@ -162,24 +163,25 @@ class _ApointmentEffectiveReworkedState
   void save() async {
     _effectiveApointment = EffectiveApointment(
         data: DataBody(
-            address: widget.dataLogged['local_negocio']['name'],
-            buildName: BuildName.fromJson(widget.dataLogged['obra']),
-            code: null,
-            companyName: CompanyName.fromJson(widget.dataLogged['empresa']),
-            datetime: widget.date,
-            description: 'Descrição do apontamento',
-            effective: effectives,
-            effectiveTotalQuantity: effectives.length.toString(),
-            quantityPresentes: effectives
-                .where((element) => element.effectiveStatus == 'Presente')
-                .length
-                .toString(),
-            pointer: widget.dataLogged['user']['name'],
-            segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
-            type: "EFET"));
+      address: widget.dataLogged['local_negocio']['name'],
+      buildName: BuildName.fromJson(widget.dataLogged['obra']),
+      code: null,
+      companyName: CompanyName.fromJson(widget.dataLogged['empresa']),
+      datetime: widget.date,
+      description: 'Descrição do apontamento',
+      effective: effectives,
+      effectiveTotalQuantity: effectives.length.toString(),
+      quantityPresentes: effectives
+          .where((element) => element.effectiveStatus == 'Presente')
+          .length
+          .toString(),
+      pointer: widget.dataLogged['user']['name'],
+      segment: widget.dataLogged['obra']['data']['tb01_cp026']['name'],
+      type: "EFET",
+    ));
   }
 
-  Future<bool> returnScreenAlert(BuildContext context) {
+  Future returnScreenAlert(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -203,12 +205,12 @@ class _ApointmentEffectiveReworkedState
                         showDialog(
                             context: context,
                             builder: (ctx) {
-                              return AlertDialog(
+                              return const AlertDialog(
                                 content: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
-                                  children: const [
+                                  children: [
                                     CircularProgressIndicator(),
                                     Text('Salvando...')
                                   ],
@@ -241,36 +243,42 @@ class _ApointmentEffectiveReworkedState
     return SpeedDial(
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: const IconThemeData(size: 28),
-      backgroundColor: Palette.customSwatch,
+      // backgroundColor: Palette.customSwatch,
       visible: true,
       curve: Curves.bounceInOut,
       children: [
         SpeedDialChild(
-          child: const Icon(Icons.send, color: Colors.white),
-          backgroundColor: Palette.customSwatch,
+          child: const Icon(
+            Icons.send,
+          ),
+          // backgroundColor: Palette.customSwatch,
           onTap: () => sendValidator(),
-          label: 'Enviar',
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-          labelBackgroundColor: Colors.black,
+          label: 'Enviar', backgroundColor: Colors.blue,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         SpeedDialChild(
-          child: const Icon(Icons.check, color: Colors.white),
+          child: const Icon(
+            Icons.check,
+          ),
           backgroundColor: Colors.green,
           onTap: () => updateAll('Presente'),
           label: 'Completar presenças',
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-          labelBackgroundColor: Colors.black,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         SpeedDialChild(
-          child: const Icon(Icons.cancel_outlined, color: Colors.white),
+          child: const Icon(
+            Icons.cancel_outlined,
+          ),
           backgroundColor: Colors.red,
           onTap: () => updateAll('Ausente'),
           label: 'Completar Ausências',
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-          labelBackgroundColor: Colors.black,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -302,198 +310,178 @@ class _ApointmentEffectiveReworkedState
             child: Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            children: [
-              Expanded(
-                child: AnimationLimiter(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: effectives != null && effectives.isNotEmpty
-                          ? effectives.length
-                          : 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        var effective = effectives[index];
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 2500),
-                          delay: const Duration(milliseconds: 100),
-                          child: SlideAnimation(
-                            duration: const Duration(milliseconds: 2500),
-                            verticalOffset: 300,
-                            horizontalOffset: 30,
-                            curve: Curves.fastLinearToSlowEaseIn,
-                            child: FlipAnimation(
-                              duration: const Duration(milliseconds: 3000),
-                              curve: Curves.fastLinearToSlowEaseIn,
-                              flipAxis: FlipAxis.y,
-                              child: Slidable(
-                                key: ValueKey(index),
-                                startActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  closeThreshold: 0.1,
-                                  extentRatio: 1,
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        changeStatus(index, 'Em viagem');
-                                      },
-                                      autoClose: true,
-                                      flex: 1,
-                                      backgroundColor:
-                                          Color.fromARGB(255, 25, 13, 149),
-                                      foregroundColor: Colors.white,
-                                      spacing: 4,
-                                      borderRadius: BorderRadius.circular(8),
-                                      padding: const EdgeInsets.all(1),
-                                      icon: Icons.airplanemode_active,
-                                      label: 'Viagem',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        changeStatus(index, 'Em Transferência');
-                                      },
-                                      autoClose: true,
-                                      flex: 1,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 230, 167, 23),
-                                      foregroundColor: Colors.white,
-                                      spacing: 4,
-                                      borderRadius: BorderRadius.circular(8),
-                                      padding: const EdgeInsets.all(2),
-                                      icon: Icons.call_split,
-                                      label: 'Transferência',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        changeStatus(index, 'Ausente');
-                                      },
-                                      autoClose: true,
-                                      flex: 1,
-                                      borderRadius: BorderRadius.circular(8),
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 199, 37, 37),
-                                      foregroundColor: Colors.white,
-                                      spacing: 4,
-                                      padding: const EdgeInsets.all(2),
-                                      icon: Icons.cancel_outlined,
-                                      label: 'Ausente',
-                                    ),
-                                  ],
-                                ),
-                                endActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  closeThreshold: 0.1,
-                                  dismissible: DismissiblePane(
-                                    confirmDismiss: () async {
-                                      debugPrint('confirm');
-                                      changeStatus(index, 'Presente');
-                                      return false;
-                                    },
-                                    closeOnCancel: true,
-                                    dismissThreshold: 0.02,
-                                    onDismissed: () {},
-                                  ),
-                                  extentRatio: 0.01,
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {},
-                                      autoClose: true,
-                                      flex: 1,
-                                      backgroundColor: const Color(0xFF7BC043),
-                                      foregroundColor: Colors.white,
-                                      spacing: 0,
-                                      padding: const EdgeInsets.all(8),
-                                      borderRadius: BorderRadius.circular(8),
-                                      icon: Icons.check,
-                                      label: 'Presente',
-                                    ),
-                                  ],
-                                ),
-                                child: AnimatedContainer(
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            offset: const Offset(0, 2),
-                                            blurRadius: 1,
-                                            color:
-                                                effective.effectiveStatus == ''
-                                                    ? Colors.red.withOpacity(.5)
-                                                    : Colors.transparent),
-                                      ],
-                                      // color: effective.effectiveStatus == ""
-                                      //     ? Color.fromARGB(255, 230, 60, 60)
-                                      //     : Colors.white,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 1),
-                                  margin: const EdgeInsets.all(2),
-                                  duration: const Duration(seconds: 2),
-                                  curve: Curves.easeOutCirc,
-                                  child: Card(
-                                    color: effective.effectiveStatus == ''
-                                        ? Colors.grey.shade100
-                                        : Colors.white,
-                                    // shadowColor: effective.effectiveStatus == ''
-                                    //     ? Color.fromARGB(255, 247, 0, 0)
-                                    //     : Colors.black,
-                                    elevation:
-                                        effective.effectiveStatus == '' ? 5 : 1,
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                            leading: effective
-                                                        .effectiveStatus !=
-                                                    ""
-                                                ? null
-                                                : Icon(
-                                                    Icons.arrow_forward,
-                                                    color: Colors.grey.shade400,
-                                                  ),
-                                            title: Text(
-                                              effective.effectiveName +
-                                                  '\n' +
-                                                  effective.effectiveCode,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
+          child: AnimationLimiter(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: effectives.isNotEmpty ? effectives.length : 0,
+                itemBuilder: (BuildContext context, int index) {
+                  var effective = effectives[index];
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 2500),
+                    delay: const Duration(milliseconds: 100),
+                    child: SlideAnimation(
+                      duration: const Duration(milliseconds: 2500),
+                      verticalOffset: 300,
+                      horizontalOffset: 30,
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      child: FlipAnimation(
+                        duration: const Duration(milliseconds: 3000),
+                        curve: Curves.fastLinearToSlowEaseIn,
+                        flipAxis: FlipAxis.y,
+                        child: Slidable(
+                          key: ValueKey(index),
+                          startActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            closeThreshold: 0.1,
+                            extentRatio: 1,
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {
+                                  changeStatus(index, 'Em viagem');
+                                },
+                                autoClose: true,
+                                flex: 1,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 25, 13, 149),
+                                spacing: 4,
+                                borderRadius: BorderRadius.circular(8),
+                                padding: const EdgeInsets.all(1),
+                                icon: Icons.airplanemode_active,
+                                label: 'Viagem',
+                              ),
+                              SlidableAction(
+                                onPressed: (context) {
+                                  changeStatus(index, 'Em Transferência');
+                                },
+                                autoClose: true,
+                                flex: 1,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 230, 167, 23),
+                                spacing: 4,
+                                borderRadius: BorderRadius.circular(8),
+                                padding: const EdgeInsets.all(2),
+                                icon: Icons.call_split,
+                                label: 'Transferência',
+                              ),
+                              SlidableAction(
+                                onPressed: (context) {
+                                  changeStatus(index, 'Ausente');
+                                },
+                                autoClose: true,
+                                flex: 1,
+                                borderRadius: BorderRadius.circular(8),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 199, 37, 37),
+                                spacing: 4,
+                                padding: const EdgeInsets.all(2),
+                                icon: Icons.cancel_outlined,
+                                label: 'Ausente',
+                              ),
+                            ],
+                          ),
+                          endActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            closeThreshold: 0.1,
+                            dismissible: DismissiblePane(
+                              confirmDismiss: () async {
+                                debugPrint('confirm');
+                                changeStatus(index, 'Presente');
+                                return false;
+                              },
+                              closeOnCancel: true,
+                              dismissThreshold: 0.02,
+                              onDismissed: () {},
+                            ),
+                            extentRatio: 0.01,
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {},
+                                autoClose: true,
+                                flex: 1,
+                                backgroundColor: const Color(0xFF7BC043),
+                                spacing: 0,
+                                padding: const EdgeInsets.all(8),
+                                borderRadius: BorderRadius.circular(8),
+                                icon: Icons.check,
+                                label: 'Presente',
+                              ),
+                            ],
+                          ),
+                          child: AnimatedContainer(
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      blurRadius: 1,
+                                      color: effective.effectiveStatus == ''
+                                          ? Colors.red.withOpacity(.5)
+                                          : Colors.transparent),
+                                ],
+                                // color: effective.effectiveStatus == ""
+                                //     ? Color.fromARGB(255, 230, 60, 60)
+                                //     ,
+                                borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(vertical: 1),
+                            margin: const EdgeInsets.all(2),
+                            duration: const Duration(seconds: 2),
+                            curve: Curves.easeOutCirc,
+                            child: Card(
+                              // color: effective.effectiveStatus == ''
+                              //     ? Colors.grey.shade100
+                              //     : Colors.white,
+                              // shadowColor: effective.effectiveStatus == ''
+                              //     ? Color.fromARGB(255, 247, 0, 0)
+                              //     : Colors.black,
+                              elevation:
+                                  effective.effectiveStatus == '' ? 5 : 1,
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                      leading: effective.effectiveStatus != ""
+                                          ? null
+                                          : Icon(
+                                              Icons.arrow_forward,
+                                              color: Colors.grey.shade400,
                                             ),
-                                            subtitle: Text(
-                                              effective.effectiveStatus,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: effective
-                                                              .effectiveStatus ==
-                                                          "Presente"
-                                                      ? Colors.green
-                                                      : Colors.red),
-                                            ),
-                                            trailing: effective
-                                                        .effectiveStatus !=
-                                                    ""
-                                                ? null
-                                                : Icon(
-                                                    Icons.arrow_back,
-                                                    color: Colors.grey.shade400,
-                                                  )),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                      title: Text(
+                                        effective.effectiveName +
+                                            '\n' +
+                                            effective.effectiveCode,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: Text(
+                                        effective.effectiveStatus,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: effective.effectiveStatus ==
+                                                    "Presente"
+                                                ? Colors.green
+                                                : Colors.red),
+                                      ),
+                                      trailing: effective.effectiveStatus != ""
+                                          ? null
+                                          : Icon(
+                                              Icons.arrow_back,
+                                              color: Colors.grey.shade400,
+                                            )),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      }),
-                ),
-              ),
-            ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
           ),
         )),
-        floatingActionButtonLocation:
-            FloatingActionButtonLocation.miniEndDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         extendBody: true,
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: BottomAppBar(
-            color: Palette.customSwatch,
+            // color: Palette.customSwatch,
             child: Row(
               children: [
                 const SizedBox(
@@ -501,11 +489,9 @@ class _ApointmentEffectiveReworkedState
                   width: 8,
                 ),
                 Text(
-                  '${effectives.length} funcionários cadastrados',
+                  ' funcionários cadastrados: ${effectives.length}',
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 )
               ],
             ),
@@ -525,18 +511,18 @@ class _ApointmentEffectiveReworkedState
   }
 
   void sendValidator() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       final validator =
           effectives.any((element) => element.effectiveStatus == '');
       if (validator == true) {
         showDialog(
             context: context,
             builder: (ctx) {
-              return AlertDialog(
-                title: const Text('Atenção'),
+              return const AlertDialog(
+                title: Text('Atenção'),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Text('Informe o status de todos!'),
                   ],
                 ),
@@ -549,11 +535,11 @@ class _ApointmentEffectiveReworkedState
       showDialog(
           context: context,
           builder: (ctx) {
-            return AlertDialog(
-              title: const Text('Atenção'),
+            return const AlertDialog(
+              title: Text('Atenção'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text('Informe a quantidade de cafés da manhã e da tarde!'),
                 ],
               ),

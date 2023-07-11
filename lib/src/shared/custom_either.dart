@@ -1,17 +1,22 @@
 class ResponseEither {
+  final String? message;
+  final bool status;
+  final dynamic data;
+  final StackTrace? stackTrace;
+
   ResponseEither({
     this.message,
-    this.status,
+    required this.status,
     this.data,
     this.stackTrace,
   });
 
-  final String message;
-  final bool status;
-  final dynamic data;
-  final StackTrace stackTrace;
+  factory ResponseEither.error(String message) => ResponseEither(
+        message: message,
+        status: false,
+      );
 
-  factory ResponseEither.error(String message, StackTrace stackTrace) =>
+  factory ResponseEither.exception(String message, StackTrace stackTrace) =>
       ResponseEither(
         message: message,
         status: false,

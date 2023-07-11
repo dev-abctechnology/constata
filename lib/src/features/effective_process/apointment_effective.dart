@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,8 @@ class ApointmentEffective extends StatefulWidget {
 
   final Map dataLogged;
 
-  const ApointmentEffective({Key key, this.dataLogged, this.date})
+  const ApointmentEffective(
+      {Key? key, required this.dataLogged, required this.date})
       : super(key: key);
 
   @override
@@ -27,10 +27,10 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
   final _formKey = GlobalKey<FormState>();
   List effectiveList = [];
   List viewList = [];
-  List<String> _isCheckedString;
-  List<String> val;
+  List<String> _isCheckedString = [];
+  List<String> val = [];
   List<int> valInt = [];
-  List<Color> colorCollab;
+  List<Color> colorCollab = [];
 
   Future sendApointment() async {
     setState(() {});
@@ -102,9 +102,9 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Erro no envio!'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Parece que você está sem internet.'),
                 Text(
                     'O apontamento ficará pendente para envio.\n\nCertifique-se de estar conectado à internet para tentar novamente.'),
@@ -169,10 +169,10 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
     }
   }
 
-  criarListaDeEfetivosParaSelect([List<String> fixo, List<String> ausente]) {
+  criarListaDeEfetivosParaSelect([List<String>? fixo, List<String>? ausente]) {
     viewList = [];
-    fixo ??= List<String>.filled(effectiveList.length, "");
-    ausente ??= List<String>.filled(effectiveList.length, "Ausente");
+    List<String>.filled(effectiveList.length, "");
+    List<String>.filled(effectiveList.length, "Ausente");
     for (var i = 0; i < effectiveList.length; i++) {
       try {
         var genUuid = const Uuid();
@@ -180,13 +180,14 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
           viewList.add({
             "tp_cp012": "${effectiveList[i]['data']['tb01_cp004']}", // codigo
             "tp_cp013": "${effectiveList[i]['data']['tb01_cp002']}", // nome
-            "tp_cp014": fixo[i], //fixo ou rotativo
-            "tp_cp015": ausente[i], //presente ausente transferencia
+            "tp_cp014": fixo![i], //fixo ou rotativo
+            "tp_cp015": ausente![i], //presente ausente transferencia
             "_id": genUuid.v4()
           });
         });
-      } catch (e) {
-        debugPrint(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
       }
 
       debugPrint(jsonEncode(viewList));
@@ -217,7 +218,7 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
               await SharedPreferences.getInstance();
           if (sharedPreferences.containsKey("colaboradores")) {
             effectiveList =
-                jsonDecode(sharedPreferences.getString("colaboradores"));
+                jsonDecode(sharedPreferences.getString("colaboradores")!);
             mountArrays();
           }
         }
@@ -264,7 +265,7 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Informe a quantidade de cafés da manhã';
                                   }
                                   return null;
@@ -286,7 +287,7 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Informe a quantidade de cafés da tarde';
                                   }
                                   return null;
@@ -365,7 +366,9 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                                           setState(() {
                                             colorCollab[index] =
                                                 Colors.transparent;
-                                            valInt[index] = value;
+                                            valInt[index] = int.parse(value
+                                                .toString()
+                                                .replaceAll(" ", ""));
                                             val[index] = "Presente";
                                           });
                                           debugPrint(val.toString());
@@ -400,7 +403,9 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                                           setState(() {
                                             colorCollab[index] =
                                                 Colors.transparent;
-                                            valInt[index] = value;
+                                            valInt[index] = int.parse(value
+                                                .toString()
+                                                .replaceAll(" ", ""));
                                             val[index] = "Ausente";
                                           });
                                           debugPrint(val.toString());
@@ -435,7 +440,9 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                                           setState(() {
                                             colorCollab[index] =
                                                 Colors.transparent;
-                                            valInt[index] = value;
+                                            valInt[index] = int.parse(value
+                                                .toString()
+                                                .replaceAll(" ", ""));
                                             val[index] = "Em transferência";
                                           });
                                           debugPrint(val.toString());
@@ -464,9 +471,7 @@ class _ApointmentEffectiveState extends State<ApointmentEffective> {
                     : const Color.fromARGB(255, 231, 80, 80)
                 : null,
             onPressed: () {
-              if (_formKey.currentState.validate()) {
-                developer.log(cafeManhaController.text, name: "MANHÃ");
-                developer.log(cafeTardeController.text, name: "TARDE");
+              if (_formKey.currentState!.validate()) {
                 if (viewList.isNotEmpty) {
                   if (val.contains('')) {
                     showDialog(

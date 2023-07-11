@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'dart:developer' as developer;
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,7 @@ import 'epi_process.dart';
 class EpiHome extends StatefulWidget {
   var dataLogged;
 
-  EpiHome({Key key, this.dataLogged}) : super(key: key);
+  EpiHome({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _EpiHomeState createState() => _EpiHomeState();
@@ -24,7 +25,7 @@ class EpiHome extends StatefulWidget {
 class _EpiHomeState extends State<EpiHome> {
   var res = [];
   String _selectedDate = "Escolha a data";
-  String _date;
+  String _date = "";
   int opened = 0;
   bool pending = false;
   bool sending = false;
@@ -36,19 +37,19 @@ class _EpiHomeState extends State<EpiHome> {
     });
     bool k = false;
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
-        Duration(days: 120),
+        const Duration(days: 120),
       ),
       lastDate: DateTime.now().add(
-        Duration(days: 0),
+        const Duration(days: 0),
       ),
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(Duration(days: 3)));
+        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
         if (k == true) {
           print('k true');
           dateStatus = false;
@@ -136,7 +137,7 @@ class _EpiHomeState extends State<EpiHome> {
       if (response.statusCode == 200) {
         resAppointment = jsonDecode(await response.stream.bytesToString());
         setState(() {});
-        if (resAppointment.length > 0) {
+        if (resAppointment.isNotEmpty) {
           status = false;
 
           setState(() {});
@@ -155,7 +156,7 @@ class _EpiHomeState extends State<EpiHome> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Não foi possível verificar se há apontamentos.'),
               content: Text(
                 "Verifique sua conexão e tente novamente!\n\nAtenção!\nPode ocorrer inconsistências.",
@@ -170,7 +171,7 @@ class _EpiHomeState extends State<EpiHome> {
     developer.log(indice.toString(), name: "Indice apagar:");
     setState(() {
       SharedPreferences.getInstance().then((value) async {
-        List fila = value.getStringList('filaApontamentoEPI');
+        List<String> fila = value.getStringList('filaApontamentoEPI')!;
         print(fila.length);
         if (fila.length > 1) {
           fila.removeAt(indice);
@@ -181,7 +182,7 @@ class _EpiHomeState extends State<EpiHome> {
         List x = jsonDecode(fila.toString());
         filaDeApontamento = x.toSet().toList();
         value.setStringList('filaApontamentoEPI', fila);
-        if (filaDeApontamento.length == 0) {
+        if (filaDeApontamento.isEmpty) {
           pending = false;
           value.remove('filaApontamentoEPI');
         }
@@ -191,7 +192,7 @@ class _EpiHomeState extends State<EpiHome> {
 
   List filaDeApontamento = [];
 
-  List result;
+  List result = [];
 
   @override
   void initState() {
@@ -201,21 +202,19 @@ class _EpiHomeState extends State<EpiHome> {
   }
 
   void buildFila() async {
-    SharedPreferences sharedPreferences;
+    late SharedPreferences sharedPreferences;
     await SharedPreferences.getInstance()
         .then((value) => sharedPreferences = value);
-    if (sharedPreferences != null) {
-      if (sharedPreferences.containsKey("filaApontamentoEPI")) {
-        // pending = true;
-        // status = false;
-        setState(() {});
-        filaDeApontamento = jsonDecode(
-            sharedPreferences.getStringList("filaApontamentoEPI").toString());
-        print("ADFDSAFDSF" +
-            sharedPreferences.getStringList('filaApontamentoEPI').toString());
-        developer.log(filaDeApontamento.length.toString());
-        setState(() {});
-      }
+    if (sharedPreferences.containsKey("filaApontamentoEPI")) {
+      // pending = true;
+      // status = false;
+      setState(() {});
+      filaDeApontamento = jsonDecode(
+          sharedPreferences.getStringList("filaApontamentoEPI").toString());
+      print("ADFDSAFDSF" +
+          sharedPreferences.getStringList('filaApontamentoEPI').toString());
+      developer.log(filaDeApontamento.length.toString());
+      setState(() {});
     }
   }
 
@@ -223,7 +222,7 @@ class _EpiHomeState extends State<EpiHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('3 - Controle de EPI'),
+        title: const Text('3 - Controle de EPI'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -257,7 +256,7 @@ class _EpiHomeState extends State<EpiHome> {
                                     }
                                   });
                                 },
-                                icon: Icon(Icons.calendar_today)),
+                                icon: const Icon(Icons.calendar_today)),
                           ],
                         ),
                       ),
@@ -265,14 +264,14 @@ class _EpiHomeState extends State<EpiHome> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          height: MediaQuery.of(context).size.height * 0.065,
+                        child: SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.95,
+                          height: MediaQuery.sizeOf(context).height * 0.065,
                           child: ElevatedButton(
                             onPressed: dateStatus
                                 ? () {
                                     setState(() {
-                                      var route = MaterialPageRoute(
+                                      var route = CustomPageRoute(
                                         builder: (BuildContext context) =>
                                             EpiProcess(
                                           dataLogged: widget.dataLogged,
@@ -292,8 +291,8 @@ class _EpiHomeState extends State<EpiHome> {
                 ),
               ),
               filaDeApontamento.isEmpty
-                  ? Text('')
-                  : Center(
+                  ? const Text('')
+                  : const Center(
                       child: Column(children: [
                       Divider(),
                       Text('Apontamento de EPI pendente')
@@ -307,12 +306,12 @@ class _EpiHomeState extends State<EpiHome> {
                     return Card(
                       child: ListTile(
                         leading: ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(primary: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             onPressed: () {
                               apagarApontamentoPendente(index);
                             },
-                            child: Icon(Icons.delete)),
+                            child: const Icon(Icons.delete)),
                         title: Text(
                             'Data: ${filaDeApontamento[index]['data']['h0_cp054']}\n'
                             'Nome: ${filaDeApontamento[index]['data']['h0_cp013']}'),
@@ -334,7 +333,7 @@ class _EpiHomeState extends State<EpiHome> {
                                   });
                                   // hasAppointmentQueue(filaDeApontamento[index]['data']['h0_cp008']).then((value) => switchAppointment(value), );
                                 },
-                          child: Icon(Icons.arrow_circle_up),
+                          child: const Icon(Icons.arrow_circle_up),
                         ),
                       ),
                     );
@@ -345,8 +344,8 @@ class _EpiHomeState extends State<EpiHome> {
                     : Center(
                         child: Column(
                         children: [
-                          Divider(),
-                          Text('$_selectedDate'),
+                          const Divider(),
+                          Text(_selectedDate),
                         ],
                       )),
               ),
@@ -357,13 +356,11 @@ class _EpiHomeState extends State<EpiHome> {
                 itemBuilder: (BuildContext context, int index) {
                   List epiList = resAppointment[index]['data']['tb03_cp011'];
                   var validated =
-                      resAppointment[index]['data']['h0_cp056'] == null
-                          ? 'Não'
-                          : resAppointment[index]['data']['h0_cp056'];
+                      resAppointment[index]['data']['h0_cp056'] ?? 'Não';
                   return InkWell(
                     onTap: () {
                       setState(() {
-                        var route = MaterialPageRoute(
+                        var route = CustomPageRoute(
                           builder: (BuildContext context) =>
                               EpiAppointmentDetails(
                             epiAppointment: resAppointment[index],

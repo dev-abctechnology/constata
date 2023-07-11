@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class EffectiveController {
   Future<List<Effective>> fetchEffective(
-      {BuildContext context, String buildName}) async {
+      {required BuildContext context, required String buildName}) async {
     try {
       var headers = {
         'Authorization':
@@ -37,7 +37,7 @@ class EffectiveController {
       if (response.statusCode == 200) {
         var effectiveList = jsonDecode(await response.stream.bytesToString());
         List<Effective> effective = [];
-        Uuid uuid = Uuid();
+        Uuid uuid = const Uuid();
 
         for (var i = 0; i < effectiveList.length; i++) {
           effective.add(Effective(
@@ -53,14 +53,15 @@ class EffectiveController {
         print('a');
         throw Exception();
       }
-    } catch (e, s) {
+    } catch (e) {
       print(e);
       throw Exception();
     }
   }
 
   Future<String> sendEffective(
-      {BuildContext context, EffectiveApointment efetivo}) async {
+      {required BuildContext context,
+      required EffectiveApointment efetivo}) async {
     var headers = {
       'Authorization':
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
@@ -68,7 +69,7 @@ class EffectiveController {
     };
     var request =
         http.Request('POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjre-00'));
-    request.body = '${jsonEncode(efetivo.toJson())}';
+    request.body = jsonEncode(efetivo.toJson());
     request.headers.addAll(headers);
     try {
       http.StreamedResponse response = await request.send();

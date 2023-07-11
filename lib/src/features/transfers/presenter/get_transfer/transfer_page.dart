@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:constata/src/features/transfers/data/repositories/accept_transfer_repository.dart';
 import 'package:constata/src/features/transfers/data/repositories/get_transfers_repository.dart';
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
@@ -7,16 +5,19 @@ import 'package:constata/src/features/transfers/domain/usecases/accept_transfer/
 import 'package:constata/src/features/transfers/domain/usecases/get_transfers/get_transfers_usecase_impl.dart';
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/accept_transfer_datasource.dart';
 import 'package:constata/src/features/transfers/external/datasources/get_transfers_datasource.dart';
-import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_controller.dart';
 import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_page.dart';
 import 'package:constata/src/features/transfers/presenter/get_transfer/get_transfer_controller.dart';
-import 'package:constata/src/shared/http_client.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../services/messaging/firebase_messaging_service.dart';
 
 class TransferPage extends StatefulWidget {
   final Map<String, dynamic> obra;
 
-  const TransferPage({Key key, this.obra}) : super(key: key);
+  const TransferPage({Key? key, required this.obra}) : super(key: key);
 
   @override
   State<TransferPage> createState() => _TransferPageState();
@@ -26,9 +27,7 @@ class _TransferPageState extends State<TransferPage> {
   final _controller = TransferController(
     GetTransfersUseCaseImpl(
       GetTransfersRepositoryImpl(
-        GetTransfersDataSouceImpl(
-          HttpClientAdapter(),
-        ),
+        GetTransfersDataSouceImpl(),
       ),
     ),
     AcceptTransferUseCaseImpl(
@@ -61,6 +60,12 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +73,7 @@ class _TransferPageState extends State<TransferPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          var route = MaterialPageRoute(
+          var route = CustomPageRoute(
             builder: (BuildContext context) =>
                 CreateTransferPage(originObra: widget.obra),
           );
@@ -79,14 +84,16 @@ class _TransferPageState extends State<TransferPage> {
       body: ValueListenableBuilder(
         valueListenable: _isLoading,
         builder: (context, value, child) {
-          return value
+          return value == true
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : ValueListenableBuilder(
                   valueListenable: _isError,
                   builder: (context, value, child) {
-                    return value ? _buildErrorContent() : _buildTransferList();
+                    return value == true
+                        ? _buildErrorContent()
+                        : _buildTransferList();
                   },
                 );
         },
@@ -99,7 +106,7 @@ class _TransferPageState extends State<TransferPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Erro ao carregar transferências!'),
+          const Text('Erro ao carregar transferências!'),
           ElevatedButton(
             onPressed: () {
               getData();
@@ -117,13 +124,22 @@ class _TransferPageState extends State<TransferPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: _controller.transfers.isEmpty
             ? [
-                const Text('Nenhuma transferência pendente!'),
+                const Text(
+                  'Nenhuma transferência pendente!'
+                  '\n'
+                  'Clique no botão + para criar uma nova transferência!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
               ]
             : [
                 const SizedBox(height: 20),
                 Text(
                   'Transferências pendentes',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -148,33 +164,27 @@ class _TransferPageState extends State<TransferPage> {
       onExpansionChanged: (value) {
         print(transfer);
       },
-      title: Text(transfer.nameEffective),
+      title: Text(transfer.nameEffective!),
       // subtitle: Text('${transfer.originBuild} (arrow icon here) ${transfer.targetBuild}'),
-      subtitle: TextWithIcon(
-          origin: transfer.originBuild, target: transfer.targetBuild),
+      subtitle:
+          Text('De: ${transfer.originBuild}\nPara: ${transfer.targetBuild} '),
 
-      trailing: Text(transfer.status),
+      trailing: Text(transfer.status!),
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
-              onPressed: () async {
-                await _showConfirmDialog(transfer, index);
-              },
-              child: const Text('Confirmar'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
               onPressed: () async {
                 await _showCancelDialog(transfer, index);
               },
               child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _showConfirmDialog(transfer, index);
+              },
+              child: const Text('Confirmar'),
             ),
           ],
         ),
@@ -199,15 +209,16 @@ class _TransferPageState extends State<TransferPage> {
               child: const Text('Não'),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
               onPressed: () async {
                 final accepted = await _controller.acceptTransfer(transfer);
                 if (accepted) {
                   _controller.transfers.removeAt(index);
                   setState(() {});
                   _showSuccessDialog('Transferência aceita com sucesso!');
+                  await Provider.of<FirebaseMessagingService>(context,
+                          listen: false)
+                      .sendMessageConfirmedTranfer(transfer.originBuild!,
+                          transfer.targetBuild!, transfer.nameEffective!);
                 } else {
                   print('Erro ao aceitar transferência!');
                 }
@@ -220,7 +231,10 @@ class _TransferPageState extends State<TransferPage> {
     );
   }
 
-  Future<void> _showCancelDialog(TransferEntity transfer, int index) async {
+  Future<void> _showCancelDialog(
+    TransferEntity transfer,
+    int index,
+  ) async {
     showDialog(
       context: context,
       builder: (context) {
@@ -231,28 +245,28 @@ class _TransferPageState extends State<TransferPage> {
           actionsAlignment: MainAxisAlignment.spaceEvenly,
           actions: [
             ElevatedButton(
+              onPressed: () async {
+                final canceled = await _controller.denyTransfer(transfer);
+                if (canceled) {
+                  _controller.transfers.removeAt(index);
+                  await Provider.of<FirebaseMessagingService>(context,
+                          listen: false)
+                      .sendMessageDeniedTransfer(transfer.originBuild!,
+                          transfer.targetBuild!, transfer.nameEffective!);
+                  setState(() {});
+                  Navigator.of(context).pop();
+                  _showSuccessDialog('Transferência cancelada com sucesso!');
+                } else {
+                  _showErrorDialog('Erro ao cancelar transferência!');
+                }
+              },
+              child: const Text('Sim'),
+            ),
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
               child: const Text('Não'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              onPressed: () async {
-                Navigator.of(context).pop();
-
-                final canceled = await _controller.denyTransfer(transfer);
-                if (canceled) {
-                  _controller.transfers.removeAt(index);
-                  setState(() {});
-                  _showSuccessDialog('Transferência cancelada com sucesso!');
-                } else {
-                  print('Erro ao cancelar transferência!');
-                }
-              },
-              child: const Text('Sim'),
             ),
           ],
         );
@@ -271,6 +285,27 @@ class _TransferPageState extends State<TransferPage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(String s) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Erro!'),
+          content: Text(s),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
               },
               child: const Text('Ok'),
             ),
@@ -282,7 +317,7 @@ class _TransferPageState extends State<TransferPage> {
 }
 
 class TransferListLoading extends StatelessWidget {
-  const TransferListLoading({Key key}) : super(key: key);
+  const TransferListLoading({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +330,7 @@ class TransferListLoading extends StatelessWidget {
 class TransferListError extends StatelessWidget {
   final VoidCallback onRetry;
 
-  const TransferListError({Key key, this.onRetry}) : super(key: key);
+  const TransferListError({Key? key, required this.onRetry}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +338,7 @@ class TransferListError extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Erro ao carregar transferências!'),
+          const Text('Erro ao carregar transferências!'),
           ElevatedButton(
             onPressed: onRetry,
             child: const Text('Tentar novamente'),
@@ -319,9 +354,9 @@ class TextWithIcon extends StatelessWidget {
   final String target;
 
   const TextWithIcon({
-    Key key,
-    this.origin,
-    this.target,
+    Key? key,
+    required this.origin,
+    required this.target,
   }) : super(key: key);
 
   @override
@@ -331,12 +366,12 @@ class TextWithIcon extends StatelessWidget {
         children: [
           TextSpan(
             text: origin,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),
           ),
-          WidgetSpan(
+          const WidgetSpan(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.0),
               child: Icon(
@@ -348,7 +383,7 @@ class TextWithIcon extends StatelessWidget {
           ),
           TextSpan(
             text: target,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "771544945913",
+    "project_id": "constata-abctechnology",
+    "storage_bucket": "constata-abctechnology.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:771544945913:android:587e819c67d84ff7b07e28",
+        "android_client_info": {
+          "package_name": "com.abctechnology.constata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "771544945913-8frd9ct6164d4go524no2u92ki6i0ccr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmRowfVKqE52Wxu1yrLfcPRNl0rwBXL90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "771544945913-8frd9ct6164d4go524no2u92ki6i0ccr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "771544945913-6h93dhjsb24da87beiup4l80iuspv54j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.constata003"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -32,7 +32,7 @@ class CompanyRefreshController {
     } catch (e) {
       debugPrint(e.toString());
       developer.log('error', name: "Update", error: e);
-      return null;
+      return [];
     }
   }
 }

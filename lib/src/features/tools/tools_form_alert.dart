@@ -1,11 +1,10 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 class ToolsFormAlert extends StatefulWidget {
   var tool;
-  ToolsFormAlert({Key key, this.tool}) : super(key: key);
+  ToolsFormAlert({Key? key, this.tool}) : super(key: key);
 
   @override
   _ToolsFormAlertState createState() => _ToolsFormAlertState();
@@ -23,10 +22,9 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
     saldo = double.parse(widget.tool["tp_cp044"].toString());
     disponivel = double.parse(widget.tool["tp_cp041"].toString());
   }
+
   @override
   Widget build(BuildContext context) {
-    
-
     return AlertDialog(
       content: SingleChildScrollView(
         child: Column(
@@ -48,15 +46,16 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                       controller: controller,
                       validator: (value) {
                         if (controller.text.isNotEmpty &&
-                            double.tryParse(controller.text) > disponivel) {
+                            double.tryParse(controller.text)! > disponivel) {
                           controller.clear();
                           return "Valor inválido!";
-                        }else if(controller.text.isNotEmpty){
-                          saldo = widget.tool["tp_cp041"] + double.tryParse(controller.text);
+                        } else if (controller.text.isNotEmpty) {
+                          saldo = widget.tool["tp_cp041"] +
+                              double.tryParse(controller.text);
                         }
                         return null;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           icon: Icon(Icons.arrow_back),
                           labelText: 'Entrada de ferramentas'),
                     ),
@@ -66,14 +65,14 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                       controller: controller1,
                       validator: (value) {
                         if (controller1.text.isNotEmpty &&
-                            double.tryParse(controller1.text) > saldo) {
+                            double.tryParse(controller1.text)! > saldo) {
                           controller1.clear();
                           return "Valor inválido!";
                         }
                         print(saldo);
                         return null;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           icon: Icon(Icons.arrow_forward),
                           labelText: 'Saída de ferramentas'),
                     ),
@@ -98,10 +97,10 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                       "name": widget.tool['tp_cp040']['name'],
                       "_id": widget.tool['tp_cp040']['_id']
                     },
-                    "_id": Uuid().v4()
+                    "_id": const Uuid().v4()
                   });
                 },
-                child: Text('Salvar'))
+                child: const Text('Salvar'))
           ],
         ),
       ),

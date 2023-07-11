@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ToolListAlert extends StatefulWidget {
   var dataLogged;
 
-  ToolListAlert({Key key, this.dataLogged}) : super(key: key);
+  ToolListAlert({Key? key, this.dataLogged}) : super(key: key);
 
   @override
   _ToolListAlertState createState() => _ToolListAlertState();
@@ -14,25 +14,23 @@ class ToolListAlert extends StatefulWidget {
 class _ToolListAlertState extends State<ToolListAlert> {
   @override
   Widget build(BuildContext context) {
-    List tools = widget.dataLogged['obra']['data']['tb07_cp038'] != null
-        ? widget.dataLogged['obra']['data']['tb07_cp038']
-        : [];
+    List tools = widget.dataLogged['obra']['data']['tb07_cp038'] ?? [];
     return AlertDialog(
       actions: [
         ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('voltar'))
+            child: const Text('voltar'))
       ],
-      content: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        // height: MediaQuery.of(context).size.height * 0.7,
+      content: SizedBox(
+        width: MediaQuery.sizeOf(context).width * 0.8,
+        // height: MediaQuery.sizeOf(context).height * 0.7,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             tools.isEmpty
-                ? Text('Não há ferramentas cadastradas na obra!')
+                ? const Text('Não há ferramentas cadastradas na obra!')
                 : Container(),
             ListView.builder(
                 shrinkWrap: true,
@@ -53,7 +51,7 @@ class _ToolListAlertState extends State<ToolListAlert> {
                         Navigator.pop(context, kk);
                       },
                       child: ListTile(
-                        leading: Icon(Icons.handyman_outlined),
+                        leading: const Icon(Icons.handyman_outlined),
                         title: Text(tools[i]['tp_cp039']['name']),
                         subtitle: Text(tools[i]['tp_cp040']['name']),
                       ),

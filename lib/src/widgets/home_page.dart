@@ -1,11 +1,8 @@
-import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
-import 'package:constata/src/home_page.dart';
+// import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +19,7 @@ import 'grid_button.dart';
 class HomePageBody extends StatefulWidget {
   final Map arguments;
 
-  const HomePageBody({Key key, this.arguments}) : super(key: key);
+  const HomePageBody({Key? key, required this.arguments}) : super(key: key);
 
   @override
   State<HomePageBody> createState() => _HomePageBodyState();
@@ -46,20 +43,20 @@ class _HomePageBodyState extends State<HomePageBody> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Column(
-                    children: const [Icon(Icons.approval), Text('Ficar')],
+                  child: const Column(
+                    children: [Icon(Icons.approval), Text('Ficar')],
                   ),
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.red),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
                     SharedPreferences.getInstance().then(
                       (value) => value.remove("data"),
                     );
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                   },
-                  child: Column(
-                    children: const [Icon(Icons.exit_to_app), Text('Sair')],
+                  child: const Column(
+                    children: [Icon(Icons.exit_to_app), Text('Sair')],
                   ),
                 ),
               ],
@@ -82,13 +79,13 @@ class _HomePageBodyState extends State<HomePageBody> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
+                return const AlertDialog(
                   title: Text('Verifique sua conexão!'),
                   content: Text(
                       'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
                 );
               }).then((value) {
-            var route = MaterialPageRoute(
+            var route = CustomPageRoute(
               builder: (BuildContext context) => Measurement(
                 dataLogged: widget.arguments,
               ),
@@ -99,7 +96,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         } else if (value.isNotEmpty) {
           Navigator.of(context).pop();
           widget.arguments['obra'] = value[0];
-          var route = MaterialPageRoute(
+          var route = CustomPageRoute(
             builder: (BuildContext context) => Measurement(
               dataLogged: widget.arguments,
             ),
@@ -111,13 +108,13 @@ class _HomePageBodyState extends State<HomePageBody> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
+                return const AlertDialog(
                   title: Text('Ocorreu um problema volte e tente novamente!'),
                   content: Text(
                       'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
                 );
               }).then((value) {
-            var route = MaterialPageRoute(
+            var route = CustomPageRoute(
               builder: (BuildContext context) => Measurement(
                 dataLogged: widget.arguments,
               ),
@@ -151,14 +148,16 @@ class _HomePageBodyState extends State<HomePageBody> {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.02),
-        height: MediaQuery.of(context).size.height * 0.9,
+            horizontal: MediaQuery.sizeOf(context).width * 0.02),
+        height: MediaQuery.sizeOf(context).height * 0.9,
         decoration: const BoxDecoration(
           // color: Colors.green,
           image: DecorationImage(
             isAntiAlias: true,
             fit: BoxFit.cover,
-            image: AssetImage('assets/constata.png'),
+            image: AssetImage(
+              'assets/constata.png',
+            ),
             opacity: 0.25,
           ),
         ),
@@ -170,23 +169,26 @@ class _HomePageBodyState extends State<HomePageBody> {
                 child: Container(
                   child: Text('Conectado em $obra',
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
                       )),
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
+                height: MediaQuery.sizeOf(context).height * 0.02,
               ),
-              Container(
-                alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/constata_big.png',
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/constata_big.png',
+                    color: Colors.blue,
+                  ),
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
+                height: MediaQuery.sizeOf(context).height * 0.02,
               ),
               Center(
                 child: Padding(
@@ -195,9 +197,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     crossAxisCount: 2,
-                    childAspectRatio: 1.8,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
+                    childAspectRatio: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
                     children: <Widget>[
                       GridButton(
                           icon: const Icon(
@@ -207,7 +209,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           label: "Efetivo",
                           onPressed: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) =>
                                     EffectiveControl(
                                   dataLogged: widget.arguments,
@@ -215,7 +217,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                               );
                               Navigator.of(context).push(route);
 
-                              // var route = MaterialPageRoute(
+                              // var route = CustomPageRoute(
                               //     builder: (BuildContext context) =>
                               //         EffectiveClean());
                               // Navigator.of(context).push(route);
@@ -230,7 +232,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           label: "EPI",
                           onPressed: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) => EpiHome(
                                   dataLogged: widget.arguments,
                                 ),
@@ -242,7 +244,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           icon: const Icon(Icons.health_and_safety, size: 30)),
                       GridButton(
                           onPressed: () {
-                            var route = MaterialPageRoute(
+                            var route = CustomPageRoute(
                               builder: (BuildContext context) => SelectDatePage(
                                 dataLogged: widget.arguments,
                               ),
@@ -261,7 +263,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             await prefs.remove('obra_id');
                             await prefs.setString('obra_id', obraId);
 
-                            var route = MaterialPageRoute(
+                            var route = CustomPageRoute(
                               builder: (BuildContext context) => TransferPage(
                                   obra: {'id': obraId, 'name': obra}),
                             );
@@ -274,7 +276,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             size: 30,
                           )),
                       GridButton(
-                          color: Colors.red,
+                          // color: Colors.red,
                           onPressed: () {
                             exitApplication(context);
                           },
@@ -289,8 +291,8 @@ class _HomePageBodyState extends State<HomePageBody> {
               ),
               // Divider(),
               // Container(
-              //   width: MediaQuery.of(context).size.width * 0.95,
-              //   height: MediaQuery.of(context).size.height * 0.065,
+              //   width: MediaQuery.sizeOf(context).width * 0.95,
+              //   height: MediaQuery.sizeOf(context).height * 0.065,
               //   child: ElevatedButton(
               //     style: ElevatedButton.styleFrom(primary: Colors.red),
               //     onPressed: () {

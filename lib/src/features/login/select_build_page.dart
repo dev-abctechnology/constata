@@ -1,27 +1,20 @@
 import 'dart:convert';
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../shared/utils.dart';
+
 class SelectObra extends StatefulWidget {
-  var localDeNegocio;
-  var empresa;
-  var filial;
   var user;
 
   var obraData;
 
-  SelectObra(
-      {Key key,
-      this.user,
-      this.localDeNegocio,
-      this.empresa,
-      this.filial,
-      this.obraData})
+  SelectObra({Key? key, required this.user, required this.obraData})
       : super(key: key);
 
   @override
@@ -56,8 +49,8 @@ class _SelectObraState extends State<SelectObra> {
             return Card(
               elevation: 3,
               child: InkWell(
-                onTap: () {
-                  var route = MaterialPageRoute(
+                onTap: () async {
+                  var route = CustomPageRoute(
                     builder: (BuildContext context) => HomePage(
                       dataLogged: generateDataLogged(index),
                     ),
@@ -68,6 +61,17 @@ class _SelectObraState extends State<SelectObra> {
                           json.encode(
                               generateStoredDataLogged(context, index))));
 
+                  final topicName = convertToValidTopicName(
+                      listaDeObras[index]['data']['tb01_cp002']);
+                  await Provider.of<FirebaseMessagingService>(context,
+                          listen: false)
+                      .unsubscribeFromAllTopics();
+                  final subscribe = await Provider.of<FirebaseMessagingService>(
+                          context,
+                          listen: false)
+                      .subscribeToTopic(topicName);
+                  print(
+                      'inscrição no tópico ${listaDeObras[index]['data']['tb01_cp002']}: $subscribe');
                   Navigator.of(context).push(route);
                 },
                 child: ListTile(
@@ -114,12 +118,15 @@ class _SelectObraState extends State<SelectObra> {
           child: Center(
             child: Column(
               children: [
-                Container(
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      'assets/images/constata_big.png',
-                      width: double.infinity,
-                    )),
+                Card(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/constata_big.png',
+                    color: Colors.blue,
+                    width: double.infinity,
+                  ),
+                )),
                 const Divider(),
                 listagem(),
               ],

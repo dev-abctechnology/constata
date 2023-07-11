@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/features/transfers/data/repositories/create_transfer_repository.dart';
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
 import 'package:constata/src/features/transfers/domain/usecases/create_transfer/create_transfer_usercase_impl.dart';
@@ -8,15 +9,15 @@ import 'package:constata/src/features/transfers/presenter/create_transfer/create
 import 'package:constata/src/models/seletor_obra_model.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
 
 class CreateTransferPage extends StatefulWidget {
   final Map<String, dynamic> originObra;
 
-  const CreateTransferPage({Key key, this.originObra}) : super(key: key);
+  const CreateTransferPage({Key? key, required this.originObra})
+      : super(key: key);
 
   @override
   State<CreateTransferPage> createState() => _CreateTransferPageState();
@@ -38,6 +39,9 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
       final response = await _createTransferController.createTransfer();
       if (response) {
         _isSuccess.value = true;
+
+        Provider.of<FirebaseMessagingService>(context, listen: false)
+            .sendMessageNewTranfer(_transferEntity.targetBuild!);
       } else {
         _isError.value = true;
       }
@@ -57,7 +61,17 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
   }
 
   int _currentStep = 0;
-  TransferEntity _transferEntity = TransferEntity();
+  TransferEntity _transferEntity = TransferEntity(
+      nameEffective: '',
+      id: '',
+      innerId: '',
+      codeEffective: '',
+      originBuild: '',
+      originBuildId: '',
+      targetBuild: '',
+      targetBuildId: '',
+      date: '',
+      status: '');
 
   List<ObraSeletor> obras = [];
   List<ObraSeletor> obrasFiltered = [];
@@ -181,13 +195,13 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Criar Transferência'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              listaEfetivo();
-            },
-            icon: const Icon(Icons.list),
-          )
+        actions: const [
+          // IconButton(
+          //   onPressed: () {
+          //     listaEfetivo();
+          //   },
+          //   icon: const Icon(Icons.list),
+          // )
         ],
       ),
       body: Stepper(
@@ -244,9 +258,10 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                             onTap: () {
                               // Salvar a seleção do efetivo no _transferEntity
                               _transferEntity = TransferEntity(
-                                  nameEffective:
-                                      item['data']['tb01_cp002'].toString(),
-                                  codeEffective: item['id'].toString());
+                                nameEffective:
+                                    item['data']['tb01_cp002'].toString(),
+                                codeEffective: item['id'].toString(),
+                              );
                               nextStep();
                             },
                           )
@@ -372,11 +387,11 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                         Text(
                             'Saindo de: ${_transferEntity.originBuild.toString()}',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text(
                             'Indo para: ${_transferEntity.targetBuild.toString()}',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                         const SizedBox(
                           height: 20,
                         ),
@@ -384,8 +399,6 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                           onPressed: () {
                             sendTransfer();
                           },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green),
                           child: const Text('Enviar'),
                         ),
                       ],

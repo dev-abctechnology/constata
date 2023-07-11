@@ -1,50 +1,52 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:constata/src/constants.dart';
 import 'package:constata/src/features/measurement/data/measurement_data.dart';
 import 'package:constata/src/features/measurement/measurement_details.dart';
+import 'package:constata/src/features/measurement/measurement_report_r.dart';
 import 'package:constata/src/models/token.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'measurement_report_r.dart';
 import 'model/measurement_model.dart';
 import 'model/measurement_object_r.dart';
 
 class Measurement extends StatefulWidget {
-  var dataLogged;
+  final Map dataLogged;
 
-  Measurement({Key key, this.dataLogged}) : super(key: key);
+  const Measurement({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _MeasurementState createState() => _MeasurementState();
 }
 
-class _MeasurementState extends State<Measurement> with NavigatorObserver {
+class _MeasurementState extends State<Measurement> {
   String _selectedDate = "Data do apontamento";
-  String _date = null;
+  String _date = '';
   bool status = false;
   bool dateStatus = false;
   List medicaoPendente = [];
   bool sending = false;
 
   void rascunho() {
-    if (Provider.of<MeasurementData>(context, listen: false).measurementData !=
-        null) {
+    if (Provider.of<MeasurementData>(context, listen: false).hasData == true) {
       showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Rascunho encontrado"),
-              content: Text("Deseja continuar o rascunho?"),
+              title: const Text("Rascunho encontrado"),
+              content: const Text("Deseja continuar o rascunho?"),
               actionsAlignment: MainAxisAlignment.spaceAround,
               actions: [
                 TextButton(
-                  child: Text("Não"),
+                  child: const Text("Não"),
                   onPressed: () {
                     Provider.of<MeasurementData>(context, listen: false)
                         .clearMeasurementData();
@@ -52,13 +54,13 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                   },
                 ),
                 TextButton(
-                  child: Text("Sim"),
+                  child: const Text("Sim"),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CustomPageRoute(
                             builder: (context) => MeasurementReportReworked(
                                   dataLogged: widget.dataLogged,
                                   date: Provider.of<MeasurementData>(context,
@@ -83,19 +85,19 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
       res = [];
     });
 
-    final DateTime d = await showDatePicker(
+    final DateTime? d = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
-        Duration(days: 1000),
+        const Duration(days: 1000),
       ),
       lastDate: DateTime.now().add(
-        Duration(days: 0),
+        const Duration(days: 0),
       ),
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(Duration(days: 3)));
+        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
         if (k == true) {
           dateStatus = false;
         }
@@ -142,7 +144,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
           Provider.of<MeasurementData>(context, listen: false)
               .clearMeasurementData();
         });
-        medicaoPendente = [jsonDecode(value.getString('filaMedicao'))];
+        medicaoPendente = [jsonDecode(value.getString('filaMedicao')!)];
 
         setState(() {});
       }
@@ -184,23 +186,23 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       res = jsonDecode(await response.stream.bytesToString());
-      setState(() {
-        res;
-        if (res.length > 0) {
-          status = false;
-          showSnackBar(
-              'Na data selecionada já existe um relatório', Colors.red);
-          return true;
-        } else {
-          print(res.length);
-          return false;
-        }
-      });
+
+      res;
+      if (res.isNotEmpty) {
+        status = false;
+        showSnackBar('Na data selecionada já existe um relatório', Colors.red);
+        setState(() {});
+        return true;
+      } else {
+        print(res.length);
+        setState(() {});
+        return false;
+      }
     } else {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return const AlertDialog(
               content: Text(
                   'Não foi possivel verificar se houve uma medição no dia '),
             );
@@ -211,7 +213,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
   }
 
   Future<Map<String, dynamic>> effectiveValidator(
-      {Map<String, dynamic> offlineMeasurement}) async {
+      {required Map<String, dynamic> offlineMeasurement}) async {
     String date = offlineMeasurement['data']['h0_cp008'];
     String obra = offlineMeasurement['data']['h0_cp007']['name'];
 
@@ -226,10 +228,10 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
         'POST', Uri.parse('$apiUrl/stuffdata/sdt_a-inm-prjre-00/filter'));
     request.body = jsonEncode({
       "filters": [
-        {"fieldName": "data.h0_cp008", "value": "$date", "expression": "EQUAL"},
+        {"fieldName": "data.h0_cp008", "value": date, "expression": "EQUAL"},
         {
           "fieldName": "data.h0_cp013.name",
-          "value": "$obra",
+          "value": obra,
           "expression": "EQUAL"
         }
       ]
@@ -341,7 +343,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('2 - Controle de medição'),
+        title: const Text('2 - Controle de medição'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -366,7 +368,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                                 onPressed: () {
                                   _openDatePicker(context);
                                 },
-                                icon: Icon(Icons.calendar_today)),
+                                icon: const Icon(Icons.calendar_today)),
                           ],
                         ),
                       ),
@@ -374,14 +376,14 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          height: MediaQuery.of(context).size.height * 0.065,
+                        child: SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.95,
+                          height: MediaQuery.sizeOf(context).height * 0.065,
                           child: ElevatedButton(
                             onPressed: status == true && dateStatus == true
                                 ? () {
                                     setState(() {
-                                      var route = MaterialPageRoute(
+                                      var route = CustomPageRoute(
                                         builder: (BuildContext context) =>
                                             MeasurementReportReworked(
                                           dataLogged: widget.dataLogged,
@@ -394,7 +396,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                                     });
                                   }
                                 : null,
-                            child: Text("Apontar"),
+                            child: const Text("Apontar"),
                           ),
                         ),
                       ),
@@ -403,8 +405,9 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                 ),
               ),
               Center(
-                child: Text(
-                    "${medicaoPendente.isEmpty ? '' : 'Apontamentos aguardando envio'}"),
+                child: Text(medicaoPendente.isEmpty
+                    ? ''
+                    : 'Apontamentos aguardando envio'),
               ),
               ListView.builder(
                   shrinkWrap: true,
@@ -414,12 +417,12 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                     return Card(
                       child: ListTile(
                         leading: ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(primary: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                             onPressed: () {
                               eliminateQueue();
                             },
-                            child: Icon(Icons.delete)),
+                            child: const Icon(Icons.delete)),
                         title: Text(
                             'Data: ${medicaoPendente[index]["data"]['h0_cp008']}'),
                         trailing: ElevatedButton(
@@ -446,7 +449,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                                   });
                                 }
                               : null,
-                          child: Icon(Icons.arrow_circle_up),
+                          child: const Icon(Icons.arrow_circle_up),
                         ),
                       ),
                     );
@@ -466,7 +469,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                         child: InkWell(
                           onTap: () {
                             setState(() {
-                              var route = MaterialPageRoute(
+                              var route = CustomPageRoute(
                                 builder: (BuildContext context) =>
                                     MeasurementDetails(
                                   measurement: res[index],
@@ -480,7 +483,7 @@ class _MeasurementState extends State<Measurement> with NavigatorObserver {
                           ),
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                     ],
                   );
                 },

@@ -1,5 +1,11 @@
 import 'dart:convert';
 
+import 'package:constata/src/features/login/login_controller.dart';
+import 'package:constata/src/features/login/login_repository.dart';
+import 'package:constata/src/features/login/select_build_page.dart';
+import 'package:constata/src/shared/custom_page_route.dart';
+import 'package:constata/src/shared/dark_mode.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -17,14 +23,14 @@ class HomePage extends StatefulWidget {
   final Map
       dataLogged; // ---> OBJETO COM TODOS OS DADOS DAS TELAS ANTERIORES (usuário, token,empresa, filial, local de negocio e empresa)
 
-  const HomePage({Key key, this.dataLogged}) : super(key: key);
+  const HomePage({Key? key, required this.dataLogged}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String tokenSerilizado;
+  String tokenSerilizado = '';
 
   Future fetchColaboradores() async {
     var headers = {
@@ -62,7 +68,8 @@ class _HomePageState extends State<HomePage> {
       debugPrint('gravou na memoria');
       return true;
     } else {
-      debugPrint(response.reasonPhrase);
+      debugPrint(await response.stream.bytesToString());
+
       return false;
     }
   }
@@ -147,7 +154,7 @@ class _HomePageState extends State<HomePage> {
           Card(
             child: ListTile(
               title: const Text('Sair'),
-              trailing: const Icon(Icons.lock_open),
+              trailing: const Icon(Icons.lock_open, color: Colors.red),
               onTap: () {
                 showDialog(
                     context: context,
@@ -165,8 +172,8 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Column(
-                                  children: const [
+                                child: const Column(
+                                  children: [
                                     Icon(Icons.approval),
                                     Text('Ficar')
                                   ],
@@ -182,9 +189,11 @@ class _HomePageState extends State<HomePage> {
                                   SystemChannels.platform
                                       .invokeMethod('SystemNavigator.pop');
                                 },
-                                child: Column(
-                                  children: const [
-                                    Icon(Icons.exit_to_app),
+                                child: const Column(
+                                  children: [
+                                    Icon(
+                                      Icons.exit_to_app,
+                                    ),
                                     Text('Sair')
                                   ],
                                 ),
@@ -200,20 +209,17 @@ class _HomePageState extends State<HomePage> {
           Card(
             child: ListTile(
               title: const Text('Mudar de obra'),
-              trailing: const Icon(Icons.change_circle),
+              trailing: const Icon(Icons.change_circle, color: Colors.blue),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
-                Map username = jsonDecode(prefs.getString('authentication'));
+                Map username = jsonDecode(prefs.getString('authentication')!);
                 debugPrint(username.toString());
                 Provider.of<AppointmentData>(context, listen: false)
                     .clearAppointmentData();
                 Provider.of<MeasurementData>(context, listen: false)
                     .clearMeasurementData();
                 Navigator.of(context).pop();
-                Navigator.of(context).pop({
-                  "username": username['user'],
-                  "password": username['password']
-                });
+                changeBuild();
               },
             ),
           ),
@@ -222,11 +228,29 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  bool botao = false;
+  final loginController = LoginController(LoginRepository(Dio()));
 
-  void initializer() {
-    fetchColaboradores();
-    fetchEquipments();
+  void changeBuild() async {
+    var prefs = await SharedPreferences.getInstance();
+    Map authParam = jsonDecode(prefs.getString('authentication')!);
+    await loginController.generateToken(
+        authParam['user'], authParam['password']);
+    final user = await loginController.fetchUserSigned(authParam['user']);
+
+    final userData =
+        await loginController.pegarParceiroDeNegocio(authParam['user']);
+
+    final obraData =
+        await loginController.fetchObraData(userData['tb01_cp004']);
+
+    var route = CustomPageRoute(
+      builder: (BuildContext context) => SelectObra(
+        obraData: obraData,
+        user: user,
+      ),
+    );
+
+    Navigator.of(context).push(route);
   }
 
   @override
@@ -237,9 +261,9 @@ class _HomePageState extends State<HomePage> {
 
   void checkInitToken() {
     tokenSerilizado = Provider.of<Token>(context, listen: false).token;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       AuthRefreshController authRefreshcontroller = AuthRefreshController();
-      authRefreshcontroller.checkAuth(tokenSerilizado).then((value) {
+      await authRefreshcontroller.checkAuth(tokenSerilizado).then((value) {
         debugPrint('Checking Expired Auth Token');
         // Navigator.pop(context);
         if (value.isNotEmpty) {
@@ -250,8 +274,13 @@ class _HomePageState extends State<HomePage> {
         debugPrint('Token Not Expired');
       });
 
-      initializer();
+      fetchColaboradores();
+      fetchEquipments();
     });
+  }
+
+  changeTheme() async {
+    Provider.of<DarkMode>(context, listen: false).changeMode();
   }
 
   @override
@@ -260,6 +289,16 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Olá, ${widget.dataLogged['user']['name']}.'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              changeTheme();
+            },
+            icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
+                ? const Icon(Icons.wb_sunny)
+                : const Icon(Icons.nightlight_round),
+          ),
+        ],
       ),
       drawer: customDrawer(context),
       body: HomePageBody(arguments: widget.dataLogged),
