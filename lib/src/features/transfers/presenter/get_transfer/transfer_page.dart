@@ -7,12 +7,14 @@ import 'package:constata/src/features/transfers/external/datasources/accept_tran
 import 'package:constata/src/features/transfers/external/datasources/get_transfers_datasource.dart';
 import 'package:constata/src/features/transfers/presenter/create_transfer/create_transfer_page.dart';
 import 'package:constata/src/features/transfers/presenter/get_transfer/get_transfer_controller.dart';
+import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/custom_page_route.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../services/messaging/firebase_messaging_service.dart';
+import '../../common/update_colaboradores.dart';
 
 class TransferPage extends StatefulWidget {
   final Map<String, dynamic> obra;
@@ -193,6 +195,7 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   Future<void> _showConfirmDialog(TransferEntity transfer, int index) async {
+    final token = Provider.of<Token>(context, listen: false).token;
     showDialog(
       context: context,
       builder: (context) {
@@ -219,6 +222,13 @@ class _TransferPageState extends State<TransferPage> {
                           listen: false)
                       .sendMessageConfirmedTranfer(transfer.originBuild!,
                           transfer.targetBuild!, transfer.nameEffective!);
+                  final updateColab = await UpdateColaborators()
+                      .fetchColaboradores(
+                          token: token, obra: transfer.targetBuild!);
+
+                  updateColab == true
+                      ? print('Colaboradores atualizados com sucesso!')
+                      : print('Erro ao atualizar colaboradores!');
                 } else {
                   print('Erro ao aceitar transferência!');
                 }

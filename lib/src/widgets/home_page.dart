@@ -74,26 +74,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               widget.arguments['obra']['data']['tb01_cp002'],
               Provider.of<Token>(context, listen: false).token)
           .then((value) {
-        if (value == null) {
-          Navigator.of(context).pop();
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text('Verifique sua conexão!'),
-                  content: Text(
-                      'Não foi possível sincronizar os dados da obra. Caso prossiga, podem ocorrer inconsistências.'),
-                );
-              }).then((value) {
-            var route = CustomPageRoute(
-              builder: (BuildContext context) => Measurement(
-                dataLogged: widget.arguments,
-              ),
-            );
-
-            Navigator.of(context).push(route);
-          });
-        } else if (value.isNotEmpty) {
+        if (value.isNotEmpty) {
           Navigator.of(context).pop();
           widget.arguments['obra'] = value[0];
           var route = CustomPageRoute(
@@ -128,7 +109,6 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     updateBuild();
   }
@@ -136,15 +116,14 @@ class _HomePageBodyState extends State<HomePageBody> {
   updateBuild() async {
     var prefs = SharedPrefs();
     String obra = widget.arguments['obra']['data']['tb01_cp002'];
-
     await prefs.setString('obra', obra);
   }
 
   @override
   Widget build(BuildContext context) {
     String obra = widget.arguments['obra']['data']['tb01_cp002'];
-
     String obraId = widget.arguments['obra']['id'].toString();
+
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -166,14 +145,12 @@ class _HomePageBodyState extends State<HomePageBody> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Center(
-                child: Container(
-                  child: Text('Conectado em $obra',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      )),
-                ),
+                child: Text('Conectado em $obra',
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    )),
               ),
               SizedBox(
                 height: MediaQuery.sizeOf(context).height * 0.02,
@@ -216,11 +193,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 ),
                               );
                               Navigator.of(context).push(route);
-
-                              // var route = CustomPageRoute(
-                              //     builder: (BuildContext context) =>
-                              //         EffectiveClean());
-                              // Navigator.of(context).push(route);
                             });
                           }),
                       GridButton(
@@ -276,31 +248,20 @@ class _HomePageBodyState extends State<HomePageBody> {
                             size: 30,
                           )),
                       GridButton(
-                          // color: Colors.red,
-                          onPressed: () {
-                            exitApplication(context);
-                          },
-                          label: "Sair",
-                          icon: const Icon(
-                            Icons.exit_to_app,
-                            size: 30,
-                          )),
+                        // color: Colors.red,
+                        onPressed: () {
+                          exitApplication(context);
+                        },
+                        label: "Sair",
+                        icon: const Icon(
+                          Icons.exit_to_app,
+                          size: 30,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              // Divider(),
-              // Container(
-              //   width: MediaQuery.sizeOf(context).width * 0.95,
-              //   height: MediaQuery.sizeOf(context).height * 0.065,
-              //   child: ElevatedButton(
-              //     style: ElevatedButton.styleFrom(primary: Colors.red),
-              //     onPressed: () {
-              //       exitApplication(context);
-              //     },
-              //     child: Text('Sair'),
-              //   ),
-              // ),
             ],
           ),
         ),
