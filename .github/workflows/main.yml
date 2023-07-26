@@ -1,69 +1,84 @@
-# This is a basic workflow to help you get started with Actions
+name: Android Release
 
-name: build
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build_android:
-    # The type of runner that the job will run on
+  version:
+    name: Create version number
     runs-on: ubuntu-latest
-    env:
-      KEY_JKS: ${{ secrets.KEY_JKS }}
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      STORE_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-      
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v3.0.6
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
         with:
-          channel: 'stable'
-          cache: true
-          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash
-          cache-path: /home/runner/hostedtoolcache/flutter/:channel:-:version:-:arch
+          versionSpec: "5.x"
+      - name: Use GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+      - name: Create version.txt with nuGetVersion
+        run: echo ${{ steps.gitversion.outputs.nuGetVersion  }} > version.txt
+      - name: Upload version.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: gitversion
+          path: version.txt
 
-      - name: Flutter action
-        uses: subosito/flutter-action@v2.7.0
-      # build apk
+  build:
+    name: Create Android Build
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - name: Get version.txt
+        uses: actions/download-artifact@v2
+        with:
+          name: gitversion
+      - name: Create new file without newline char from version.txt
+        run: tr -d '\n' < version.txt > version1.txt
+      - name: Read version
+        id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: version1.txt
+      - name: Update version in YAML
+        run: sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.ALIAS_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+      - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
-      - uses: subosito/flutter-action@v3.0.6
+          java-version: "12.x"
+          cache: gradle
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.0.5'
-      - run: flutter clean
-      - run: echo $KEY_JKS | base64 -di > android/app/release.jks
-      - run: flutter pub get
-      - run: flutter build apk --release
-      - uses: actions/upload-artifact@v1
+          flutter-version: "3.10.5"
+          channel: 'stable'
+          cache: true
+      
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Start Android Release Build
+        run: flutter build appbundle
+
+      - name: Upload Android Release
+        uses: actions/upload-artifact@v2
         with:
-          name: app-release.apk
-          path: build/app/outputs/apk/release/app-release.apk
-          token: ${{ secrets.GITHUB_TOKEN }}
-  build_windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v3.0.6
-        with:
-          channel: 'beta'
-      - run: flutter config --enable-windows-desktop
-      - run: flutter build windows --target=x64
-      - uses: actions/upload-artifact@v1
-        with:
-          name: windows-build
-          path: "build/windows/runner/Release"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: android-release
+          path: build/app/outputs/bundle/release/app-release.aab
