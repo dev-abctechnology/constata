@@ -4,11 +4,15 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-   
-        
-    - run: echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> ${{env.PROPERTIES_PATH}} && echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> ${{env.PROPERTIES_PATH}} && echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> ${{env.PROPERTIES_PATH}}
+      # ... (outros passos aqui)
 
+      # Corrigindo os comandos echo e encadeando-os usando &&
+      - run: |
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> ${{env.PROPERTIES_PATH}} &&
+          echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> ${{env.PROPERTIES_PATH}} &&
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> ${{env.PROPERTIES_PATH}}
+
+      # ... (outros passos aqui)
