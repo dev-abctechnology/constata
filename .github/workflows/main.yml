@@ -25,3 +25,4 @@ jobs:
       with:
         name: release
         path: build/app/outputs/bundle/release/
+        if-no-files-found: ignore
