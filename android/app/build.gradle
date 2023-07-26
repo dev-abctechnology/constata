@@ -33,8 +33,10 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
+    println 'Keystore properties file found'
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+
 
 android {
     compileSdkVersion 33

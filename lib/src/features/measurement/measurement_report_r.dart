@@ -265,7 +265,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: const Icon(Icons.location_on),
+                                                icon: const Icon(
+                                                    Icons.location_on),
                                                 label: 'Local',
                                                 value: measurementBody
                                                     .measurements[index]
@@ -286,7 +287,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                                icon: const Icon(Icons.handyman),
+                                                icon:
+                                                    const Icon(Icons.handyman),
                                                 label: 'Serviço',
                                                 value: measurementBody
                                                     .measurements[index]
@@ -296,7 +298,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                                                 color: Colors.black12,
                                                 thickness: 2),
                                             MeasurementDetailTile(
-                                              icon: const Icon(Icons.account_balance),
+                                              icon: const Icon(
+                                                  Icons.account_balance),
                                               label: 'Quantidade',
                                               value: measurementBody
                                                   .measurements[index].quantity
@@ -520,10 +523,9 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                         Provider.of<MeasurementData>(context, listen: false)
                             .clearMeasurementData();
                       } else {
-                        var nav = Navigator.of(context);
-                        nav.pop();
+                        Navigator.of(context).pop();
 
-                        alerta(context);
+                        alerta();
                         showSnackBar('Erro ao enviar a medição!', Colors.red);
                       }
                     });
@@ -553,7 +555,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       TextEditingController observacaoController,
       BuildContext context,
       int index) {
-    late Task selected;
+    Task? selected;
     return AlertDialog(
       content: Form(
         key: _globalKey,
@@ -574,7 +576,6 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             onChanged: (Task value) {
               setState(() {
                 selected = value;
-                print(selected.toJson());
               });
             },
             closeButton: "Fechar",
@@ -659,9 +660,15 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
         TextButton(
           onPressed: () {
             if (_globalKey.currentState!.validate()) {
+              //CHECK IF SELECTED HAS BEEN INITIALIZED
+              if (selected == null) {
+                showSnackBar('Selecione um serviço', Colors.red);
+                return;
+              }
+
               addMeasurement(
                   colaborator: colaborators[index],
-                  task: selected,
+                  task: selected!,
                   quantity: double.parse(
                       quantidadeController.text.replaceAll(',', '.')),
                   unitValue: double.parse(
@@ -677,7 +684,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
     );
   }
 
-  Future alerta(BuildContext context) async {
+  Future alerta() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -697,8 +704,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                var nav = Navigator.of(context);
-                nav.pop();
+                Navigator.of(context).pop();
               },
             ),
           ],
