@@ -35,6 +35,12 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     println 'Keystore properties file found'
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}else {
+    println 'Keystore properties file NOT found'
+    keystoreProperties['keyAlias'] = 'upload'
+    keystoreProperties['keyPassword'] = '@BCtech2022@'
+    keystoreProperties['storeFile'] = 'C:/Users/abc/upload-keystore.jks'
+    keystoreProperties['storePassword'] = '@BCtech2022@'
 }
 
 
