@@ -10,9 +10,9 @@ jobs:
       # ... (outros passos aqui)
 
       # Corrigindo os comandos echo e encadeando-os usando &&
-    - run: echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> ${{ env.PROPERTIES_PATH }}
-    - run: echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> ${{ env.PROPERTIES_PATH }}
-    - run: echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> ${{ env.PROPERTIES_PATH }}
+    - run: echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> filename.txt
+    - run: echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> filename.txt
+    - run: echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> filename.txt
 
 
       # ... (outros passos aqui)
