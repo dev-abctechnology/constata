@@ -4,15 +4,24 @@ on: [push]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      # ... (outros passos aqui)
-
-      # Corrigindo os comandos echo e encadeando-os usando &&
-    - run: echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> filename.txt
-    - run: echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> filename.txt
-    - run: echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> filename.txt
-
-
-      # ... (outros passos aqui)
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+          java-version: '17'
+          distribution: 'adopt'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+      env:
+        KEY_JKS: ${{ secrets.KEY_JKS }}
+        KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+        ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: echo $KEY_JKS > key.jks 
+    - run: flutter pub get
+    - run: echo $KEY_JKS
+    - run: $KEY_PASSWORD
+    - run: $ALIAS_PASSWORD
