@@ -23,5 +23,5 @@ jobs:
         run: echo $KEY_JKS > key.jks && flutter pub get && flutter test && flutter build appbundle
     - uses: actions/upload-artifact@v3
       with:
-        name: release-apk
-        path: build/app/outputs/bundle/release/app-release.aab
+        name: release
+        path: build/app/outputs/bundle/release/
