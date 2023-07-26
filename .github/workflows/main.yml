@@ -24,9 +24,10 @@ jobs:
         run: echo $KEY_JKS > key.jks 
               # Creating the key.properties file
     - run: |
-          echo keyPassword=\${{ secrets.KEY_STORE }} > ${{env.PROPERTIES_PATH}}
+          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
           echo storePassword=\${{ secrets.KEY_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
           echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
+    - run: echo "${{ secrets.KEY_JKS }}" | base64 --decode > android/app/key.jks
     - run: flutter pub get
     - run: flutter build apk
     - uses: actions/upload-artifact@v3
