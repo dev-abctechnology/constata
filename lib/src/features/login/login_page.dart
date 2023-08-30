@@ -11,6 +11,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../widgets/privacy_dialog.dart';
 import 'select_build_page.dart';
 
 //LOGIN
@@ -205,6 +207,15 @@ class _LoginState extends State<Login> {
                       child: const Text('Entrar'),
                     );
                   },
+                ),
+                TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => PrivacyPolicyDialog(),
+                    );
+                  },
+                  child: const Text('Política de privacidade'),
                 ),
               ],
             ),

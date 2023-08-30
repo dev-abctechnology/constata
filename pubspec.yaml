@@ -2,7 +2,7 @@ name: constata
 description: Apontamento Digital - Constata.
 
 publish_to: "none"
-version: 1.7.4+18
+version: 1.7.5+19
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -33,6 +33,7 @@ dependencies:
   flutter_local_notifications: ^13.0.0
   flutter_native_timezone_updated_gradle: ^2.0.3
   firebase_core: ^2.14.0
+  url_launcher: ^6.1.12
 dev_dependencies:
   flutter_test:
     sdk: flutter
