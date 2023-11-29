@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-
 class CreateTransferPage extends StatefulWidget {
   final Map<String, dynamic> originObra;
 
@@ -142,7 +141,6 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchObras();
     listaEfetivo();
@@ -247,26 +245,30 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                         },
                       ),
                     ),
-                    ListView(
+                    ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      children: [
-                        for (var item in efetivo)
-                          ListTile(
-                            title: Text(item['data']['tb01_cp002'].toString()),
+                      itemCount: efetivo.length,
+                      itemBuilder: (context, index) {
+                        EffectiveTileTransfer item =
+                            EffectiveTileTransfer.fromJson(efetivo[index]);
+                        return Card(
+                          child: ListTile(
+                            title: Text(item.name),
+                            subtitle: Text(item.code),
                             // subtitle: Text(item['id'].toString()),
                             onTap: () {
                               // Salvar a seleção do efetivo no _transferEntity
                               _transferEntity = TransferEntity(
-                                nameEffective:
-                                    item['data']['tb01_cp002'].toString(),
-                                codeEffective: item['id'].toString(),
+                                nameEffective: item.name,
+                                codeEffective: item.id,
                               );
                               nextStep();
                             },
-                          )
-                      ],
-                    ),
+                          ),
+                        );
+                      },
+                    )
                   ],
                 )
               ],
@@ -289,12 +291,14 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                     },
                   ),
                 ),
-                ListView(
+                ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  children: [
-                    for (var obra in obrasFiltered)
-                      ListTile(
+                  itemCount: obrasFiltered.length,
+                  itemBuilder: (context, index) {
+                    var obra = obrasFiltered[index];
+                    return Card(
+                      child: ListTile(
                         title: Text(obra.name),
                         onTap: () {
                           _transferEntity = TransferEntity(
@@ -310,9 +314,10 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                               );
                           nextStep();
                         },
-                      )
-                  ],
-                ),
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),
@@ -387,11 +392,13 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
                         Text(
                             'Saindo de: ${_transferEntity.originBuild.toString()}',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                         Text(
                             'Indo para: ${_transferEntity.targetBuild.toString()}',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                         const SizedBox(
                           height: 20,
                         ),
@@ -413,5 +420,20 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
         type: StepperType.vertical,
       ),
     );
+  }
+}
+
+class EffectiveTileTransfer {
+  late String name;
+  late String code;
+  late String id;
+
+  EffectiveTileTransfer(
+      {required this.name, required this.code, required this.id});
+
+  EffectiveTileTransfer.fromJson(Map<String, dynamic> json) {
+    name = json["data"]['tb01_cp002'];
+    code = json["data"]['tb01_cp004'];
+    id = json["_id"] ?? json["id"];
   }
 }

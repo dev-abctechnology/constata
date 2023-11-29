@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Navigator.of(context).push(route);
+    Navigator.of(context).pushReplacement(route);
   }
 
   @override
@@ -260,48 +260,114 @@ class _HomePageState extends State<HomePage> {
   }
 
   void checkInitToken() {
-    tokenSerilizado = Provider.of<Token>(context, listen: false).token;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      AuthRefreshController authRefreshcontroller = AuthRefreshController();
-      await authRefreshcontroller.checkAuth(tokenSerilizado).then((value) {
-        debugPrint('Checking Expired Auth Token');
-        // Navigator.pop(context);
-        if (value.isNotEmpty) {
-          debugPrint('New Token Refreshed');
+    try {
+      tokenSerilizado = Provider.of<Token>(context, listen: false).token;
 
-          Provider.of<Token>(context, listen: false).setToken(value);
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        AuthRefreshController authRefreshcontroller = AuthRefreshController();
+
+        try {
+          // Check the authentication status using the obtained token
+          String value = await authRefreshcontroller.checkAuth(tokenSerilizado);
+
+          debugPrint('Checking Expired Auth Token');
+
+          // If a new token is received, update it in the Provider
+          if (value.isNotEmpty) {
+            debugPrint('New Token Refreshed');
+            Provider.of<Token>(context, listen: false).setToken(value);
+          }
+
+          debugPrint('Token Not Expired');
+        } catch (authException) {
+          // Handle authentication-related exceptions
+          debugPrint('Authentication Exception: $authException');
+          // You may want to perform specific actions for authentication errors
         }
-        debugPrint('Token Not Expired');
-      });
 
-      fetchColaboradores();
-      fetchEquipments();
-    });
+        try {
+          // Fetch Colaboradores data
+          fetchColaboradores();
+        } catch (colaboradoresException) {
+          // Handle exceptions related to fetching Colaboradores data
+          debugPrint('Colaboradores Exception: $colaboradoresException');
+          // You may want to perform specific actions for Colaboradores data errors
+        }
+
+        try {
+          // Fetch Equipments data
+          fetchEquipments();
+        } catch (equipmentsException) {
+          // Handle exceptions related to fetching Equipments data
+          debugPrint('Equipments Exception: $equipmentsException');
+          // You may want to perform specific actions for Equipments data errors
+        }
+      });
+    } catch (e) {
+      // Handle any other exceptions that might occur outside the async code
+      debugPrint('Unexpected Exception: $e');
+      // You may want to perform specific actions for unexpected errors
+    }
   }
 
   changeTheme() async {
     Provider.of<DarkMode>(context, listen: false).changeMode();
   }
 
+  Future<bool> _showConfirmationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirmação'),
+              content: const Text('Tem certeza que deseja sair?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(false); // Retorna falso se o usuário cancelar
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(true); // Retorna verdadeiro se o usuário confirmar
+                  },
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // Se o usuário fechar o diálogo, retorna false
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Olá, ${widget.dataLogged['user']['name']}.'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () async {
-              changeTheme();
-            },
-            icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
-                ? const Icon(Icons.wb_sunny)
-                : const Icon(Icons.nightlight_round),
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        bool confirmed = await _showConfirmationDialog();
+        return confirmed;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Olá, ${widget.dataLogged['user']['name']}.'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () async {
+                changeTheme();
+              },
+              icon: Provider.of<DarkMode>(context, listen: false).isDarkMode
+                  ? const Icon(Icons.wb_sunny)
+                  : const Icon(Icons.nightlight_round),
+            ),
+          ],
+        ),
+        drawer: customDrawer(context),
+        body: HomePageBody(arguments: widget.dataLogged),
       ),
-      drawer: customDrawer(context),
-      body: HomePageBody(arguments: widget.dataLogged),
     );
   }
 }

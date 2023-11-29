@@ -72,7 +72,7 @@ class _SelectObraState extends State<SelectObra> {
                       .subscribeToTopic(topicName);
                   print(
                       'inscrição no tópico ${listaDeObras[index]['data']['tb01_cp002']}: $subscribe');
-                  Navigator.of(context).push(route);
+                  Navigator.of(context).pushReplacement(route);
                 },
                 child: ListTile(
                     title: Center(
@@ -107,31 +107,66 @@ class _SelectObraState extends State<SelectObra> {
     };
   }
 
+  Future<bool> _showConfirmationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirmação'),
+              content: const Text('Tem certeza que deseja sair?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(false); // Retorna falso se o usuário cancelar
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(true); // Retorna verdadeiro se o usuário confirmar
+                  },
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // Se o usuário fechar o diálogo, retorna false
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Escolha uma obra'),
-          centerTitle: true,
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Card(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/constata_big.png',
-                    color: Colors.blue,
-                    width: double.infinity,
-                  ),
-                )),
-                const Divider(),
-                listagem(),
-              ],
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        bool confirmed = await _showConfirmationDialog();
+        return confirmed;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Escolha uma obra'),
+            centerTitle: true,
           ),
-        ));
+          body: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  Card(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'assets/images/constata_big.png',
+                      color: Colors.blue,
+                      width: double.infinity,
+                    ),
+                  )),
+                  const Divider(),
+                  listagem(),
+                ],
+              ),
+            ),
+          )),
+    );
   }
 }

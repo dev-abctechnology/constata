@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/services/messaging/notification_service.dart';
+import 'package:constata/src/features/login/app_initializer_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -79,7 +80,7 @@ void main() async {
           initialRoute: "/",
           routes: {
             '/': (context) => AnimatedSplashScreen(
-                  nextScreen: const Login(),
+                  nextScreen: const AppInitializer(),
                   splash: Image.asset(
                     'assets/images/constata.png',
                   ),

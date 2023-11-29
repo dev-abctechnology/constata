@@ -11,7 +11,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/privacy_dialog.dart';
 import 'select_build_page.dart';
 
@@ -53,13 +52,7 @@ class _LoginState extends State<Login> {
       );
       _usernameController.clear();
       _passwordController.clear();
-      await Navigator.of(context).push(route).then((value) async {
-        print(value);
-        _usernameController.text = 'kkkkkkkkkkk';
-        _passwordController.text = 'kkkkkkkkkkk';
-        setState(() {});
-        await login(value['user'], value['password']);
-      });
+      await Navigator.of(context).pushReplacement(route);
     } catch (e, s) {
       print(s);
       String error = e.toString();
@@ -96,19 +89,10 @@ class _LoginState extends State<Login> {
           dataLogged: dataLogged,
         ),
       );
-      Navigator.of(context).push(route);
+      Navigator.of(context).pushReplacement(route);
     } else {
       print('nao tem dados salvos no shared preferences');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initializeFirebaseMessaging();
-    checkNotifications();
-    isLogged();
-    // subscribeToTopic();
   }
 
   unsubscribeFromTopic() async {
@@ -119,19 +103,10 @@ class _LoginState extends State<Login> {
     await FirebaseMessaging.instance.subscribeToTopic('all');
   }
 
-  initializeFirebaseMessaging() async {
-    await Provider.of<FirebaseMessagingService>(context, listen: false).init();
-  }
-
-  checkNotifications() async {
-    await Provider.of<NotificationService>(context, listen: false)
-        .checkForNotifications();
-  }
-
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,9 +149,19 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
                     labelText: 'Senha',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {

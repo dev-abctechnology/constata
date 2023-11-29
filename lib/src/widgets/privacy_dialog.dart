@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class PrivacyPolicyDialog extends StatelessWidget {
+  const PrivacyPolicyDialog({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Privacy Policy"),
-      content: SingleChildScrollView(
+      title: const Text("Privacy Policy"),
+      content: const SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -133,7 +135,7 @@ Via Email: marco.antonio@abctechnology.com.br
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text("Close"),
+          child: const Text("Close"),
         ),
       ],
     );
