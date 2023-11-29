@@ -97,13 +97,7 @@ class _MeasurementState extends State<Measurement> {
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
-        if (k == true) {
-          dateStatus = false;
-        }
-        if (k == false) {
-          dateStatus = true;
-        }
+        dateStatus = true;
 
         _selectedDate = DateFormat(" d 'de' MMMM 'de' y", "pt_BR").format(d);
         _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);

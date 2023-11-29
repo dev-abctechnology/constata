@@ -114,10 +114,6 @@ class _EffectiveControlState extends State<EffectiveControl> {
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
-        if (k == true) {
-          status = false;
-        }
         _selectedDate = DateFormat(" d 'de' MMMM 'de' y", "pt_BR").format(d);
         _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
         // _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);

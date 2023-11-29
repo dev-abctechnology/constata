@@ -45,13 +45,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
     );
     if (d != null) {
       setState(() {
-        k = DateTime.now().isAfter(d.add(const Duration(days: 3)));
-        if (k == true) {
-          dateStatus = false;
-        }
-        if (k == false) {
-          dateStatus = true;
-        }
+        dateStatus = true;
 
         _selectedDate = DateFormat(" d 'de' MMMM 'de' y", "pt_BR").format(d);
         var _dateFetch = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
