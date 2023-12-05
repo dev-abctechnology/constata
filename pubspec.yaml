@@ -2,7 +2,7 @@ name: constata
 description: Apontamento Digital - Constata.
 
 publish_to: "none"
-version: 1.7.5+21
+version: 1.8.0+22
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
