@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:constata/src/shared/constants.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class LoginRepository {
@@ -30,8 +29,8 @@ class LoginRepository {
       token = response.data['access_token'];
       return response.data['access_token'];
     } on DioException catch (e) {
-      debugPrint(e.stackTrace.toString());
-      debugPrint(e.toString());
+      print(e.stackTrace);
+      print(e.toString());
       if (e.response != null) {
         if (e.response!.statusCode == 400) {
           throw Exception('Usuário ou senha inválidos');
@@ -100,16 +99,16 @@ class LoginRepository {
           final collaborators = responseData[0]['data'];
           return collaborators;
         } catch (e, s) {
-          debugPrint(e.toString());
-          debugPrint(s.toString());
+          print(e);
+          print(s);
           throw Exception(jsonDecode(await response.stream.bytesToString()));
         }
       } else {
         throw Exception('Falha ao baixar dados do usuário');
       }
     } catch (e, s) {
-      debugPrint(e.toString());
-      debugPrint(s.toString());
+      print(e);
+      print(s);
       rethrow;
     }
   }
@@ -153,8 +152,8 @@ class LoginRepository {
         throw Exception(await response.stream.bytesToString());
       }
     } catch (e, s) {
-      debugPrint(e.toString());
-      debugPrint(s.toString());
+      print(e);
+      print(s);
       rethrow;
     }
   }

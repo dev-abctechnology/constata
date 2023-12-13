@@ -61,15 +61,15 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
     try {
       showLoading(context);
       http.StreamedResponse response = await request.send();
-      debugPrint('body: ${request.body}\n\n');
+      print('body: ${request.body}\n\n');
 
-      debugPrint(response.statusCode.toString());
+      print(response.statusCode);
 
       if (response.statusCode == 201) {
         setState(() {
           // _flag = true;
         });
-        debugPrint('enviou');
+        print('enviou');
         Navigator.of(context).pop();
         Navigator.of(context).pop();
         Navigator.of(context).pop();
@@ -182,7 +182,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
                       dataLogged: widget.dataLogged,
                     );
                   }).then((value) => {toolsApp = value});
-              debugPrint(toolsApp);
+              print(toolsApp);
               if (toolsApp != null) {
                 toolsAppointment.add(toolsApp);
               }
@@ -228,7 +228,7 @@ class ToolsProcessPageState extends State<ToolsProcessPage> {
                             onPressed: () {
                               setState(() {
                                 toolsAppointment.remove(toolsAppointment[i]);
-                                debugPrint(toolsAppointment.length.toString());
+                                print(toolsAppointment.length);
                               });
                             },
                             child: const SizedBox(

@@ -39,8 +39,8 @@ class MeasurementJarvis {
       ]
     });
     request.headers.addAll(headers);
-    debugPrint(date);
-    debugPrint(buildName);
+    print(date);
+    print(buildName);
     try {
       http.StreamedResponse response = await request.send();
 
@@ -69,11 +69,11 @@ class MeasurementJarvis {
         }
         return effectiveAllowedAndPresent;
       } else {
-        debugPrint((await response.stream.bytesToString()));
+        print((await response.stream.bytesToString()));
         throw Exception('Falha ao carregar colaboradores');
       }
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
 
       throw Exception(
           'Falha ao carregar colaboradores. Buscando dados offline');
@@ -96,15 +96,15 @@ class MeasurementJarvis {
     try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 201) {
-        debugPrint('Success');
+        print('Success');
         return 'created';
       } else {
-        debugPrint((await response.stream.bytesToString()));
+        print((await response.stream.bytesToString()));
         return '${response.statusCode}';
       }
     } catch (e) {
-      debugPrint(e.toString());
-      debugPrint('offline store');
+      print(e);
+      print('offline store');
       SharedPreferences.getInstance()
           .then((value) => value.setString("filaMedicao", request.body));
       return 'offline';

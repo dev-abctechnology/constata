@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
+import 'package:constata/services/messaging/notification_service.dart';
 import 'package:constata/src/features/login/login_controller.dart';
 import 'package:constata/src/features/login/login_repository.dart';
 import 'package:constata/src/home_page.dart';
@@ -52,7 +54,7 @@ class _LoginState extends State<Login> {
       _passwordController.clear();
       await Navigator.of(context).pushReplacement(route);
     } catch (e, s) {
-      debugPrint(s.toString());
+      print(s);
       String error = e.toString();
       error = error.replaceAll('Exception: ', '');
       showDialog(
@@ -89,7 +91,7 @@ class _LoginState extends State<Login> {
       );
       Navigator.of(context).pushReplacement(route);
     } else {
-      debugPrint('nao tem dados salvos no shared preferences');
+      print('nao tem dados salvos no shared preferences');
     }
   }
 
@@ -160,7 +162,7 @@ class _LoginState extends State<Login> {
                         });
                       },
                     ),
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -195,7 +197,7 @@ class _LoginState extends State<Login> {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) => const PrivacyPolicyDialog(),
+                      builder: (context) => PrivacyPolicyDialog(),
                     );
                   },
                   child: const Text('Política de privacidade'),

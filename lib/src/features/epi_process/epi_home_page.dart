@@ -55,9 +55,9 @@ class _EpiHomeState extends State<EpiHome> {
         _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
         // _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
         var _date2 = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
-        debugPrint('jarvis: 2021-11-12T00:00:00');
-        debugPrint('timePicker: $d');
-        debugPrint('converted: $_date2');
+        print('jarvis: 2021-11-12T00:00:00');
+        print('timePicker: $d');
+        print('converted: $_date2');
         if (pending == false && k == false) {
           status = true;
         }
@@ -81,21 +81,21 @@ class _EpiHomeState extends State<EpiHome> {
             'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-ehm-ppeas-00'));
     request.body = jsonEncode(epiIndex);
     request.headers.addAll(headers);
-    debugPrint(request.body);
-    debugPrint('');
+    print(request.body);
+    print('');
     developer.log(request.body, name: "Corpo da req");
     developer.log(intIndex.toString(), name: "Index list");
     try {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 201) {
-        debugPrint('enviado');
-        debugPrint(await response.stream.bytesToString());
+        print('enviado');
+        print(await response.stream.bytesToString());
 
         return true;
       } else {}
     } catch (e) {
-      debugPrint('catch');
+      print('catch');
     }
   }
 
@@ -125,7 +125,7 @@ class _EpiHomeState extends State<EpiHome> {
     try {
       http.StreamedResponse response = await request.send();
       Navigator.of(context).pop();
-      debugPrint(response.statusCode.toString());
+      print(response.statusCode);
       if (response.statusCode == 200) {
         resAppointment = jsonDecode(await response.stream.bytesToString());
         setState(() {});
@@ -136,11 +136,11 @@ class _EpiHomeState extends State<EpiHome> {
 
           return {'log': 'true'};
         }
-        debugPrint("Apontamentos nesse dia: ${resAppointment.length}");
+        print("Apontamentos nesse dia: ${resAppointment.length}");
 
         return {'log': 'false'};
       } else {
-        debugPrint(response.statusCode.toString());
+        print(response.statusCode.toString());
         return {'log': 'error'};
       }
     } catch (e) {
@@ -164,11 +164,11 @@ class _EpiHomeState extends State<EpiHome> {
     setState(() {
       SharedPreferences.getInstance().then((value) async {
         List<String> fila = value.getStringList('filaApontamentoEPI')!;
-        debugPrint(fila.length.toString());
+        print(fila.length);
         if (fila.length > 1) {
           fila.removeAt(indice);
         } else {
-          debugPrint(filaDeApontamento.toString());
+          print(filaDeApontamento);
           fila.clear();
         }
         List x = jsonDecode(fila.toString());
@@ -203,7 +203,7 @@ class _EpiHomeState extends State<EpiHome> {
       setState(() {});
       filaDeApontamento = jsonDecode(
           sharedPreferences.getStringList("filaApontamentoEPI").toString());
-      debugPrint("ADFDSAFDSF" +
+      print("ADFDSAFDSF" +
           sharedPreferences.getStringList('filaApontamentoEPI').toString());
       developer.log(filaDeApontamento.length.toString());
       setState(() {});

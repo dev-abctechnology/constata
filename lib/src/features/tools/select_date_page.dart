@@ -89,15 +89,15 @@ class _SelectDatePagState extends State<SelectDatePage> {
   }
 
   Future fetchRelatorios(date) async {
-    debugPrint(date);
-    debugPrint('fetchrelatorio');
+    print(date);
+    print('fetchrelatorio');
     var headers = {
       'Authorization':
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
       'Content-Type': 'application/json'
     };
     date ??= transformDate(_date);
-    debugPrint(date);
+    print(date);
     var request = http.Request(
         'POST',
         Uri.parse(
@@ -109,10 +109,10 @@ class _SelectDatePagState extends State<SelectDatePage> {
     try {
       showLoading(context);
       http.StreamedResponse response = await request.send();
-      debugPrint(response.statusCode.toString());
+      print(response.statusCode);
       if (response.statusCode == 200) {
         Navigator.of(context).pop();
-        debugPrint('hahahaha');
+        print('hahahaha');
         res = jsonDecode(await response.stream.bytesToString());
         setState(() {});
         return true;
@@ -125,7 +125,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
                     'Não foi possivel verificar se houve uma medição no dia '),
               );
             });
-        debugPrint(response.reasonPhrase);
+        print(response.reasonPhrase);
         return false;
       }
     } catch (e) {
@@ -188,7 +188,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
               );
             });
       } else {
-        debugPrint('error' + response.statusCode.toString());
+        print('error' + response.statusCode.toString());
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -204,7 +204,7 @@ class _SelectDatePagState extends State<SelectDatePage> {
       setState(() {
         sending = false;
       });
-      debugPrint('err');
+      print('err');
     }
   }
 

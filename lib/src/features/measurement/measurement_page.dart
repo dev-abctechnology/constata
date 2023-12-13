@@ -76,7 +76,7 @@ class _MeasurementState extends State<Measurement> {
             );
           });
     } else {
-      debugPrint('não tem rascunho');
+      print('não tem rascunho');
     }
   }
 
@@ -103,9 +103,9 @@ class _MeasurementState extends State<Measurement> {
         _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
         // _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
         var _date2 = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
-        debugPrint('jarvis: 2021-11-12T00:00:00');
-        debugPrint('timePicker: $d');
-        debugPrint('converted: $_date2');
+        print('jarvis: 2021-11-12T00:00:00');
+        print('timePicker: $d');
+        print('converted: $_date2');
         //2021-11-12T00:00:00
         SharedPreferences.getInstance().then((value) {
           if (!value.containsKey('filaMedicao')) {
@@ -168,7 +168,7 @@ class _MeasurementState extends State<Measurement> {
     // if (date == null) {
     //   date = transformDate(_date);
     // }
-    debugPrint('date: $date');
+    print('date: $date');
     var request = http.Request(
         'POST',
         Uri.parse(
@@ -188,7 +188,7 @@ class _MeasurementState extends State<Measurement> {
         setState(() {});
         return true;
       } else {
-        debugPrint(res.length.toString());
+        print(res.length);
         setState(() {});
         return false;
       }
@@ -201,7 +201,7 @@ class _MeasurementState extends State<Measurement> {
                   'Não foi possivel verificar se houve uma medição no dia '),
             );
           });
-      debugPrint(response.reasonPhrase);
+      print(response.reasonPhrase);
       return false;
     }
   }
@@ -211,8 +211,8 @@ class _MeasurementState extends State<Measurement> {
     String date = offlineMeasurement['data']['h0_cp008'];
     String obra = offlineMeasurement['data']['h0_cp007']['name'];
 
-    debugPrint(date);
-    debugPrint(obra);
+    print(date);
+    print(obra);
     var headers = {
       'Authorization':
           'Bearer ${Provider.of<Token>(context, listen: false).token}',
@@ -232,12 +232,12 @@ class _MeasurementState extends State<Measurement> {
     });
     request.headers.addAll(headers);
 
-    debugPrint(request.body);
+    print(request.body);
 
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var res = jsonDecode(await response.stream.bytesToString());
-      debugPrint(res);
+      print(res);
       if (res.length > 0) {
         List data = res[0]['data']['tb01_cp011'];
         List presentes = [];
@@ -250,20 +250,20 @@ class _MeasurementState extends State<Measurement> {
         MeasurementAppointment measurementdata =
             MeasurementAppointment.fromJson(offlineMeasurement);
 
-        debugPrint('${presentes.length} presentes');
-        debugPrint('${measurementdata.data.measurements.length} medições');
+        print('${presentes.length} presentes');
+        print('${measurementdata.data.measurements.length} medições');
         List<MeasurementModel> medicoes = measurementdata.data.measurements;
         List<MeasurementModel> medicoesPresentes = [];
         for (MeasurementModel medicao in medicoes) {
           for (var i = 0; i < presentes.length; i++) {
             if (medicao.codePerson == presentes[i]['tp_cp012']) {
-              debugPrint(presentes[i]['tp_cp012'] +
+              print(presentes[i]['tp_cp012'] +
                   ' == ' +
                   medicao.codePerson +
                   ' ✓');
               medicoesPresentes.add(medicao);
             } else {
-              debugPrint(presentes[i]['tp_cp012'] +
+              print(presentes[i]['tp_cp012'] +
                   ' == ' +
                   medicao.codePerson +
                   ' ✗');
@@ -271,12 +271,10 @@ class _MeasurementState extends State<Measurement> {
           }
         }
 
-        debugPrint(
-            '${measurementdata.data.measurements.length} medições originais');
-        debugPrint('${medicoesPresentes.length} medições presentes');
+        print('${measurementdata.data.measurements.length} medições originais');
+        print('${medicoesPresentes.length} medições presentes');
         measurementdata.data.measurements = medicoesPresentes;
-        debugPrint(
-            '${measurementdata.data.measurements.length} medições finais');
+        print('${measurementdata.data.measurements.length} medições finais');
         return measurementdata.toJson();
       } else {
         throw Exception(
@@ -319,7 +317,7 @@ class _MeasurementState extends State<Measurement> {
         showSnackBar(
             'Apontamento de medição enviado com sucesso!', Colors.green);
       } else {
-        debugPrint('error' + response.statusCode.toString());
+        print('error' + response.statusCode.toString());
         showSnackBar('Erro ao enviar apontamento de medição!', Colors.red);
         setState(() {
           sending = false;
@@ -329,7 +327,7 @@ class _MeasurementState extends State<Measurement> {
       setState(() {
         sending = false;
       });
-      debugPrint('err');
+      print('err');
     }
   }
 
@@ -440,8 +438,8 @@ class _MeasurementState extends State<Measurement> {
                                     showSnackBar(
                                         'Erro inesperado, tente novamente, se o erro persistir contate o suporte',
                                         Colors.red);
-                                    debugPrint(error.toString());
-                                    debugPrint(stackTrace.toString());
+                                    print(error);
+                                    print(stackTrace);
                                   });
                                 }
                               : null,

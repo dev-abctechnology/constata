@@ -35,7 +35,7 @@ class AuthRefreshController {
 
       return await refreshAuthToken(token);
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return '';
     }
   }

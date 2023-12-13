@@ -27,20 +27,20 @@ class EpiReportTask extends StatefulWidget {
 
 class _EpiReportTaskState extends State<EpiReportTask> {
   List result = [];
-
+  var body;
   List epiReport = [];
 
   void initializer() {
-    debugPrint('iniciou a busca de EPIs');
+    print('iniciou a busca de EPIs');
     fetchEquipments().then(
       (value) async {
         if (value == true) {
-          debugPrint('value true');
+          print('value true');
           setState(() {
             _isOffline = false;
           });
         } else {
-          debugPrint('value false');
+          print('value false');
           SharedPreferences sharedPreferences =
               await SharedPreferences.getInstance();
           if (sharedPreferences.containsKey("epi")) {
@@ -48,7 +48,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
             setState(() {
               _isOffline = true;
             });
-            debugPrint(result.toString());
+            print(result);
           }
         }
       },
@@ -77,10 +77,10 @@ class _EpiReportTaskState extends State<EpiReportTask> {
       if (response.statusCode == 200) {
         result = jsonDecode(await response.stream.bytesToString());
         setState(() {});
-        debugPrint(result.toString());
+        print(result);
         return true;
       } else {
-        debugPrint(response.reasonPhrase);
+        print(response.reasonPhrase);
         setState(() {
           result = [];
         });
@@ -161,7 +161,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
   void initState() {
     super.initState();
     initializer();
-    debugPrint(widget.userSelected.toString());
+    print(widget.userSelected);
   }
 
   Map returnData = {};
@@ -180,14 +180,14 @@ class _EpiReportTaskState extends State<EpiReportTask> {
             'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-ehm-ppeas-00'));
     request.body = returnValue;
     request.headers.addAll(headers);
-    debugPrint(request.body);
-    debugPrint('');
+    print(request.body);
+    print('');
     developer.log(request.body, name: "Corpo da req");
     try {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 201) {
-        debugPrint(await response.stream.bytesToString());
+        print(await response.stream.bytesToString());
         return true;
       } else {
         // SharedPreferences.getInstance().then((value) =>
@@ -215,7 +215,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
       fila.add(jsonEncode(jsonDecode(request)));
       SharedPreferences.getInstance()
           .then((value) => value.setStringList("filaApontamentoEPI", fila));
-      debugPrint("ASDFDSFFDDS " + fila.toString());
+      print("ASDFDSFFDDS " + fila.toString());
     } else {
       SharedPreferences.getInstance().then(
           (value) => value.setStringList("filaApontamentoEPI", [request]));
@@ -371,7 +371,7 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                                         );
                                       });
                                 } else {
-                                  debugPrint('entrou no caso');
+                                  print('entrou no caso');
                                   construct(result[index], quantidadeEPI.text,
                                       dropValue.value);
                                   Navigator.pop(context);
@@ -417,9 +417,9 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () {
-                      debugPrint('Before: ${epiReport.length}');
+                      print('Before: ${epiReport.length}');
                       epiReport.removeAt(index);
-                      debugPrint('After: ${epiReport.length}');
+                      print('After: ${epiReport.length}');
                       setState(() {});
                     },
                     child: const Icon(Icons.delete)),

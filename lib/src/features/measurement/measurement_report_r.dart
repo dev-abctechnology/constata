@@ -47,17 +47,17 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       try {
         storedBuild = Build.fromJson(widget.dataLogged['obra']['data']);
         for (Task task in storedBuild.tasks!) {
-          debugPrint(task.local!.name +
+          print(task.local!.name +
               ' | ' +
               task.sector!.name +
               ' | ' +
               task.service!.name);
-          debugPrint(task.budgetedQuantity.toString());
-          debugPrint('-----------------------');
+          print(task.budgetedQuantity);
+          print('-----------------------');
         }
       } catch (e, s) {
-        debugPrint(e.toString());
-        debugPrint(s.toString());
+        print(e);
+        print(s);
       }
 
       String obra = widget.dataLogged['obra']['data']['tb01_cp002'];
@@ -69,7 +69,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       SharedPreferences.getInstance().then((value) {
         if (value.containsKey('colaboradores')) {
           colaborators = jsonDecode(value.getString('colaboradores')!);
-          // debugPrint(colaboradores);
+          // print(colaboradores);
           colaborators = colaborators
               .where((element) =>
                   element['data']['tb01_cp123'][0]['tp_cp132'] == "Sim")
@@ -110,8 +110,8 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       ));
       setState(() {});
     } catch (e, s) {
-      debugPrint(e.toString());
-      debugPrint(s.toString());
+      print(e);
+      print(s);
       throw Exception(e);
     }
   }
@@ -214,7 +214,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
       onWillPop: () async {
         final shouldSave = await returnScreenAlert(context);
 
-        debugPrint(shouldSave);
+        print(shouldSave);
         return shouldSave ?? false;
       },
       child: Scaffold(
@@ -531,7 +531,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                     });
                     setState(() {});
                   } catch (e, s) {
-                    debugPrint(s.toString());
+                    print(s);
                     showSnackBar(e.toString(), Colors.red);
                   }
                 }
@@ -580,7 +580,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
             },
             closeButton: "Fechar",
             searchFn: (String keyword, items) {
-              debugPrint(keyword);
+              print(keyword);
               List<int> ret = [];
               if (items != null && keyword.isNotEmpty) {
                 keyword.split(" ").forEach((k) {

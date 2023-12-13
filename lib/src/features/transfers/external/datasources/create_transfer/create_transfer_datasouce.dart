@@ -3,7 +3,6 @@ import 'package:constata/src/features/transfers/data/datasources/create_transfer
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
 import 'package:constata/src/shared/custom_either.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class CreateTransferDataSourceImpl implements CreateTransferDataSource {
@@ -26,7 +25,7 @@ class CreateTransferDataSourceImpl implements CreateTransferDataSource {
 
     http.StreamedResponse response = await request.send();
     var body = await response.stream.bytesToString();
-    debugPrint(body);
+    print(body);
     if (response.statusCode == 201) {
       return ResponseEither.success(true);
     } else {
