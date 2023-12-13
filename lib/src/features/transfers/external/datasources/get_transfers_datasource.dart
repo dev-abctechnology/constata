@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:constata/src/constants.dart';
 import 'package:constata/src/features/transfers/data/datasources/get_transfers_datasource.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class GetTransfersDataSouceImpl implements GetTransfersDataSource {
@@ -13,7 +14,7 @@ class GetTransfersDataSouceImpl implements GetTransfersDataSource {
     final prefs = SharedPrefs();
     final token = await prefs.getString('token');
     final obraId = await prefs.getString('obra_id');
-    print(token);
+    debugPrint(token);
     try {
       final headers = {
         "Authorization": "Bearer $token",
@@ -46,13 +47,13 @@ class GetTransfersDataSouceImpl implements GetTransfersDataSource {
 
         return result;
       } else {
-        print(await response.stream.bytesToString());
-        print(response.statusCode);
+        debugPrint(await response.stream.bytesToString());
+        debugPrint(response.statusCode.toString());
         throw Exception('Failed to load transfers');
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       rethrow;
     }
   }

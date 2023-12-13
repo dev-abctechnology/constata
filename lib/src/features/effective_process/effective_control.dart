@@ -50,7 +50,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
         ),
       );
       setState(() {});
-      print(filaDeApontamento);
+      debugPrint(filaDeApontamento.toString());
     }
     rascunho();
   }
@@ -118,9 +118,9 @@ class _EffectiveControlState extends State<EffectiveControl> {
         _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
         // _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
         var _date2 = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
-        print('jarvis: 2021-11-12T00:00:00');
-        print('timePicker: $d');
-        print('converted: $_date2');
+        debugPrint('jarvis: 2021-11-12T00:00:00');
+        debugPrint('timePicker: $d');
+        debugPrint('converted: $_date2');
         dateStatus = true;
         if (pending != true && k == false) {
           status = true;
@@ -157,13 +157,13 @@ class _EffectiveControlState extends State<EffectiveControl> {
         setState(() {});
 
         Navigator.of(context).pop();
-        print(res.length);
+        debugPrint(res.length.toString());
       } else {
         Navigator.of(context).pop();
       }
     } on Exception catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       Navigator.of(context).pop();
     }
   }
@@ -202,11 +202,11 @@ class _EffectiveControlState extends State<EffectiveControl> {
 
           return {'log': 'true'};
         }
-        print("Apontamentos nesse dia: ${resAppointment.length}");
+        debugPrint("Apontamentos nesse dia: ${resAppointment.length}");
 
         return {'log': 'false'};
       } else {
-        print("has appointment error: " +
+        debugPrint("has appointment error: " +
             response.statusCode.toString() +
             " " +
             jsonDecode(await response.stream.bytesToString()));
@@ -260,16 +260,16 @@ class _EffectiveControlState extends State<EffectiveControl> {
           setState(() {});
           return {'log': 'true'};
         }
-        print("Apontamentos nesse dia: ${resAppointment.length}");
+        debugPrint("Apontamentos nesse dia: ${resAppointment.length}");
 
         return {'log': 'false'};
       } else {
-        print('hasAppointmentQueue: ' + (response.statusCode.toString()));
+        debugPrint('hasAppointmentQueue: ' + (response.statusCode.toString()));
         return {'log': 'error'};
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -300,10 +300,10 @@ class _EffectiveControlState extends State<EffectiveControl> {
 
     try {
       http.StreamedResponse response = await request.send();
-      // print('body: ${request.body}\n\n');
+      // debugPrint('body: ${request.body}\n\n');
 
-      // print(await response.stream.bytesToString());
-      print(response.statusCode);
+      // debugPrint(await response.stream.bytesToString());
+      debugPrint(response.statusCode.toString());
 
       if (response.statusCode == 201) {
         setState(() {
@@ -328,22 +328,22 @@ class _EffectiveControlState extends State<EffectiveControl> {
   }
 
   Future switchAppointment(value) async {
-    print('entrou na func');
+    debugPrint('entrou na func');
 
-    print(value);
+    debugPrint(value);
     String command = value.toString();
-    print(command);
+    debugPrint(command);
     {
       switch (command) {
         case "{log: true}":
-          print('ja tem');
+          debugPrint('ja tem');
           break;
         case '{log: false}':
-          print('send');
+          debugPrint('send');
           sendApointment().then((value) {
             setState(() {
               sending = false;
-              print('a');
+              debugPrint('a');
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -355,7 +355,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
           });
           break;
         case '{log: error}':
-          print('error');
+          debugPrint('error');
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -366,7 +366,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
               });
           break;
         default:
-          print('caiu no default');
+          debugPrint('caiu no default');
       }
 
       setState(() {

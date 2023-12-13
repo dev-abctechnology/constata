@@ -49,12 +49,12 @@ class EffectiveController {
         }
         return effective;
       } else {
-        print(response.reasonPhrase);
-        print('a');
+        debugPrint(response.reasonPhrase);
+        debugPrint('a');
         throw Exception();
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       throw Exception();
     }
   }
@@ -74,15 +74,15 @@ class EffectiveController {
     try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 201) {
-        print('Success');
+        debugPrint('Success');
         return 'created';
       } else {
-        print((await response.stream.bytesToString()));
+        debugPrint((await response.stream.bytesToString()));
         return '${response.statusCode}';
       }
     } catch (e) {
-      print(e);
-      print('offline store');
+      debugPrint(e.toString());
+      debugPrint('offline store');
       SharedPreferences.getInstance()
           .then((value) => value.setString("filaApontamento", request.body));
       return 'offline';

@@ -55,7 +55,7 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
   void listaEfetivo() async {
     final prefs = SharedPrefs();
     efetivo = jsonDecode(await prefs.getString('colaboradores'));
-    // print(efetivo);
+    // debugPrint(efetivo);
     setState(() {});
   }
 
@@ -109,7 +109,7 @@ class _CreateTransferPageState extends State<CreateTransferPage> {
       obras = data.map<ObraSeletor>((e) => ObraSeletor.fromJson(e)).toList();
       obrasFiltered = obras;
       setState(() {});
-      print(obras);
+      debugPrint(obras.toString());
     } else {
       showDialog(
           context: context,

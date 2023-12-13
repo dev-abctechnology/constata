@@ -69,7 +69,7 @@ class _ToolsFormAlertState extends State<ToolsFormAlert> {
                           controller1.clear();
                           return "Valor inválido!";
                         }
-                        print(saldo);
+                        debugPrint(saldo.toString());
                         return null;
                       },
                       decoration: const InputDecoration(

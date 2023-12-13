@@ -88,112 +88,107 @@ List<Widget> buildButton(editing, context) {
 class _MeasurementeDetailsState extends State<MeasurementeDetails> {
   @override
   Widget build(BuildContext context) {
-    print(widget.details);
-    return Container(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              widget.details["tp_cp052"],
-              style: const TextStyle(fontSize: 16),
-            ),
-            Container(
-              child: RichText(
-                  text: TextSpan(
-                      text: '',
-                      style: const TextStyle(fontSize: 14, color: Colors.black),
-                      children: [
-                    TextSpan(text: widget.details["tp_cp051"].toString())
-                  ])),
-            ),
-            const Divider(color: Colors.black12, thickness: 2),
-            ListTile(
-              leading: const Column(
-                children: [
-                  Icon(Icons.map),
-                  Text("Local"),
-                ],
-              ),
-              title: Text(widget.details["tp_cp053"]["name"]),
-            ),
-            const Divider(color: Colors.black12, thickness: 2),
-            ListTile(
-              leading: const Column(
-                children: [
-                  Icon(Icons.run_circle_outlined),
-                  Text("Setor"),
-                ],
-              ),
-              title: Text(widget.details["tp_cp054"]["name"]),
-            ),
-            const Divider(color: Colors.black12, thickness: 2),
-            ListTile(
-              leading: const Column(
-                children: [
-                  Icon(Icons.handyman),
-                  Text("Tarefa"),
-                ],
-              ),
-              title: Text(widget.details["tp_cp055"]["name"]),
-            ),
-            const Divider(color: Colors.black12, thickness: 2),
-            const Icon(Icons.account_balance),
-            RichText(
-                text: TextSpan(
-                    text: '',
-                    style: DefaultTextStyle.of(context).style,
-                    children: [
-                  const TextSpan(
-                      text: 'Quantidade: ',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: widget.details["tp_cp058"].toString())
-                ])),
-            RichText(
-                text: TextSpan(
-                    text: '',
-                    style: DefaultTextStyle.of(context).style,
-                    children: [
-                  const TextSpan(
-                      text: 'Valor unitario: ',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(
-                      text: 'R\$ ' +
-                          NumberFormat("#,##0.00", 'pt-Br')
-                              .format(widget.details["tp_cp057"]))
-                ])),
-            RichText(
-                text: TextSpan(
-                    text: '',
-                    style: DefaultTextStyle.of(context).style,
-                    children: [
-                  const TextSpan(
-                      text: 'Total: ',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(
-                      text: 'R\$ ' +
-                          NumberFormat("#,##0.00", 'pt-Br')
-                              .format(widget.details["tp_cp059"]))
-                ])),
-            const Divider(color: Colors.black12, thickness: 2),
-            Container(
-                child: Column(
+    debugPrint(widget.details.toString());
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            widget.details["tp_cp052"],
+            style: const TextStyle(fontSize: 16),
+          ),
+          RichText(
+              text: TextSpan(
+                  text: '',
+                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                  children: [
+                TextSpan(text: widget.details["tp_cp051"].toString())
+              ])),
+          const Divider(color: Colors.black12, thickness: 2),
+          ListTile(
+            leading: const Column(
               children: [
-                const Text('Observações:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
-                Text(widget.details["tp_cp060"].toString(),
-                    style: const TextStyle(fontSize: 20))
+                Icon(Icons.map),
+                Text("Local"),
               ],
-            )),
-            const Divider(color: Colors.black12, thickness: 2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: buildButton(widget.editing, context),
-            )
-          ],
-        ),
+            ),
+            title: Text(widget.details["tp_cp053"]["name"]),
+          ),
+          const Divider(color: Colors.black12, thickness: 2),
+          ListTile(
+            leading: const Column(
+              children: [
+                Icon(Icons.run_circle_outlined),
+                Text("Setor"),
+              ],
+            ),
+            title: Text(widget.details["tp_cp054"]["name"]),
+          ),
+          const Divider(color: Colors.black12, thickness: 2),
+          ListTile(
+            leading: const Column(
+              children: [
+                Icon(Icons.handyman),
+                Text("Tarefa"),
+              ],
+            ),
+            title: Text(widget.details["tp_cp055"]["name"]),
+          ),
+          const Divider(color: Colors.black12, thickness: 2),
+          const Icon(Icons.account_balance),
+          RichText(
+              text: TextSpan(
+                  text: '',
+                  style: DefaultTextStyle.of(context).style,
+                  children: [
+                const TextSpan(
+                    text: 'Quantidade: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: widget.details["tp_cp058"].toString())
+              ])),
+          RichText(
+              text: TextSpan(
+                  text: '',
+                  style: DefaultTextStyle.of(context).style,
+                  children: [
+                const TextSpan(
+                    text: 'Valor unitario: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: 'R\$ ' +
+                        NumberFormat("#,##0.00", 'pt-Br')
+                            .format(widget.details["tp_cp057"]))
+              ])),
+          RichText(
+              text: TextSpan(
+                  text: '',
+                  style: DefaultTextStyle.of(context).style,
+                  children: [
+                const TextSpan(
+                    text: 'Total: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: 'R\$ ' +
+                        NumberFormat("#,##0.00", 'pt-Br')
+                            .format(widget.details["tp_cp059"]))
+              ])),
+          const Divider(color: Colors.black12, thickness: 2),
+          Column(
+            children: [
+              const Text('Observações:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )),
+              Text(widget.details["tp_cp060"].toString(),
+                  style: const TextStyle(fontSize: 20))
+            ],
+          ),
+          const Divider(color: Colors.black12, thickness: 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: buildButton(widget.editing, context),
+          )
+        ],
       ),
     );
   }

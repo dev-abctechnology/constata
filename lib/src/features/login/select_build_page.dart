@@ -70,7 +70,7 @@ class _SelectObraState extends State<SelectObra> {
                           context,
                           listen: false)
                       .subscribeToTopic(topicName);
-                  print(
+                  debugPrint(
                       'inscrição no tópico ${listaDeObras[index]['data']['tb01_cp002']}: $subscribe');
                   Navigator.of(context).pushReplacement(route);
                 },

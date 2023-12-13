@@ -77,7 +77,7 @@ class NotificationService {
 
   _onSelectNotification(String? payload) {
     if (payload != null && payload.isNotEmpty) {
-      print('Notification payload: $payload');
+      debugPrint('Notification payload: $payload');
     }
   }
 
@@ -112,7 +112,7 @@ class NotificationService {
         payload: notification.payload,
       );
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 

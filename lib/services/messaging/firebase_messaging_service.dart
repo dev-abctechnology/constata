@@ -27,7 +27,7 @@ class FirebaseMessagingService {
 
   getDeviceFirebaseToken() async {
     final token = await FirebaseMessaging.instance.getToken();
-    print('Firebase Token: $token');
+    debugPrint('Firebase Token: $token');
   }
 
   void _onMessage() {
@@ -49,7 +49,7 @@ class FirebaseMessagingService {
 
   _onMessageOpenedApp() {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
+      debugPrint('A new onMessageOpenedApp event was published!');
       _notificationService.showNotification(message);
     });
   }
@@ -67,7 +67,7 @@ class FirebaseMessagingService {
         var response = await dio.get(
             'https://iid.googleapis.com/iid/info/' + token,
             queryParameters: {'details': true});
-        print(response.data);
+        debugPrint(response.data);
 
         if (response.data['rel'] != null) {
           Map<String, dynamic> subscribedTopics =
@@ -133,10 +133,10 @@ class FirebaseMessagingService {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      debugPrint(await response.stream.bytesToString());
       return true;
     } else {
-      print(response.reasonPhrase);
+      debugPrint(response.reasonPhrase);
       return false;
     }
   }
@@ -166,10 +166,10 @@ class FirebaseMessagingService {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      debugPrint(await response.stream.bytesToString());
       return true;
     } else {
-      print(response.reasonPhrase);
+      debugPrint(response.reasonPhrase);
       return false;
     }
   }
@@ -201,10 +201,10 @@ class FirebaseMessagingService {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      debugPrint(await response.stream.bytesToString());
       return true;
     } else {
-      print(response.reasonPhrase);
+      debugPrint(response.reasonPhrase);
       return false;
     }
   }

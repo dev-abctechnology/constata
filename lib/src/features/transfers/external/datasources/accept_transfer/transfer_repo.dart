@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:constata/src/constants.dart';
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
@@ -22,7 +23,7 @@ class TransferRepository {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 202) {
       var body = jsonDecode(await response.stream.bytesToString());
-      print(body);
+      debugPrint(body);
       return {'status': true, 'data': body};
     } else {
       return {
@@ -67,8 +68,8 @@ class TransferRepository {
         return false;
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       return false;
     }
   }
@@ -91,7 +92,7 @@ class TransferRepository {
 
       if (response.statusCode == 202) {
         var body = jsonDecode(await response.stream.bytesToString());
-        print(body);
+        debugPrint(body);
         return {'status': true, 'data': body};
       } else {
         return {
@@ -101,8 +102,8 @@ class TransferRepository {
         };
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       return {'status': false, 'message': 'Erro ao buscar transferência'};
     }
   }
@@ -133,8 +134,8 @@ class TransferRepository {
         return false;
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       return false;
     }
   }

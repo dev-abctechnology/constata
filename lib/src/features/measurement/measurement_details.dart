@@ -67,7 +67,7 @@ class _MeasurementDetailsState extends State<MeasurementDetails> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: measurements.length,
                     itemBuilder: (BuildContext context, int index) {
-                      print(measurements[index]);
+                      debugPrint(measurements[index]);
                       return MeasurementCard(
                         jsonBody: measurements[index],
                         callback: () {},

@@ -44,15 +44,15 @@ class _TransferPageState extends State<TransferPage> {
     _isLoading.value = true;
     bool getTransfer = await _controller.getTransfers();
     if (getTransfer) {
-      print('Transferências carregadas com sucesso!');
+      debugPrint('Transferências carregadas com sucesso!');
       _isError.value = false;
     } else {
-      print('Erro ao carregar transferências!');
+      debugPrint('Erro ao carregar transferências!');
       _isError.value = true;
     }
     setState(() {});
     _isLoading.value = false;
-    print(_controller.transfers);
+    debugPrint(_controller.transfers.toString());
   }
 
   @override
@@ -164,7 +164,7 @@ class _TransferPageState extends State<TransferPage> {
   Widget _buildExpansionTile(TransferEntity transfer, int index) {
     return ExpansionTile(
       onExpansionChanged: (value) {
-        print(transfer);
+        debugPrint(transfer.toString());
       },
       title: Text(transfer.nameEffective!),
       // subtitle: Text('${transfer.originBuild} (arrow icon here) ${transfer.targetBuild}'),
@@ -227,10 +227,10 @@ class _TransferPageState extends State<TransferPage> {
                           token: token, obra: transfer.targetBuild!);
 
                   updateColab == true
-                      ? print('Colaboradores atualizados com sucesso!')
-                      : print('Erro ao atualizar colaboradores!');
+                      ? debugPrint('Colaboradores atualizados com sucesso!')
+                      : debugPrint('Erro ao atualizar colaboradores!');
                 } else {
-                  print('Erro ao aceitar transferência!');
+                  debugPrint('Erro ao aceitar transferência!');
                 }
               },
               child: const Text('Sim'),

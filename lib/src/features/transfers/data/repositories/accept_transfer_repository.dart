@@ -1,6 +1,7 @@
 import 'package:constata/src/features/transfers/data/datasources/accept_transfer_datasource.dart';
 import 'package:constata/src/features/transfers/domain/entities/transfer_entity.dart';
 import 'package:constata/src/features/transfers/domain/repositories/accept_transfer_repository.dart';
+import 'package:flutter/material.dart';
 
 class AcceptTransferRepositoryImpl implements AcceptTransferRepository {
   AcceptTransferRepositoryImpl(this._acceptTransferDataSource);
@@ -16,8 +17,8 @@ class AcceptTransferRepositoryImpl implements AcceptTransferRepository {
         return true;
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       rethrow;
     }
   }
@@ -32,8 +33,8 @@ class AcceptTransferRepositoryImpl implements AcceptTransferRepository {
         return true;
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       rethrow;
     }
   }

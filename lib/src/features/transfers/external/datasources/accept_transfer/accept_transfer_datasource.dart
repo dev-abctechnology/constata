@@ -3,6 +3,7 @@ import 'package:constata/src/features/transfers/domain/entities/transfer_entity.
 import 'package:constata/src/features/transfers/external/datasources/accept_transfer/transfer_repo.dart';
 import 'package:constata/src/shared/custom_either.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
+import 'package:flutter/foundation.dart';
 
 class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
   final prefs = SharedPrefs();
@@ -30,8 +31,8 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
         }
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       return ResponseEither(status: false, message: e.toString());
     }
   }
@@ -52,8 +53,8 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
         }
       }
     } catch (e, s) {
-      print(e);
-      print(s);
+      debugPrint(e.toString());
+      debugPrint(s.toString());
       return ResponseEither(status: false, message: e.toString());
     }
   }
@@ -68,7 +69,7 @@ class AcceptTransferDataSourceImpl implements AcceptTransferDataSource {
         throw Exception(updateResponse.message);
       }
     } catch (e, s) {
-      print(e);
+      debugPrint(e.toString());
       return ResponseEither.exception(e.toString(), s);
     }
   }

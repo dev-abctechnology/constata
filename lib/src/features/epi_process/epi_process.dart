@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class EpiProcess extends StatefulWidget {
   Map dataLogged;
 
@@ -64,11 +65,11 @@ class _EpiProcessState extends State<EpiProcess> {
 
       if (response.statusCode == 200) {
         effectiveList = jsonDecode(await response.stream.bytesToString());
-        print(effectiveList.length);
+        debugPrint(effectiveList.length.toString());
         setState(() {});
         return true;
       } else {
-        print(response.reasonPhrase);
+        debugPrint(response.reasonPhrase);
         return false;
       }
     } catch (e) {
@@ -86,7 +87,7 @@ class _EpiProcessState extends State<EpiProcess> {
       }
     });
 
-    print(widget.dataLogged['obra']);
+    debugPrint(widget.dataLogged['obra']);
   }
 
   apagarApontamentoPendente(indice) async {
@@ -95,7 +96,7 @@ class _EpiProcessState extends State<EpiProcess> {
       var temp =
           jsonDecode(filaEpi.getStringList("filaApontamentoEPI").toString());
 
-      print(temp);
+      debugPrint(temp);
     }
   }
 
@@ -106,7 +107,8 @@ class _EpiProcessState extends State<EpiProcess> {
       developer.log('Colaboradores na memoria');
       effectiveList =
           jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!);
-      print(jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!));
+      debugPrint(
+          jsonDecode(preferenciasCompartilhadas.getString("colaboradores")!));
       setState(() {
         _isOffline = true;
       });
@@ -174,8 +176,8 @@ class _EpiProcessState extends State<EpiProcess> {
                   try {
                     developer.log(result.toString(), name: "Retorno da pagina");
                   } catch (error, s) {
-                    print(error);
-                    print(s);
+                    debugPrint(error.toString());
+                    debugPrint(s.toString());
                   }
                 } catch (e, s) {
                   developer.log("error", error: e, stackTrace: s);

@@ -41,7 +41,7 @@ class Verifications {
 
     if (response.statusCode == 200) {
       List effectiveList = jsonDecode(await response.stream.bytesToString());
-      // print(effectiveList);
+      // debugPrint(effectiveList);
       debugPrint(response.statusCode.toString());
       return effectiveList;
     } else {
