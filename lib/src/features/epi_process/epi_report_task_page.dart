@@ -353,7 +353,8 @@ class _EpiReportTaskState extends State<EpiReportTask> {
                       actions: [
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red),
+                              backgroundColor: Colors.red,
+                            ),
                             onPressed: () {
                               Navigator.pop(context);
                             },

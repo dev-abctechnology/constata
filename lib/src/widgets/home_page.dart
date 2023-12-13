@@ -1,4 +1,5 @@
 // import 'package:constata/src/features/effective_clean/presenter/effective_page.dart';
+import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/shared/custom_page_route.dart';
 import 'package:constata/src/shared/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +50,13 @@ class _HomePageBodyState extends State<HomePageBody> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  onPressed: () {
+                  onPressed: () async {
                     SharedPreferences.getInstance().then(
                       (value) => value.remove("data"),
                     );
+                    await Provider.of<FirebaseMessagingService>(context,
+                            listen: false)
+                        .unsubscribeFromAllTopics();
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                   },
                   child: const Column(

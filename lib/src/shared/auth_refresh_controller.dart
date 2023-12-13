@@ -1,68 +1,74 @@
 import 'dart:convert';
 
+import 'package:constata/src/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRefreshController {
-  int times = 1;
+  static const Map<String, String> jsonHeaders = {
+    'Content-Type': 'application/json',
+  };
+  static const Map<String, String> authHeaders = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Basic amFydmlzQGVmY3MyMDE4OlM0SkJ4NzRv',
+  };
+
+  int retryCount = 0;
+  static const int maxRetries = 3;
+
   Future<String> checkAuth(String token) async {
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request(
-        'GET', Uri.parse('http://abctech.ddns.net:4230/jarvis/api/'));
-
-    request.headers.addAll(headers);
     try {
-      return request.send().then((value) {
-        if (value.statusCode != 401) {
-          return '';
-        }
-        if (value.statusCode == 401) {
-          return SharedPreferences.getInstance().then(
-            (value) {
-              var headers = {
-                'Authorization': 'Basic amFydmlzQGVmY3MyMDE4OlM0SkJ4NzRv',
-                'Content-Type': 'application/x-www-form-urlencoded',
-              };
-              Map body = jsonDecode(value.getString("authentication")!);
-              var refresh = http.Request(
-                  'POST',
-                  Uri.parse(
-                      'http://abctech.ddns.net:4230/jarvis/api/oauth/token'));
-              refresh.bodyFields = {
-                'username': body["user"],
-                'password': body["password"],
-                'grant_type': 'password'
-              };
-              refresh.headers.addAll(headers);
-              return refresh.send().then(
-                (value) {
-                  if (value.statusCode == 200) {
-                    debugPrint(value.statusCode.toString());
-                    return value.stream
-                        .bytesToString()
-                        .then((value) => jsonDecode(value)['access_token']);
-                  } else {
-                    if (times < 3) {
-                      times = times++;
-                      checkAuth(token);
-                    }
-                    return '';
-                  }
-                },
-              );
-            },
-          );
-        }
+      final headers = {
+        'Authorization': 'Bearer $token',
+        ...jsonHeaders,
+      };
 
+      final request = http.Request('GET', Uri.parse(apiUrl));
+      request.headers.addAll(headers);
+
+      final response = await request.send();
+
+      if (response.statusCode != 401) {
         return '';
-      });
+      }
+
+      return await refreshAuthToken(token);
     } catch (e) {
       print(e);
       return '';
+    }
+  }
+
+  Future<String> refreshAuthToken(String token) async {
+    if (retryCount >= maxRetries) {
+      return '';
+    }
+
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final body = jsonDecode(sharedPreferences.getString("authentication")!);
+
+    final refresh = http.Request(
+      'POST',
+      Uri.parse('$apiUrl/oauth/token'),
+    );
+    refresh.bodyFields = {
+      'username': body["user"],
+      'password': body["password"],
+      'grant_type': 'password',
+    };
+    refresh.headers.addAll(authHeaders);
+
+    final refreshResponse = await refresh.send();
+
+    if (refreshResponse.statusCode == 200) {
+      debugPrint(refreshResponse.statusCode.toString());
+      return await refreshResponse.stream
+          .bytesToString()
+          .then((value) => jsonDecode(value)['access_token']);
+    } else {
+      retryCount++;
+      return await checkAuth(token);
     }
   }
 }

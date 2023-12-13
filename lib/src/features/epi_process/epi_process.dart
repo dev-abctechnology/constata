@@ -35,35 +35,6 @@ class _EpiProcessState extends State<EpiProcess> {
   bool sending = false;
   List filaDeApontamento = [];
 
-  // Future<void> _openDatePicker(BuildContext context) async {
-  //   setState(() {
-  //     res = [];
-  //   });
-
-  //   final DateTime d = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime.now().subtract(
-  //       Duration(days: 2000000),
-  //     ),
-  //     lastDate: DateTime.now().add(
-  //       Duration(days: 2000000),
-  //     ),
-  //   );
-  //   if (d != null) {
-  //     setState(() {
-  //       _selectedDate = DateFormat(" d 'de' MMMM 'de' y", "pt_BR").format(d);
-  //       _date = DateFormat('dd/MM/yyyy', "pt_BR").format(d);
-  //       // _date = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
-  //       var _date2 = DateFormat('yyyy-MM-ddTHH:mm:ss', "pt_BR").format(d);
-  //       print('jarvis: 2021-11-12T00:00:00');
-  //       print('timePicker: $d');
-  //       print('converted: $_date2');
-  //       //2021-11-12T00:00:00
-  //     });
-  //   }
-  // }
-
   Future fetchColaboradores() async {
     setState(() {});
     var headers = {
@@ -126,14 +97,6 @@ class _EpiProcessState extends State<EpiProcess> {
 
       print(temp);
     }
-
-    // setState(() {
-    //   SharedPreferences.getInstance().then((value) async {
-    //     value.remove("filaApontamentoEPI");
-    //     filaDeApontamento = [];
-    //     pending = false;
-    //   });
-    // });
   }
 
   Future<void> mountEffective() async {
@@ -222,12 +185,14 @@ class _EpiProcessState extends State<EpiProcess> {
               }
             },
             child: ListTile(
-              title: Center(
-                  child: Text(
+              title: Text(
                 '${effectiveList[index]['data']['tb01_cp002']}',
                 textAlign: TextAlign.center,
-                maxLines: 3,
-              )),
+              ),
+              subtitle: Text(
+                '${effectiveList[index]['data']['tb01_cp004']}',
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         );
