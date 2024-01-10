@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             child: Column(
-              children: <Widget>[
+              children: [
                 Material(
                   borderRadius: const BorderRadius.all(Radius.circular(70.0)),
                   elevation: 20,
@@ -130,8 +130,8 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(10.0),
                         child: Image.asset(
                           'assets/images/constata.png',
-                          width: 50,
-                          height: 50,
+                          width: 40,
+                          height: 40,
                           fit: BoxFit.scaleDown,
                         ),
                       ),

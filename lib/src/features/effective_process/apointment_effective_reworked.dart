@@ -306,7 +306,7 @@ class _ApointmentEffectiveReworkedState
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: shouldAnimate == false
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : AnimationLimiter(
                   child: ListView.builder(
                       shrinkWrap: true,
@@ -405,75 +405,7 @@ class _ApointmentEffectiveReworkedState
                                     ),
                                   ],
                                 ),
-                                child: AnimatedContainer(
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            offset: const Offset(0, 2),
-                                            blurRadius: 1,
-                                            color:
-                                                effective.effectiveStatus == ''
-                                                    ? Colors.red.withOpacity(.5)
-                                                    : Colors.transparent),
-                                      ],
-                                      // color: effective.effectiveStatus == ""
-                                      //     ? Color.fromARGB(255, 230, 60, 60)
-                                      //     ,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 1),
-                                  margin: const EdgeInsets.all(2),
-                                  duration: const Duration(seconds: 2),
-                                  curve: Curves.easeOutCirc,
-                                  child: Card(
-                                    // color: effective.effectiveStatus == ''
-                                    //     ? Colors.grey.shade100
-                                    //     : Colors.white,
-                                    // shadowColor: effective.effectiveStatus == ''
-                                    //     ? Color.fromARGB(255, 247, 0, 0)
-                                    //     : Colors.black,
-                                    elevation:
-                                        effective.effectiveStatus == '' ? 5 : 1,
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                            leading: effective
-                                                        .effectiveStatus !=
-                                                    ""
-                                                ? null
-                                                : Icon(
-                                                    Icons.arrow_forward,
-                                                    color: Colors.grey.shade400,
-                                                  ),
-                                            title: Text(
-                                              effective.effectiveName +
-                                                  '\n' +
-                                                  effective.effectiveCode,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            subtitle: Text(
-                                              effective.effectiveStatus,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: effective
-                                                              .effectiveStatus ==
-                                                          "Presente"
-                                                      ? Colors.green
-                                                      : Colors.red),
-                                            ),
-                                            trailing: effective
-                                                        .effectiveStatus !=
-                                                    ""
-                                                ? null
-                                                : Icon(
-                                                    Icons.arrow_back,
-                                                    color: Colors.grey.shade400,
-                                                  )),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                child: EffectiveCard(effective: effective),
                               ),
                             ),
                           ),
@@ -550,5 +482,75 @@ class _ApointmentEffectiveReworkedState
             );
           });
     }
+  }
+}
+
+class EffectiveCard extends StatelessWidget {
+  const EffectiveCard({
+    Key? key,
+    required this.effective,
+  }) : super(key: key);
+
+  final Effective effective;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                offset: const Offset(0, 2),
+                blurRadius: 1,
+                color: effective.effectiveStatus == ''
+                    ? Colors.red.withOpacity(.5)
+                    : Colors.transparent),
+          ],
+          // color: effective.effectiveStatus == ""
+          //     ? Color.fromARGB(255, 230, 60, 60)
+          //     ,
+          borderRadius: BorderRadius.circular(8)),
+      padding: const EdgeInsets.symmetric(vertical: 1),
+      margin: const EdgeInsets.all(2),
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeOutCirc,
+      child: Card(
+        // color: effective.effectiveStatus == ''
+        //     ? Colors.grey.shade100
+        //     : Colors.white,
+        // shadowColor: effective.effectiveStatus == ''
+        //     ? Color.fromARGB(255, 247, 0, 0)
+        //     : Colors.black,
+        elevation: effective.effectiveStatus == '' ? 5 : 1,
+        child: Column(
+          children: [
+            ListTile(
+                leading: effective.effectiveStatus != ""
+                    ? null
+                    : Icon(
+                        Icons.arrow_forward,
+                        color: Colors.grey.shade400,
+                      ),
+                title: Text(
+                  effective.effectiveName + '\n' + effective.effectiveCode,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  effective.effectiveStatus,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: effective.effectiveStatus == "Presente"
+                          ? Colors.green
+                          : Colors.red),
+                ),
+                trailing: effective.effectiveStatus != ""
+                    ? null
+                    : Icon(
+                        Icons.arrow_back,
+                        color: Colors.grey.shade400,
+                      )),
+          ],
+        ),
+      ),
+    );
   }
 }
