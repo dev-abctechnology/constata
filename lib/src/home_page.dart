@@ -34,43 +34,45 @@ class _HomePageState extends State<HomePage> {
   String tokenSerilizado = '';
 
   Future fetchColaboradores() async {
-    var headers = {
-      'Authorization':
-          'Bearer ${Provider.of<Token>(context, listen: false).token}',
-      'Content-Type': 'application/json'
-    };
-    AuthRefreshController authRefreshController = AuthRefreshController();
-    String x = await authRefreshController
-        .checkAuth(Provider.of<Token>(context, listen: false).token);
-    if (x.isNotEmpty) {
-      Provider.of<Token>(context, listen: false).setToken(x);
-    }
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-pem-permd-00/filter'));
-    request.body = json.encode({
-      "filters": [
-        {
-          "fieldName": "data.tb01_cp123.tp_cp124.name",
-          "value": "${widget.dataLogged['obra']['data']['tb01_cp002']}",
-          "expression": "EQUAL"
-        }
-      ]
-    });
-    request.headers.addAll(headers);
+    try {
+      var headers = {
+        'Authorization':
+            'Bearer ${Provider.of<Token>(context, listen: false).token}',
+        'Content-Type': 'application/json'
+      };
+      AuthRefreshController authRefreshController = AuthRefreshController();
+      String x = await authRefreshController
+          .checkAuth(Provider.of<Token>(context, listen: false).token);
+      if (x.isNotEmpty) {
+        Provider.of<Token>(context, listen: false).setToken(x);
+      }
+      var request = http.Request(
+          'POST',
+          Uri.parse(
+              'http://abctech.ddns.net:4230/jarvis/api/stuffdata/sdt_a-pem-permd-00/filter'));
+      request.body = json.encode({
+        "filters": [
+          {
+            "fieldName": "data.tb01_cp123.tp_cp124.name",
+            "value": "${widget.dataLogged['obra']['data']['tb01_cp002']}",
+            "expression": "EQUAL"
+          }
+        ]
+      });
+      request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      SharedPreferences.getInstance().then((value) async => value.setString(
-          "colaboradores",
-          jsonEncode(jsonDecode(await response.stream.bytesToString()))));
-      debugPrint('gravou na memoria');
-      return true;
-    } else {
-      debugPrint(await response.stream.bytesToString());
-
+      if (response.statusCode == 200) {
+        SharedPreferences.getInstance().then((value) async => value.setString(
+            "colaboradores",
+            jsonEncode(jsonDecode(await response.stream.bytesToString()))));
+        debugPrint('gravou na memoria');
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   }
