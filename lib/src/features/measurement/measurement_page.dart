@@ -33,6 +33,7 @@ class _MeasurementState extends State<Measurement> {
   bool dateStatus = false;
   List medicaoPendente = [];
   bool sending = false;
+  List pastReports = [];
 
   void rascunho() {
     if (Provider.of<MeasurementData>(context, listen: false).hasData == true) {
@@ -82,7 +83,7 @@ class _MeasurementState extends State<Measurement> {
 
   Future<void> _openDatePicker(BuildContext context) async {
     setState(() {
-      res = [];
+      pastReports = [];
     });
 
     final DateTime? d = await showDatePicker(
@@ -118,8 +119,6 @@ class _MeasurementState extends State<Measurement> {
       });
     }
   }
-
-  //{timestamp: 2021-11-12T13:33:31.491+0000, status: 500, error: Internal Server Error, message: No value present, path: /jarvis/api/stuffdata/sdt_a-inm-prjre-00}
 
   @override
   void initState() {
@@ -179,16 +178,14 @@ class _MeasurementState extends State<Measurement> {
 
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-      res = jsonDecode(await response.stream.bytesToString());
+      pastReports = jsonDecode(await response.stream.bytesToString());
 
-      res;
-      if (res.isNotEmpty) {
+      if (pastReports.isNotEmpty) {
         status = false;
         showSnackBar('Na data selecionada já existe um relatório', Colors.red);
         setState(() {});
         return true;
       } else {
-        print(res.length);
         setState(() {});
         return false;
       }
@@ -331,8 +328,13 @@ class _MeasurementState extends State<Measurement> {
     }
   }
 
-  List res = [];
-  bool k = false;
+  void showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: color,
+      content: Text(message),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -421,27 +423,7 @@ class _MeasurementState extends State<Measurement> {
                             'Data: ${medicaoPendente[index]["data"]['h0_cp008']}'),
                         trailing: ElevatedButton(
                           onPressed: !sending
-                              ? () async {
-                                  setState(() {
-                                    sending = true;
-                                  });
-
-                                  await effectiveValidator(
-                                          offlineMeasurement:
-                                              medicaoPendente[index])
-                                      .then(
-                                          (value) => makeRequestOffline(value))
-                                      .onError((error, stackTrace) {
-                                    setState(() {
-                                      sending = false;
-                                    });
-                                    showSnackBar(
-                                        'Erro inesperado, tente novamente, se o erro persistir contate o suporte',
-                                        Colors.red);
-                                    print(error);
-                                    print(stackTrace);
-                                  });
-                                }
+                              ? () => _handleSendOfflineButton(index)
                               : null,
                           child: const Icon(Icons.arrow_circle_up),
                         ),
@@ -449,13 +431,13 @@ class _MeasurementState extends State<Measurement> {
                     );
                   }),
               ListTile(
-                title: res.isEmpty
+                title: pastReports.isEmpty
                     ? null
                     : Center(child: Text('Apontamentos do dia $_selectedDate')),
               ),
               ListView.builder(
                 shrinkWrap: true,
-                itemCount: res.isEmpty ? 0 : res.length,
+                itemCount: pastReports.isEmpty ? 0 : pastReports.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
@@ -466,14 +448,15 @@ class _MeasurementState extends State<Measurement> {
                               var route = CustomPageRoute(
                                 builder: (BuildContext context) =>
                                     MeasurementDetails(
-                                  measurement: res[index],
+                                  measurement: pastReports[index],
                                 ),
                               );
                               Navigator.of(context).push(route);
                             });
                           },
                           child: ListTile(
-                            title: Text('${res[index]['data']['h0_cp008']}'),
+                            title: Text(
+                                '${pastReports[index]['data']['h0_cp008']}'),
                           ),
                         ),
                       ),
@@ -489,10 +472,19 @@ class _MeasurementState extends State<Measurement> {
     );
   }
 
-  void showSnackBar(String message, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: color,
-      content: Text(message),
-    ));
+  Future<void> _handleSendOfflineButton(int index) async {
+    setState(() => sending = true);
+    try {
+      var validatedData =
+          await effectiveValidator(offlineMeasurement: medicaoPendente[index]);
+      makeRequestOffline(validatedData);
+    } catch (error, stackTrace) {
+      setState(() => sending = false);
+      showSnackBar(
+          'Erro inesperado, tente novamente, se o erro persistir contate o suporte',
+          Colors.red);
+      print(error);
+      print(stackTrace);
+    }
   }
 }
