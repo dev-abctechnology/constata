@@ -446,11 +446,36 @@ class _ApointmentEffectiveReworkedState
     setState(() {});
   }
 
+  bool isButtonDisabled = false;
+
   void sendValidator() async {
-    if (_formKey.currentState!.validate()) {
-      final validator =
-          effectives.any((element) => element.effectiveStatus == '');
-      if (validator == true) {
+    if (!isButtonDisabled) {
+      // Set the flag to disable the button temporarily
+      setState(() {
+        isButtonDisabled = true;
+      });
+
+      if (_formKey.currentState!.validate()) {
+        final validator =
+            effectives.any((element) => element.effectiveStatus == '');
+        if (validator == true) {
+          showDialog(
+              context: context,
+              builder: (ctx) {
+                return const AlertDialog(
+                  title: Text('Atenção'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Informe o status de todos!'),
+                    ],
+                  ),
+                );
+              });
+        } else {
+          send();
+        }
+      } else {
         showDialog(
             context: context,
             builder: (ctx) {
@@ -459,28 +484,19 @@ class _ApointmentEffectiveReworkedState
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Informe o status de todos!'),
+                    Text('Informe a quantidade de cafés da manhã e da tarde!'),
                   ],
                 ),
               );
             });
-      } else {
-        send();
       }
-    } else {
-      showDialog(
-          context: context,
-          builder: (ctx) {
-            return const AlertDialog(
-              title: Text('Atenção'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Informe a quantidade de cafés da manhã e da tarde!'),
-                ],
-              ),
-            );
-          });
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        // After the task is done, enable the button again
+        setState(() {
+          isButtonDisabled = false;
+        });
+      });
     }
   }
 }

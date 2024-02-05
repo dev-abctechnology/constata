@@ -511,27 +511,37 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
                   showSnackBar('Não há medições para enviar', Colors.red);
                 } else {
                   try {
-                    await measurementJarvis
-                        .sendMeasurement(
-                            MeasurementAppointment(data: measurementBody),
-                            context)
-                        .then((value) {
-                      if (value == 'created') {
-                        showSnackBar(
-                            'Medição enviada com sucesso!', Colors.green);
-                        Navigator.of(context).pop();
-                        Provider.of<MeasurementData>(context, listen: false)
-                            .clearMeasurementData();
-                      } else {
-                        Navigator.of(context).pop();
+                    if (!isSending) {
+                      setState(() {
+                        isSending = true;
+                      });
+                      await measurementJarvis
+                          .sendMeasurement(
+                              MeasurementAppointment(data: measurementBody),
+                              context)
+                          .then((value) {
+                        if (value == 'created') {
+                          showSnackBar(
+                              'Medição enviada com sucesso!', Colors.green);
+                          Navigator.of(context).pop();
+                          Provider.of<MeasurementData>(context, listen: false)
+                              .clearMeasurementData();
+                        } else {
+                          Navigator.of(context).pop();
 
-                        alerta();
-                        showSnackBar('Erro ao enviar a medição!', Colors.red);
-                      }
-                    });
-                    setState(() {});
+                          alerta();
+                          showSnackBar('Erro ao enviar a medição!', Colors.red);
+                        }
+                      });
+                      setState(() {
+                        isSending = false;
+                      });
+                    }
                   } catch (e, s) {
                     print(s);
+                    setState(() {
+                      isSending = false;
+                    });
                     showSnackBar(e.toString(), Colors.red);
                   }
                 }
@@ -547,6 +557,7 @@ class _MeasurementReportReworkedState extends State<MeasurementReportReworked> {
     );
   }
 
+  bool isSending = false;
   AlertDialog searchService(
       GlobalKey<FormState> _globalKey,
       List<DropdownMenuItem<Task>> dropdownMenuItems,

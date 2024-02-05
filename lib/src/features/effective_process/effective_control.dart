@@ -130,7 +130,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
     }
   }
 
-  Future fetchRelatorios(date) async {
+  Future fetchRelatorios() async {
     setState(() {});
 
     developer.log(Provider.of<Token>(context, listen: false).token,
@@ -406,7 +406,7 @@ class _EffectiveControlState extends State<EffectiveControl> {
                           _openDatePicker(context).then((value) {
                             if (_date.isNotEmpty) {
                               hasAppointment(_date)
-                                  .then((value) => fetchRelatorios(null));
+                                  .then((value) => fetchRelatorios());
                             }
                           });
                         },
@@ -418,8 +418,8 @@ class _EffectiveControlState extends State<EffectiveControl> {
                                 onPressed: () {
                                   _openDatePicker(context).then((value) {
                                     if (_date.isNotEmpty) {
-                                      hasAppointment(_date).then(
-                                          (value) => fetchRelatorios(null));
+                                      hasAppointment(_date)
+                                          .then((value) => fetchRelatorios());
                                     }
                                   });
                                 },
