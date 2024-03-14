@@ -218,15 +218,16 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Mudar de obra'),
               trailing: const Icon(Icons.change_circle, color: Colors.blue),
               onTap: () async {
-                var prefs = await SharedPreferences.getInstance();
-                Map username = jsonDecode(prefs.getString('authentication')!);
-                debugPrint(username.toString());
-                Provider.of<AppointmentData>(context, listen: false)
-                    .clearAppointmentData();
-                Provider.of<MeasurementData>(context, listen: false)
-                    .clearMeasurementData();
-                Navigator.of(context).pop();
-                changeBuild();
+                try {
+                  Provider.of<AppointmentData>(context, listen: false)
+                      .clearAppointmentData();
+                  Provider.of<MeasurementData>(context, listen: false)
+                      .clearMeasurementData();
+                  Navigator.of(context).pop();
+                  changeBuild();
+                } catch (e) {
+                  print(e);
+                }
               },
             ),
           ),
@@ -238,26 +239,30 @@ class _HomePageState extends State<HomePage> {
   final loginController = LoginController(LoginRepository(Dio()));
 
   void changeBuild() async {
-    var prefs = await SharedPreferences.getInstance();
-    Map authParam = jsonDecode(prefs.getString('authentication')!);
-    await loginController.generateToken(
-        authParam['user'], authParam['password']);
-    final user = await loginController.fetchUserSigned(authParam['user']);
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      Map authParam = jsonDecode(prefs.getString('authentication')!);
+      await loginController.generateToken(
+          authParam['user'], authParam['password']);
+      final user = await loginController.fetchUserSigned(authParam['user']);
 
-    final userData =
-        await loginController.pegarParceiroDeNegocio(authParam['user']);
+      final userData =
+          await loginController.pegarParceiroDeNegocio(authParam['user']);
 
-    final obraData =
-        await loginController.fetchObraData(userData['tb01_cp004']);
+      final obraData =
+          await loginController.fetchObraData(userData['tb01_cp004']);
 
-    var route = CustomPageRoute(
-      builder: (BuildContext context) => SelectObra(
-        obraData: obraData,
-        user: user,
-      ),
-    );
+      var route = CustomPageRoute(
+        builder: (BuildContext context) => SelectObra(
+          obraData: obraData,
+          user: user,
+        ),
+      );
 
-    Navigator.of(context).pushReplacement(route);
+      Navigator.of(context).pushReplacement(route);
+    } catch (e) {
+      print('Failed to generate token: $e');
+    }
   }
 
   @override
