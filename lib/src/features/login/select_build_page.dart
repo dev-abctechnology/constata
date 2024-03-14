@@ -3,6 +3,7 @@ import 'package:constata/services/messaging/firebase_messaging_service.dart';
 import 'package:constata/src/home_page.dart';
 import 'package:constata/src/models/token.dart';
 import 'package:constata/src/shared/custom_page_route.dart';
+import 'package:constata/src/shared/load_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,29 +51,56 @@ class _SelectObraState extends State<SelectObra> {
               elevation: 3,
               child: InkWell(
                 onTap: () async {
-                  var route = CustomPageRoute(
-                    builder: (BuildContext context) => HomePage(
-                      dataLogged: generateDataLogged(index),
-                    ),
-                  );
-                  SharedPreferences.getInstance().then((value) =>
-                      value.setString(
-                          "data",
-                          json.encode(
-                              generateStoredDataLogged(context, index))));
+                  showLoading(context);
+                  try {
+                    var route = CustomPageRoute(
+                      builder: (BuildContext context) => HomePage(
+                        dataLogged: generateDataLogged(index),
+                      ),
+                    );
 
-                  final topicName = convertToValidTopicName(
-                      listaDeObras[index]['data']['tb01_cp002']);
-                  await Provider.of<FirebaseMessagingService>(context,
-                          listen: false)
-                      .unsubscribeFromAllTopics();
-                  final subscribe = await Provider.of<FirebaseMessagingService>(
-                          context,
-                          listen: false)
-                      .subscribeToTopic(topicName);
-                  print(
-                      'inscrição no tópico ${listaDeObras[index]['data']['tb01_cp002']}: $subscribe');
-                  Navigator.of(context).pushReplacement(route);
+                    SharedPreferences.getInstance().then((value) =>
+                        value.setString(
+                            "data",
+                            json.encode(
+                                generateStoredDataLogged(context, index))));
+
+                    final topicName = convertToValidTopicName(
+                        listaDeObras[index]['data']['tb01_cp002']);
+                    await Provider.of<FirebaseMessagingService>(context,
+                            listen: false)
+                        .unsubscribeFromAllTopics();
+                    final subscribe =
+                        await Provider.of<FirebaseMessagingService>(context,
+                                listen: false)
+                            .subscribeToTopic(topicName);
+                    print(
+                        'inscrição no tópico ${listaDeObras[index]['data']['tb01_cp002']}: $subscribe');
+
+                    Navigator.of(context).pop(); // Close the dialog
+
+                    Navigator.of(context).pushReplacement(route);
+                  } catch (e) {
+                    Navigator.of(context).pop();
+                    //dialog de erro
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Erro'),
+                            content: Text(
+                                'Erro ao tentar acessar a obra: ${listaDeObras[index]['data']['tb01_cp002']}'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        });
+                  }
                 },
                 child: ListTile(
                     title: Center(
